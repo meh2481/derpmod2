@@ -1,0 +1,15 @@
+.vscode/
+*.adb
+*.lib
+*.o
+hUGEDriver.h
+*.lst
+*.rst
+*.sym
+*.ihx
+*.noi
+*.asm
+*.map
+*.cdb
+*.gb
+*.gbc
