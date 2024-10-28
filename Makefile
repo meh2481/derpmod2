@@ -8,7 +8,7 @@ LCC = $(GBDK_HOME)bin/lcc -Wa-l -Wl-m -Wl-j -I./include
 
 BINS	= derp.gbc
 
-OBJS	= derp.o pressure_cooker.o pajama_jam.o the_traveller.o
+OBJS	= derp.o music/pressure_cooker.o music/pajama_jam.o music/the_traveller.o
 
 GBDK_DEBUG = ON
 # Force MBC0 and force Gameboy Color
@@ -27,4 +27,4 @@ all:	$(BINS)
 	$(LCC) -debug -v -c -o $@ $<
 
 clean:
-	rm -f *.o *.lst *.map *.gbc *~ *.rel *.cdb *.ihx *.lnk *.sym *.asm *.noi *.rst
+	rm -f *.o *.lst *.map *.gbc *~ *.rel *.cdb *.ihx *.lnk *.sym *.asm *.noi *.rst *.adb
