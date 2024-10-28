@@ -4,7 +4,7 @@ ifndef GBDK_HOME
 	GBDK_HOME = ../gbdk/
 endif
 
-LCC = $(GBDK_HOME)bin/lcc -Wa-l -Wl-m -Wl-j
+LCC = $(GBDK_HOME)bin/lcc -Wa-l -Wl-m -Wl-j -I./include
 
 BINS	= derp.gbc
 
@@ -12,7 +12,7 @@ OBJS	= derp.o pressure_cooker.o pajama_jam.o the_traveller.o
 
 GBDK_DEBUG = ON
 # Force MBC0 and force Gameboy Color
-LCCFLAGS = -Wm-yt0x00 -Wm-yC -Wm-yn"DERP2" -Wl-lhUGEDriver.lib
+LCCFLAGS = -Wm-yt0x00 -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
 ifdef GBDK_DEBUG
 	LCCFLAGS += -debug -v
 endif
