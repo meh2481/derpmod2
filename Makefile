@@ -8,11 +8,18 @@ LCC = $(GBDK_HOME)bin/lcc -Wa-l -Wl-m -Wl-j -I./include
 
 BINS	= derp.gbc
 
-OBJS	= derp.o music/pressure_cooker.o music/pajama_jam.o music/the_traveller.o
+OBJS	= derp.o \
+	music/pressure_cooker.o \
+	music/space_odyssey.o \
+	music/the_traveller.o \
+	tiles/title_bg_tiles_hi.o \
+	tiles/title_bg_tiles_low.o \
+	tiles/title_text.o \
+	tiles/title.o \
 
 GBDK_DEBUG = ON
-# Force MBC0 and force Gameboy Color
-LCCFLAGS = -Wm-yt0x00 -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
+# Force MBC1 and force Gameboy Color
+LCCFLAGS = -Wm-yt0x01 -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
 ifdef GBDK_DEBUG
 	LCCFLAGS += -debug -v
 endif

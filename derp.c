@@ -5,7 +5,7 @@
 #include "hUGEDriver.h"
 
 extern const hUGESong_t pressure_cooker;
-extern const hUGESong_t pajama_jam;
+extern const hUGESong_t space_odyssey;
 extern const hUGESong_t the_traveller;
 
 #include <gb/gb.h>
@@ -676,7 +676,7 @@ void main(void)
         } else if (i & J_A) {
           hUGE_init(&the_traveller);
         } else {
-          hUGE_init(&pajama_jam);
+          hUGE_init(&space_odyssey);
         }
         bSwitchedSound = 0x1;
       }
