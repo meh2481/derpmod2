@@ -13,3 +13,4 @@ hUGEDriver.h
 *.cdb
 *.gb
 *.gbc
+*.tmp**
