@@ -55,16 +55,21 @@ void main(void)
   VBK_REG = VBK_BANK_0;
 
   // Draw the background
-  set_bkg_tiles(0, 0, titleWidth, titleHeight - 6, titleBLK0PLN0);
+  set_bkg_tiles(0, 0, titleWidth, titleHeight - 5, titleBLK0PLN0);  // Top 12 rows
+  set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN0);  // Final four tiles in row 12
+  set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN0[4]);  // Bottom 6 rows
   // Set bg attributes
   VBK_REG = VBK_ATTRIBUTES;
-  set_bkg_tiles(0, 0, titleWidth, titleHeight - 6, titleBLK0PLN1);
-
+  set_bkg_tiles(0, 0, titleWidth, titleHeight - 5, titleBLK0PLN1);
+  set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN1);
+  set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN1[4]);
   VBK_REG = VBK_TILES;
+
 
   SCX_REG = 0;
   SCY_REG = 0;
 
+  // Hide the window
   WX_REG = MAXWNDPOSX;
   WY_REG = MAXWNDPOSY;
 
@@ -72,11 +77,11 @@ void main(void)
   enable_interrupts();
 
   // Start music
-  hUGE_init(&space_odyssey);
+  // hUGE_init(&space_odyssey);
 
   while(1) {
     vsync();
-    hUGE_dosound();
+    // hUGE_dosound();
     i = joypad();
 
     if(i & J_SELECT) {
@@ -90,8 +95,7 @@ void main(void)
         }
         bSwitchedSound = 0x1;
       }
-    }
-    if(!(i & J_SELECT)) {
+    } else {
       bSwitchedSound = 0x0;
     }
   }
