@@ -21,7 +21,7 @@ extern const hUGESong_t the_traveller;
 #define SCREEN_HEIGHT 144
 
 uint8_t bSwitchedSound = 0x0;
-uint8_t i, j;
+uint8_t i, j, tmp;
 uint8_t titleTextPosY = 0;
 
 void update_win() {
@@ -69,25 +69,23 @@ void main(void)
   set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN0);  // Final four tiles in row 12
   set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN0[4]);  // Bottom 6 rows
   // Set window tiles
-  set_win_tiles(0, 0, title_textWidth, title_textHeight, title_textPLN0);
+  // set_win_tiles(0, 0, title_textWidth, title_textHeight, title_textPLN0);
   // Set bg attributes
   VBK_REG = VBK_ATTRIBUTES;
   set_bkg_tiles(0, 0, titleWidth, titleHeight - 5, titleBLK0PLN1);  // Top 12 rows
   set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN1);  // Final four tiles in row 12
   set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN1[4]);  // Bottom 6 rows
   // Set window attributes
-  // VBK_REG = VBK_BANK_1;
-  // for (i = 0; i < titleHeight; i+=2) {
-  //   for (j = 0; j < titleWidth; j+=2) {
-  //     // Second palette for full black
-  //     // VBK_REG = VBK_TILES;
-  //     // set_win_tiles(j, i, 1, 1, 0x00);
-  //     VBK_REG = VBK_ATTRIBUTES;
-  //     set_win_tiles(j, i, 1, 1, 0x09);
-  //   }
-  //   // set_win_tiles(i, 0, 1, title_textHeight, &title_textPLN1[i * title_textHeight]);
-  // }
-  set_win_tiles(0, 0, title_textWidth, title_textHeight, title_textPLN1);
+  // Second palette for full black
+  tmp = 0x1;
+  for (i = 0; i < titleHeight; i++) {
+    for (j = 0; j < titleWidth; j++) {
+      VBK_REG = VBK_ATTRIBUTES;
+      set_win_tiles(j, i, 1, 1, &tmp);
+    }
+    // set_win_tiles(i, 0, 1, title_textHeight, &title_textPLN1[i * title_textHeight]);
+  }
+  // set_win_tiles(0, 0, title_textWidth, title_textHeight, title_textPLN1);
 
 
 
