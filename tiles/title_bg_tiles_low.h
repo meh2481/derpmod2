@@ -28,77 +28,9 @@
 /* Bank of tiles. */
 #define title_bg_tiles_lowBank 0
 
-/* Super Gameboy palette 0 */
-#define title_bg_tiles_lowSGBPal0c0 0
-#define title_bg_tiles_lowSGBPal0c1 0
-#define title_bg_tiles_lowSGBPal0c2 0
-#define title_bg_tiles_lowSGBPal0c3 0
+// Palette
+extern const palette_color_t * const title_bg_tiles_lowCGBPal[];
 
-/* Super Gameboy palette 1 */
-#define title_bg_tiles_lowSGBPal1c0 6076
-#define title_bg_tiles_lowSGBPal1c1 8935
-#define title_bg_tiles_lowSGBPal1c2 6596
-#define title_bg_tiles_lowSGBPal1c3 5344
-
-/* Super Gameboy palette 2 */
-#define title_bg_tiles_lowSGBPal2c0 6076
-#define title_bg_tiles_lowSGBPal2c1 8935
-#define title_bg_tiles_lowSGBPal2c2 6596
-#define title_bg_tiles_lowSGBPal2c3 5344
-
-/* Super Gameboy palette 3 */
-#define title_bg_tiles_lowSGBPal3c0 6076
-#define title_bg_tiles_lowSGBPal3c1 8935
-#define title_bg_tiles_lowSGBPal3c2 6596
-#define title_bg_tiles_lowSGBPal3c3 5344
-
-/* Gameboy Color palette 0 */
-#define title_bg_tiles_lowCGBPal0c0 4
-#define title_bg_tiles_lowCGBPal0c1 18917
-#define title_bg_tiles_lowCGBPal0c2 18218
-#define title_bg_tiles_lowCGBPal0c3 32766
-
-/* Gameboy Color palette 1 */
-#define title_bg_tiles_lowCGBPal1c0 0
-#define title_bg_tiles_lowCGBPal1c1 10398
-#define title_bg_tiles_lowCGBPal1c2 29670
-#define title_bg_tiles_lowCGBPal1c3 5054
-
-/* Gameboy Color palette 2 */
-#define title_bg_tiles_lowCGBPal2c0 0
-#define title_bg_tiles_lowCGBPal2c1 0
-#define title_bg_tiles_lowCGBPal2c2 0
-#define title_bg_tiles_lowCGBPal2c3 0
-
-/* Gameboy Color palette 3 */
-#define title_bg_tiles_lowCGBPal3c0 0
-#define title_bg_tiles_lowCGBPal3c1 0
-#define title_bg_tiles_lowCGBPal3c2 0
-#define title_bg_tiles_lowCGBPal3c3 0
-
-/* Gameboy Color palette 4 */
-#define title_bg_tiles_lowCGBPal4c0 0
-#define title_bg_tiles_lowCGBPal4c1 0
-#define title_bg_tiles_lowCGBPal4c2 0
-#define title_bg_tiles_lowCGBPal4c3 0
-
-/* Gameboy Color palette 5 */
-#define title_bg_tiles_lowCGBPal5c0 0
-#define title_bg_tiles_lowCGBPal5c1 0
-#define title_bg_tiles_lowCGBPal5c2 0
-#define title_bg_tiles_lowCGBPal5c3 0
-
-/* Gameboy Color palette 6 */
-#define title_bg_tiles_lowCGBPal6c0 0
-#define title_bg_tiles_lowCGBPal6c1 0
-#define title_bg_tiles_lowCGBPal6c2 0
-#define title_bg_tiles_lowCGBPal6c3 0
-
-/* Gameboy Color palette 7 */
-#define title_bg_tiles_lowCGBPal7c0 0
-#define title_bg_tiles_lowCGBPal7c1 0
-#define title_bg_tiles_lowCGBPal7c2 0
-#define title_bg_tiles_lowCGBPal7c3 0
 /* Start of tile array. */
 extern const unsigned char title_bg_tiles_low[];
 

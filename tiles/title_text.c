@@ -5,7 +5,7 @@
  Map Source File.
 
  Info:
-   Section       : 
+   Section       :
    Bank          : 0
    Map size      : 18 x 3
    Tile set      : title_bg.gbr

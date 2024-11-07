@@ -5,7 +5,7 @@
  Map Include File.
 
  Info:
-   Section       : 
+   Section       :
    Bank          : 0
    Map size      : 20 x 18
    Tile set      : C:\Users\inder\Documents\GBC\art\title_bg.gbr
