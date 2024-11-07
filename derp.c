@@ -3,10 +3,10 @@
  * A game by Daxar
  */
 #include "hUGEDriver.h"
-#include "tiles/title.h"
-#include "tiles/title_text.h"
-#include "tiles/title_bg_tiles_hi.h"
-#include "tiles/title_bg_tiles_low.h"
+#include "title/title.h"
+#include "title/title_text.h"
+#include "title/title_bg_tiles_hi.h"
+#include "title/title_bg_tiles_low.h"
 
 extern const hUGESong_t pressure_cooker;
 extern const hUGESong_t space_odyssey;
@@ -23,13 +23,21 @@ extern const hUGESong_t the_traveller;
 uint8_t bSwitchedSound = 0x0;
 uint8_t i, j, tmp;
 uint8_t titleTextPosY = 0;
+uint8_t titleUpdateIndex = 0;
 
 void update_win() {
   if(titleTextPosY < 144) {
     titleTextPosY++;
     move_win(7, titleTextPosY);
-  } else {
+  } else if (titleUpdateIndex >= 144) {
     move_win(7, MAXWNDPOSY + 1);
+  } else if (titleUpdateIndex < 54) {
+    // Display the title one tile at a time
+    VBK_REG = VBK_TILES;
+    set_bkg_tiles(1 + titleUpdateIndex % title_textWidth, 1+titleUpdateIndex / title_textWidth, 1, 1, &title_text[titleUpdateIndex]);
+    VBK_REG = VBK_ATTRIBUTES;
+    set_bkg_tiles(1 + titleUpdateIndex % title_textWidth, 1+titleUpdateIndex / title_textWidth, 1, 1, &title_textPLN1[titleUpdateIndex]);
+    titleUpdateIndex++;
   }
 }
 
@@ -65,6 +73,7 @@ void main(void)
   VBK_REG = VBK_BANK_0;
 
   // Draw the background
+  VBK_REG = VBK_TILES;
   set_bkg_tiles(0, 0, titleWidth, titleHeight - 5, titleBLK0PLN0);  // Top 12 rows
   set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN0);  // Final four tiles in row 12
   set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN0[4]);  // Bottom 6 rows
@@ -85,6 +94,7 @@ void main(void)
     }
     // set_win_tiles(i, 0, 1, title_textHeight, &title_textPLN1[i * title_textHeight]);
   }
+  VBK_REG = VBK_TILES;
   // set_win_tiles(0, 0, title_textWidth, title_textHeight, title_textPLN1);
 
 

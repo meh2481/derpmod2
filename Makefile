@@ -12,10 +12,10 @@ OBJS	= derp.o \
 	music/pressure_cooker.o \
 	music/space_odyssey.o \
 	music/the_traveller.o \
-	tiles/title_bg_tiles_hi.o \
-	tiles/title_bg_tiles_low.o \
-	tiles/title_text.o \
-	tiles/title.o \
+	title/title_bg_tiles_hi.o \
+	title/title_bg_tiles_low.o \
+	title/title_text.o \
+	title/title.o \
 
 GBDK_DEBUG = ON
 # Force MBC1 and force Gameboy Color
