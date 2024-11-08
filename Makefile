@@ -17,7 +17,9 @@ OBJS	= derp.o \
 	title/title_text.o \
 	title/title.o \
 	title/press_start.o \
-	font/font_tiles.o
+	font/font_tiles.o \
+	title/title_controller.o \
+	utils/hUGEHelpers.o \
 
 GBDK_DEBUG = ON
 # Force MBC1 and force Gameboy Color

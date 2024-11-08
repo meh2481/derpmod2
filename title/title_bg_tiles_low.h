@@ -24,6 +24,7 @@
 
 #ifndef __title_bg_tiles_low_h_INCLUDE
 #define __title_bg_tiles_low_h_INCLUDE
+#include <gb/cgb.h>
 
 /* Bank of tiles. */
 #define title_bg_tiles_lowBank 0
