@@ -5,7 +5,7 @@
  Map Include File.
 
  Info:
-   Section       : 
+   Section       :
    Bank          : 0
    Map size      : 13 x 3
    Tile set      : C:\Users\inder\Documents\GBC\art\font.gbr
@@ -19,6 +19,7 @@
 */
 #ifndef __press_start_h_INCLUDE
 #define __press_start_h_INCLUDE
+#include <gb/cgb.h>
 
 #define press_start_textWidth 13
 #define press_start_textHeight 3
@@ -27,6 +28,7 @@
 #define press_start_text press_start_textPLN0
 extern const unsigned char press_start_textPLN0[];
 extern const unsigned char press_start_textPLN1[];
+extern const palette_color_t* const press_start_textCGBPal[];
 
 #endif
 

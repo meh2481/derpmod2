@@ -33,8 +33,9 @@ uint8_t titleTextPosY = 0;
 uint8_t titleUpdateIndex = 0;
 uint8_t gamestate = STATE_START;
 uint8_t windowCounter = 0;
-#define TITLE_VSYNC_FRAMES 0//3
+#define TITLE_VSYNC_FRAMES 3
 #define NUM_TITLE_TEXT_TILES 54
+uint8_t blinkStartText = 25;
 
 void update_title_win(void) {
   windowCounter++;
@@ -52,17 +53,26 @@ void update_title_win(void) {
       titleUpdateIndex++;
     } else {
       // Blink the "Press Start" text
-      // if (titleUpdateIndex % 2 == 0) {
+      if (blinkStartText % 30 < 15) {
         VBK_REG = VBK_TILES;
         set_bkg_tiles(3, 15, press_start_textWidth, press_start_textHeight, press_start_text);
         VBK_REG = VBK_ATTRIBUTES;
         set_bkg_tiles(3, 15, press_start_textWidth, press_start_textHeight, press_start_textPLN1);
-      // } else {
-      //   VBK_REG = VBK_TILES;
-      //   set_bkg_tiles(1 + title_textWidth, 1, 1, 1, &title_text[title_textWidth + 1]);
-      //   VBK_REG = VBK_ATTRIBUTES;
-      //   set_bkg_tiles(1 + title_textWidth, 1, 1, 1, &title_textPLN1[title_textWidth + 1]);
-      // }
+      } else {
+        // Reset to the background
+        VBK_REG = VBK_TILES;
+        set_bkg_tiles(3, 15, press_start_textWidth, 1, &titleBLK1PLN0[4 + 3 + 2 * titleWidth]);
+        set_bkg_tiles(3, 16, press_start_textWidth, 1, &titleBLK1PLN0[4 + 3 + 3 * titleWidth]);
+        set_bkg_tiles(3, 17, press_start_textWidth, 1, &titleBLK1PLN0[4 + 3 + 4 * titleWidth]);
+        VBK_REG = VBK_ATTRIBUTES;
+        set_bkg_tiles(3, 15, press_start_textWidth, 1, &titleBLK1PLN1[4 + 3 + 2 * titleWidth]);
+        set_bkg_tiles(3, 16, press_start_textWidth, 1, &titleBLK1PLN1[4 + 3 + 3 * titleWidth]);
+        set_bkg_tiles(3, 17, press_start_textWidth, 1, &titleBLK1PLN1[4 + 3 + 4 * titleWidth]);
+      }
+      blinkStartText++;
+      if (blinkStartText > 30) {
+        blinkStartText = 1;
+      }
     }
   }
 }
@@ -71,8 +81,8 @@ void main(void)
 {
   disable_interrupts();
   DISPLAY_OFF;
-  cpu_fast();
   set_bkg_palette(0, 2, title_bg_tiles_lowCGBPal);  // 2 bg palettes
+  set_bkg_palette(2, 1, press_start_textCGBPal);
   LCDC_REG = LCDCF_OFF | LCDCF_WIN9C00 | LCDCF_WINON | LCDCF_BG8800 | LCDCF_BG9800 | LCDCF_OBJ16 | LCDCF_OBJON | LCDCF_BGON;
   /*
    * LCD        = Off
