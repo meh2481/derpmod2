@@ -109,6 +109,8 @@ void update_title_win(uint8_t input) {
     if (fadeValue == 0) {
       free(title_fadeout_palette);
       fadeValue = 32;
+      // Hide window
+      move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
       // Start game
       gamestate = STATE_PLAY;
       hUGE_init(&the_traveller);
@@ -134,8 +136,11 @@ void update_title_win(uint8_t input) {
   }
 
   if (input & J_START && fadeValue == 32) {
+    // Reset fade timer
     fadeValue = 31;
+    // Stop music
     hUGE_stop_music();
+    // Store palette info for fadeout
     title_fadeout_palette = (palette_color_t*) malloc(24);
     for (i = 0; i < 8; i++) {
       title_fadeout_palette[i] = (palette_color_t*)(title_bg_tiles_lowCGBPal)[i];
