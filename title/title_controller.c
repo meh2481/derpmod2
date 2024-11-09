@@ -3,6 +3,7 @@
 #include <gb/gbdecompress.h>
 #include <gb/cgb.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "title.h"
 #include "title_text.h"
 #include "title_bg_tiles_hi.h"
@@ -20,6 +21,10 @@ uint8_t blinkStartText = 25;
 uint8_t titleTextPosY = 0;
 uint8_t titleUpdateIndex = 0;
 uint8_t windowCounter = 0;
+palette_color_t* title_fadeout_palette;
+uint8_t fadeValue = 32;
+palette_color_t tmpPal;
+uint8_t tempR, tempG, tempB;
 
 void init_title(void) {
   set_bkg_palette(0, 2, title_bg_tiles_lowCGBPal);  // 2 bg palettes
@@ -64,7 +69,7 @@ void init_title(void) {
 
 void update_title_win(uint8_t input) {
   windowCounter++;
-  if (windowCounter > TITLE_VSYNC_FRAMES) {
+  if (windowCounter > TITLE_VSYNC_FRAMES && fadeValue == 32) {
     windowCounter = 0;
     if(titleTextPosY < SCREEN_HEIGHT) {
       titleTextPosY++;
@@ -99,13 +104,44 @@ void update_title_win(uint8_t input) {
         blinkStartText = 1;
       }
     }
+  } else if (fadeValue < 32) {
+    fadeValue--;
+    if (fadeValue == 0) {
+      free(title_fadeout_palette);
+      fadeValue = 32;
+      // Start game
+      gamestate = STATE_PLAY;
+      hUGE_init(&the_traveller);
+    } else {
+      for (i = 0; i < 12; i++) {
+        tmpPal = title_fadeout_palette[i];
+        tempR = tmpPal & 0x1F;
+        tempG = (tmpPal >> 5) & 0x1F;
+        tempB = (tmpPal >> 10) & 0x1F;
+        if (tempR > 0) {
+          tempR--;
+        }
+        if (tempG > 0) {
+          tempG--;
+        }
+        if (tempB > 0) {
+          tempB--;
+        }
+        title_fadeout_palette[i] = tempR | (tempG << 5) | (tempB << 10);
+      }
+      set_bkg_palette(0, 3, title_fadeout_palette);
+    }
   }
 
-  if (input & J_START) {
-    gamestate = STATE_PLAY;
-    // Stop title screen music
+  if (input & J_START && fadeValue == 32) {
+    fadeValue = 31;
     hUGE_stop_music();
-    // Start game music
-    hUGE_init(&the_traveller);
+    title_fadeout_palette = (palette_color_t*) malloc(24);
+    for (i = 0; i < 8; i++) {
+      title_fadeout_palette[i] = (palette_color_t*)(title_bg_tiles_lowCGBPal)[i];
+    }
+    for (i = 8, j = 0; i < 12; i++, j++) {
+      title_fadeout_palette[i] = (palette_color_t*)(press_start_textCGBPal)[j];
+    }
   }
 }
