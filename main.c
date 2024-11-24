@@ -6,7 +6,7 @@
 #include "font/font_tiles.h"
 #include "title/title_controller.h"
 #include "utils/hUGEHelpers.h"
-#include "utils/utils.h"
+#include "aquaria/aquaria_controller.h"
 
 #include <gb/gb.h>
 #include <gb/gbdecompress.h>
@@ -48,6 +48,8 @@ void main(void)
     i = joypad();
     if (gamestate == STATE_START) {
       update_title_win(i);
+    } else if (gamestate == STATE_PLAY) {
+      update_aquaria();
     }
     hUGE_dosound();
   }

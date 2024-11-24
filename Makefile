@@ -8,7 +8,7 @@ LCC = $(GBDK_HOME)bin/lcc -Wa-l -Wl-m -Wl-j -I./include
 
 BINS	= derp.gbc
 
-OBJS	= derp.o \
+OBJS	= main.o \
 	music/pressure_cooker.o \
 	music/space_odyssey.o \
 	music/the_traveller.o \
@@ -20,10 +20,14 @@ OBJS	= derp.o \
 	font/font_tiles.o \
 	title/title_controller.o \
 	utils/hUGEHelpers.o \
+	aquaria/tileset.o \
+	aquaria/map1_tiles.o \
+	aquaria/map1_tiles2.o \
+	aquaria/aquaria_controller.o
 
 GBDK_DEBUG = ON
 # Force MBC1 and force Gameboy Color
-LCCFLAGS = -Wm-yt0x01 -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
+LCCFLAGS = -Wl-yt3 -Wl-yo4 -Wl-ya4 -Wm-yt0x19 -Wm-yoA -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
 ifdef GBDK_DEBUG
 	LCCFLAGS += -debug -v
 endif

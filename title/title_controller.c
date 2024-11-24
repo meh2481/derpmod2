@@ -11,7 +11,7 @@
 #include "press_start.h"
 #include "../font/font_tiles.h"
 #include "../utils/hUGEHelpers.h"
-#include "../utils/utils.h"
+#include "../aquaria/aquaria_controller.h"
 
 #define WIN_X_OFFSET 7
 #define TITLE_VSYNC_FRAMES 3
@@ -114,6 +114,9 @@ void update_title_win(uint8_t input) {
       // Start game
       gamestate = STATE_PLAY;
       hUGE_init(&the_traveller);
+      // SWITCH_ROM(2);
+      init_aquaria();
+      // SWITCH_ROM(0);
     } else {
       for (i = 0; i < 12; i++) {
         tmpPal = title_fadeout_palette[i];
