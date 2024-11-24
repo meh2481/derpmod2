@@ -1,5 +1,6 @@
 #ifndef HUGE_HELPERS_H
 #define HUGE_HELPERS_H
+#include "hUGEDriver.h"
 
 // Songs
 extern const hUGESong_t pressure_cooker;

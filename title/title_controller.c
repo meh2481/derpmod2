@@ -113,11 +113,8 @@ void update_title_win(uint8_t input) {
       // Hide window
       move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
       // Start game
-      gamestate = STATE_PLAY;
-      hUGE_init(&the_traveller);
-      // SWITCH_ROM(2);
       init_aquaria();
-      // SWITCH_ROM(0);
+      return;
     } else {
       for (i = 0; i < 12; i++) {
         tmpPal = title_fadeout_palette[i];
