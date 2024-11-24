@@ -7,6 +7,7 @@
 #include "title/title_controller.h"
 #include "utils/hUGEHelpers.h"
 #include "aquaria/aquaria_controller.h"
+#include "utils/utils.h"
 
 #include <gb/gb.h>
 #include <gb/gbdecompress.h>

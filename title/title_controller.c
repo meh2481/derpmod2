@@ -11,6 +11,7 @@
 #include "press_start.h"
 #include "../font/font_tiles.h"
 #include "../utils/hUGEHelpers.h"
+#include "../utils/utils.h"
 #include "../aquaria/aquaria_controller.h"
 
 #define WIN_X_OFFSET 7
