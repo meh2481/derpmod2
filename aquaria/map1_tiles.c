@@ -1317,8 +1317,8 @@ void set_aquaria_map_tiles(void) BANKED {
   // Draw the background
   VBK_REG = VBK_TILES;
 
-  for (ii = 0; ii < 18; ii++) {
-    set_bkg_tiles(0, ii, 20, 1, &map1_tilesPLN0[ii * map1_tilesWidth]);
+  for (ii = 0; ii < 32; ii++) {
+    set_bkg_tiles(0, ii, 32, 1, &map1_tilesPLN0[ii * map1_tilesWidth]);
   }
   // set_bkg_tiles(0, 0, 20, 18, map1_tilesPLN0);
 }

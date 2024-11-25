@@ -1313,8 +1313,8 @@ uint16_t ii;
 
 void set_aquaria_map_tile_attribs(void) BANKED {
   VBK_REG = VBK_ATTRIBUTES;
-  for (ii = 0; ii < 18; ii++) {
-    set_bkg_tiles(0, ii, 20, 1, &map1_tilesPLN1[ii * map1_tilesWidth]);
+  for (ii = 0; ii < 32; ii++) {
+    set_bkg_tiles(0, ii, 32, 1, &map1_tilesPLN1[ii * map1_tilesWidth]);
   }
   VBK_REG = VBK_TILES;
 }

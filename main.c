@@ -12,9 +12,12 @@
 #include "aquaria/map1_tiles.h"
 #include "aquaria/tileset.h"
 #include "utils/hUGEHelpers.h"
+#include "utils/utils.h"
+
+#define WIN_X_OFFSET 7
 
 uint8_t i, j, tmp;
-// uint8_t gamestate = STATE_START;
+uint8_t gamestate = STATE_START;
 
 void main(void)
 {
@@ -37,6 +40,8 @@ void main(void)
   NR52_REG = 0x80;
   NR51_REG = 0xFF;
   NR50_REG = 0x77;
+
+  move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   // init_title();
   init_aquaria_music();
