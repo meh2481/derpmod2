@@ -12,7 +12,8 @@ OBJS	= main.o \
 	aquaria/map1_tiles.o \
 	aquaria/map1_tiles2.o \
 	aquaria/tileset.o \
-	music/the_traveller.o
+	music/the_traveller.o \
+	aquaria/aquaria_controller.o
 
 # music/pressure_cooker.o \
 # music/space_odyssey.o \
@@ -24,7 +25,6 @@ OBJS	= main.o \
 # font/font_tiles.o \
 # title/title_controller.o \
 # utils/hUGEHelpers.o \
-# aquaria/aquaria_controller.o
 
 GBDK_DEBUG = ON
 # Force MBC1 and force Gameboy Color

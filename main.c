@@ -9,10 +9,9 @@
 #include <gb/gbdecompress.h>
 #include <gb/cgb.h>
 #include <stdint.h>
-#include "aquaria/map1_tiles.h"
-#include "aquaria/tileset.h"
 #include "utils/hUGEHelpers.h"
 #include "utils/utils.h"
+#include "aquaria/aquaria_controller.h"
 
 #define WIN_X_OFFSET 7
 
@@ -44,10 +43,7 @@ void main(void)
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   // init_title();
-  init_aquaria_music();
-  init_aquaria_tileset();
-  set_aquaria_map_tiles();
-  set_aquaria_map_tile_attribs();
+  init_aquaria();
 
   DISPLAY_ON;
   enable_interrupts();
