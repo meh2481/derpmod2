@@ -24,9 +24,11 @@
 #define title_textHeight 3
 #define title_textBank 0
 
-#define title_text title_textPLN0
-extern const unsigned char title_textPLN0[];
-extern const unsigned char title_textPLN1[];
+// #define title_text title_textPLN0
+// extern const unsigned char title_textPLN0[];
+// extern const unsigned char title_textPLN1[];
+
+extern void show_title_tile(uint8_t tile) BANKED;
 
 #endif
 

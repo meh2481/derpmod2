@@ -10,6 +10,9 @@
 void init_aquaria_music(void) NONBANKED;
 BANKREF_EXTERN(aquaria_music)
 
-// extern void hUGE_stop_music(void);
+void init_title_music(void) NONBANKED;
+BANKREF_EXTERN(title_music)
+
+extern void hUGE_stop_music(void) NONBANKED;
 
 #endif

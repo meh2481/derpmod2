@@ -12,6 +12,7 @@
 #include "utils/hUGEHelpers.h"
 #include "utils/utils.h"
 #include "aquaria/aquaria_controller.h"
+#include "title/title_controller.h"
 
 #define WIN_X_OFFSET 7
 
@@ -42,20 +43,19 @@ void main(void)
 
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
-  // init_title();
-  init_aquaria();
+  init_title();
 
   DISPLAY_ON;
   enable_interrupts();
 
   while(1) {
     vsync();
-    // i = joypad();
-    // if (gamestate == STATE_START) {
-    //   update_title_win(i);
-    // } else if (gamestate == STATE_PLAY) {
-    //   update_aquaria();
-    // }
+    i = joypad();
+    if (gamestate == STATE_START) {
+      update_title_win(i);
+    } else if (gamestate == STATE_PLAY) {
+      update_aquaria();
+    }
     hUGE_dosound();
   }
 }

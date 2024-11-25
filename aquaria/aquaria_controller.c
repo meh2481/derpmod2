@@ -4,8 +4,10 @@
 #include "../utils/hUGEHelpers.h"
 #include "tileset.h"
 #include "map1_tiles.h"
+#include "../utils/utils.h"
 
 void init_aquaria(void) NONBANKED {
+  gamestate = STATE_PLAY;
   init_aquaria_music();
   init_aquaria_tileset();
   set_aquaria_map_tiles();

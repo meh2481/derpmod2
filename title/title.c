@@ -19,6 +19,11 @@
 
 */
 
+#include <gb/gb.h>
+#pragma bank 255
+BANKREF(title)
+
+#define press_start_textWidth 13
 #define titleWidth 20
 #define titleHeight 18
 #define titleBank 0
@@ -115,5 +120,30 @@ const unsigned char titleBLK1PLN1[] =
   0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,0x08,
   0x08,0x08,0x08,0x08
 };
+
+void set_title_bg_screen(void) BANKED {
+  VBK_REG = VBK_TILES;
+  set_bkg_tiles(0, 0, titleWidth, titleHeight - 5, titleBLK0PLN0);  // Top 12 rows
+  set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN0);  // Final four tiles in row 12
+  set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN0[4]);  // Bottom 6 rows
+  // Set bg attributes
+  VBK_REG = VBK_ATTRIBUTES;
+  set_bkg_tiles(0, 0, titleWidth, titleHeight - 5, titleBLK0PLN1);  // Top 12 rows
+  set_bkg_tiles(titleWidth - 4, titleHeight - 6, 4, 1, titleBLK1PLN1);  // Final four tiles in row 12
+  set_bkg_tiles(0, titleHeight - 5, titleWidth, 5, &titleBLK1PLN1[4]);  // Bottom 6 rows
+  VBK_REG = VBK_TILES;
+}
+
+void hide_press_start_text(void) BANKED {
+  VBK_REG = VBK_TILES;
+  set_bkg_tiles(3, 15, press_start_textWidth, 1, &titleBLK1PLN0[4 + 3 + 2 * titleWidth]);
+  set_bkg_tiles(3, 16, press_start_textWidth, 1, &titleBLK1PLN0[4 + 3 + 3 * titleWidth]);
+  set_bkg_tiles(3, 17, press_start_textWidth, 1, &titleBLK1PLN0[4 + 3 + 4 * titleWidth]);
+  VBK_REG = VBK_ATTRIBUTES;
+  set_bkg_tiles(3, 15, press_start_textWidth, 1, &titleBLK1PLN1[4 + 3 + 2 * titleWidth]);
+  set_bkg_tiles(3, 16, press_start_textWidth, 1, &titleBLK1PLN1[4 + 3 + 3 * titleWidth]);
+  set_bkg_tiles(3, 17, press_start_textWidth, 1, &titleBLK1PLN1[4 + 3 + 4 * titleWidth]);
+  VBK_REG = VBK_TILES;
+}
 
 /* End of TITLE.C */

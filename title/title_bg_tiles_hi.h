@@ -26,10 +26,12 @@
 #define __title_bg_tiles_hi_h_INCLUDE
 
 /* Bank of tiles. */
-#define title_bg_tiles_hiBank 1
+// #define title_bg_tiles_hiBank 1
 
 /* Start of tile array. */
-extern const unsigned char title_bg_tiles_hi[];
+// extern const unsigned char title_bg_tiles_hi[];
+
+extern void set_title_bg_tiles_hi(void) BANKED;
 
 #endif
 

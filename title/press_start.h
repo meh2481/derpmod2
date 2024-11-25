@@ -25,10 +25,14 @@
 #define press_start_textHeight 3
 #define press_start_textBank 0
 
-#define press_start_text press_start_textPLN0
-extern const unsigned char press_start_textPLN0[];
-extern const unsigned char press_start_textPLN1[];
-extern const palette_color_t* const press_start_textCGBPal[];
+// #define press_start_text press_start_textPLN0
+// extern const unsigned char press_start_textPLN0[];
+// extern const unsigned char press_start_textPLN1[];
+// extern const palette_color_t* const press_start_textCGBPal[];
+
+extern void set_press_start_text_palette(uint8_t start_palette) BANKED;
+extern void show_press_start_text(void) BANKED;
+extern palette_color_t* get_press_start_palette(uint8_t idx) BANKED;
 
 #endif
 

@@ -25,12 +25,15 @@
 #define titleHeight 18
 #define titleBank 0
 
-#define titleBLK0 titleBLK0PLN0
-extern const unsigned char titleBLK0PLN0[];
-extern const unsigned char titleBLK0PLN1[];
-#define titleBLK1 titleBLK1PLN0
-extern const unsigned char titleBLK1PLN0[];
-extern const unsigned char titleBLK1PLN1[];
+// #define titleBLK0 titleBLK0PLN0
+// extern const unsigned char titleBLK0PLN0[];
+// extern const unsigned char titleBLK0PLN1[];
+// #define titleBLK1 titleBLK1PLN0
+// extern const unsigned char titleBLK1PLN0[];
+// extern const unsigned char titleBLK1PLN1[];
+
+extern void set_title_bg_screen(void) BANKED;
+extern void hide_press_start_text(void) BANKED;
 
 #endif
 

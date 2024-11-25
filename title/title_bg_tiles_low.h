@@ -30,10 +30,14 @@
 #define title_bg_tiles_lowBank 0
 
 // Palette
-extern const palette_color_t * const title_bg_tiles_lowCGBPal[];
+// extern const palette_color_t * const title_bg_tiles_lowCGBPal[];
 
 /* Start of tile array. */
-extern const unsigned char title_bg_tiles_low[];
+// extern const unsigned char title_bg_tiles_low[];
+
+extern void set_title_bg_tiles_low_palette(void) BANKED;
+extern void set_title_bg_tiles_low(void) BANKED;
+extern palette_color_t* get_title_bg_tiles_low_palette(uint8_t idx) BANKED;
 
 #endif
 
