@@ -2,8 +2,8 @@
 #include <stddef.h>
 #include <gb/gb.h>
 
-#pragma bank 0
-// BANKREF(aquaria_music)
+#pragma bank 255
+BANKREF(aquaria_music)
 
 static const unsigned char order_cnt = 44;
 
