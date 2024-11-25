@@ -23,6 +23,10 @@
 */
 #include <gb/gb.h>
 #include <gb/cgb.h>
+#include <gb/gbdecompress.h>
+
+#pragma bank 255
+BANKREF(aquaria_tileset)
 
 /* CGBpalette entries. */
 const palette_color_t* const tilesetCGBPal[] =
@@ -439,5 +443,19 @@ const unsigned char tileset[] =
   0x18,0x10,0x10,0x10,0x30,0x12,0x12,0x7E,
   0x53,0x7C,0xD0,0x3E,0x34,0x7C,0x00
 };
+
+void init_aquaria_tileset(void) BANKED {
+  // gamestate = STATE_PLAY;
+  // hUGE_init(&the_traveller);
+
+  gb_decompress_bkg_data(0, tileset);
+
+  // Set up the palette
+  set_bkg_palette(0, 6, tilesetCGBPal);
+
+  // SWITCH_ROM(2);
+  // set_aquaria_map_tiles();
+  // SWITCH_ROM(0);
+}
 
 /* End of TILESET.C */

@@ -2,20 +2,19 @@
  * Derpmod2
  * A game by Daxar
  */
+#pragma bank 0
 #include "hUGEDriver.h"
-#include "font/font_tiles.h"
-#include "title/title_controller.h"
-#include "utils/hUGEHelpers.h"
-#include "aquaria/aquaria_controller.h"
-#include "utils/utils.h"
 
 #include <gb/gb.h>
 #include <gb/gbdecompress.h>
 #include <gb/cgb.h>
 #include <stdint.h>
+#include "aquaria/map1_tiles.h"
+#include "aquaria/tileset.h"
+#include "utils/hUGEHelpers.h"
 
 uint8_t i, j, tmp;
-uint8_t gamestate = STATE_START;
+// uint8_t gamestate = STATE_START;
 
 void main(void)
 {
@@ -39,19 +38,23 @@ void main(void)
   NR51_REG = 0xFF;
   NR50_REG = 0x77;
 
-  init_title();
+  // init_title();
+  init_aquaria_music();
+  init_aquaria_tileset();
+  set_aquaria_map_tiles();
+  set_aquaria_map_tile_attribs();
 
   DISPLAY_ON;
   enable_interrupts();
 
   while(1) {
     vsync();
-    i = joypad();
-    if (gamestate == STATE_START) {
-      update_title_win(i);
-    } else if (gamestate == STATE_PLAY) {
-      update_aquaria();
-    }
+    // i = joypad();
+    // if (gamestate == STATE_START) {
+    //   update_title_win(i);
+    // } else if (gamestate == STATE_PLAY) {
+    //   update_aquaria();
+    // }
     hUGE_dosound();
   }
 }

@@ -1,5 +1,9 @@
 #include "hUGEDriver.h"
 #include <stddef.h>
+#include <gb/gb.h>
+
+#pragma bank 0
+// BANKREF(aquaria_music)
 
 static const unsigned char order_cnt = 44;
 
@@ -1356,3 +1360,8 @@ static const unsigned char waves[] = {
 };
 
 const hUGESong_t the_traveller = {4, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
+
+
+void init_aquaria_music(void) NONBANKED {
+  hUGE_init(&the_traveller);
+}

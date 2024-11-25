@@ -22,7 +22,12 @@
 
 #define map1_tilesWidth 128
 #define map1_tilesHeight 100
-#define map1_tilesBank 0
+
+void set_aquaria_map_tiles(void) BANKED;
+BANKREF_EXTERN(map1_tiles)
+
+void set_aquaria_map_tile_attribs(void) BANKED;
+BANKREF_EXTERN(map1_tileattribs)
 
 #define map1_tiles map1_tilesPLN0
 extern const unsigned char map1_tilesPLN0[];

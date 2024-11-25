@@ -3,16 +3,17 @@
 #include <gb/gb.h>
 #include <gb/gbdecompress.h>
 #include <gb/cgb.h>
+#include <gbdk/platform.h>
+#include <gbdk/far_ptr.h>
 #include <stdlib.h>
 #include "../utils/hUGEHelpers.h"
 #include "../utils/utils.h"
 #include "tileset.h"
 #include "map1_tiles.h"
 
-uint8_t* tmpPtr;
-uint16_t i16;
+extern void set_aquaria_map_tiles(void) BANKED;
 
-void init_aquaria(void) {
+void init_aquaria(void) NONBANKED {
   gamestate = STATE_PLAY;
   hUGE_init(&the_traveller);
 
@@ -21,21 +22,9 @@ void init_aquaria(void) {
   // Set up the palette
   set_bkg_palette(0, 6, tilesetCGBPal);
 
-  // Draw the background
-  tmpPtr = (uint8_t*)malloc(20 * 18);
-  for (i16 = 0; i16 < 20 * 18; i16++) {
-    tmpPtr[i16] = map1_tilesPLN0[i16];
-  }
-  VBK_REG = VBK_TILES;
-  set_bkg_tiles(0, 0, 20, 18, tmpPtr);
-  VBK_REG = VBK_ATTRIBUTES;
-  for (i16 = 0; i16 < 20 * 18; i16++) {
-    tmpPtr[i16] = map1_tilesPLN1[i16] & 0b11110111;
-  }
-  set_bkg_tiles(0, 0, 20, 18, tmpPtr);
-  VBK_REG = VBK_TILES;
-
-  free(tmpPtr);
+  // SWITCH_ROM(2);
+  set_aquaria_map_tiles();
+  // SWITCH_ROM(0);
 }
 
 void update_aquaria(void) {

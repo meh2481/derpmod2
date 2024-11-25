@@ -31,6 +31,9 @@ extern const palette_color_t* const tilesetCGBPal[];
 /* Start of tile array. */
 extern const unsigned char tileset[];
 
+void init_aquaria_tileset(void) BANKED;
+BANKREF_EXTERN(aquaria_tileset)
+
 #endif
 
 /* End of TILESET.H */
