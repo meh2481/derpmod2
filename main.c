@@ -56,6 +56,5 @@ void main(void)
     } else if (gamestate == STATE_PLAY) {
       update_aquaria();
     }
-    hUGE_dosound();
   }
 }

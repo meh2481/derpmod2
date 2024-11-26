@@ -59,6 +59,13 @@ void init_title(void) NONBANKED {
 }
 
 void update_title_win(uint8_t input) NONBANKED {
+
+  // Switch to title music bank to update music
+  uint8_t previous_bank = _current_bank;
+  SWITCH_ROM(BANK(title_music));
+  hUGE_dosound();
+  SWITCH_ROM(previous_bank);
+
   windowCounter++;
   if (windowCounter > TITLE_VSYNC_FRAMES && fadeValue == 32) {
     windowCounter = 0;

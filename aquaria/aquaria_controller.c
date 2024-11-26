@@ -18,5 +18,9 @@ void init_aquaria(void) NONBANKED {
 }
 
 void update_aquaria(void) NONBANKED {
-  // Do nothing for now
+  // Switch to title music bank to update music
+  uint8_t previous_bank = _current_bank;
+  SWITCH_ROM(BANK(aquaria_music));
+  hUGE_dosound();
+  SWITCH_ROM(previous_bank);
 }

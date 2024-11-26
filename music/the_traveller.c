@@ -1359,7 +1359,4 @@ static const unsigned char waves[] = {
     0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,255,
 };
 
-void init_aquaria_music(void) NONBANKED {
-  hUGESong_t the_traveller = {4, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
-  hUGE_init(&the_traveller);
-}
+const hUGESong_t the_traveller = {4, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
