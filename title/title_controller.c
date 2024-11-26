@@ -55,7 +55,6 @@ void init_title(void) NONBANKED {
 
   // Start title screen music
   init_title_music();
-  // hUGE_init(space_odyssey_p);
 }
 
 void update_title_win(uint8_t input) NONBANKED {

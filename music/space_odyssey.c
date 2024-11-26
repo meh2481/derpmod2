@@ -512,5 +512,3 @@ static const unsigned char waves[] = {
 };
 
 const hUGESong_t space_odyssey = {7, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
-const hUGESong_t* const space_odyssey_p = &space_odyssey;
-
