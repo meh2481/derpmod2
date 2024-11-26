@@ -2094,8 +2094,3 @@ static const unsigned char waves[] = {
 };
 
 const hUGESong_t pressure_cooker = {4, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
-const hUGESong_t* pressure_cooker_p = &pressure_cooker;
-
-void init_vvvvvv_music(void) NONBANKED {
-  hUGE_init(pressure_cooker_p);
-}
