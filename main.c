@@ -2,7 +2,6 @@
  * Derpmod2
  * A game by Daxar
  */
-#pragma bank 0
 #include "hUGEDriver.h"
 
 #include <gb/gb.h>
@@ -41,6 +40,7 @@ void main(void)
   NR51_REG = 0xFF;
   NR50_REG = 0x77;
 
+  // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   init_title();

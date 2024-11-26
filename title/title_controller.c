@@ -1,5 +1,3 @@
-#pragma bank 0
-
 #include "hUGEDriver.h"
 #include <gb/gb.h>
 #include <gb/gbdecompress.h>
@@ -57,6 +55,7 @@ void init_title(void) NONBANKED {
 
   // Start title screen music
   init_title_music();
+  // hUGE_init(space_odyssey_p);
 }
 
 void update_title_win(uint8_t input) NONBANKED {
@@ -88,8 +87,8 @@ void update_title_win(uint8_t input) NONBANKED {
     if (fadeValue == 0) {
       free(title_fadeout_palette);
       fadeValue = 32;
-      // Hide window
-      move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+      // Hide screen behind window
+      move_win(WIN_X_OFFSET, 0);
       // Start game
       init_aquaria();
       return;

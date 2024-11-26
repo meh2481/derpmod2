@@ -9,19 +9,19 @@ LCC = $(GBDK_HOME)bin/lcc -Wa-l -Wl-m -Wl-j -I./include
 BINS	= derp.gbc
 
 OBJS	= main.o \
+	aquaria/aquaria_controller.o \
 	aquaria/map1_tiles.o \
 	aquaria/map1_tiles2.o \
 	aquaria/tileset.o \
-	music/the_traveller.o \
-	aquaria/aquaria_controller.o \
+	font/font_tiles.o \
 	music/space_odyssey.o \
+	music/the_traveller.o \
+	title/press_start.o \
+	title/title.o \
 	title/title_bg_tiles_hi.o \
 	title/title_bg_tiles_low.o \
-	title/title_text.o \
-	title/title.o \
-	title/press_start.o \
-	font/font_tiles.o \
 	title/title_controller.o \
+	title/title_text.o \
 	utils/hUGEHelpers.o
 
 # music/pressure_cooker.o

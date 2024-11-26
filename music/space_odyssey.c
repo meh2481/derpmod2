@@ -510,8 +510,9 @@ static const unsigned char waves[] = {
     254,221,204,187,170,153,136,119,138,189,241,36,87,138,189,238,
 };
 
-const hUGESong_t space_odyssey = {7, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
+// const hUGESong_t* const space_odyssey_p = &space_odyssey;
 
 void init_title_music(void) NONBANKED {
+  hUGESong_t space_odyssey = {7, &order_cnt, order1, order2, order3,order4, duty_instruments, wave_instruments, noise_instruments, NULL, waves};
   hUGE_init(&space_odyssey);
 }
