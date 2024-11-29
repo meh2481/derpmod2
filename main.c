@@ -54,7 +54,7 @@ void main(void)
     if (gamestate == STATE_START) {
       update_title_win(i);
     } else if (gamestate == STATE_PLAY) {
-      update_aquaria();
+      update_aquaria(i);
     }
   }
 }

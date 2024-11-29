@@ -17,10 +17,23 @@ void init_aquaria(void) NONBANKED {
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 }
 
-void update_aquaria(void) NONBANKED {
+void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
   SWITCH_ROM(BANK(aquaria_music));
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
+
+  if (input & J_LEFT) {
+    scroll_bkg(-1, 0);
+  }
+  if (input & J_RIGHT) {
+    scroll_bkg(1, 0);
+  }
+  if (input & J_UP) {
+    scroll_bkg(0, -1);
+  }
+  if (input & J_DOWN) {
+    scroll_bkg(0, 1);
+  }
 }
