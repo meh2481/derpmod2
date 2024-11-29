@@ -56,19 +56,19 @@ void update_aquaria(uint8_t input) NONBANKED {
   cur_row = bg_pos_y >> 3;
 
   if (cur_col > prev_col) {
-    set_aquaria_map_tile_column(cur_col + 20, cur_row, (cur_col + 20) % 32);
-    set_aquaria_map_attrib_column(cur_col + 20, cur_row, (cur_col + 20) % 32);
+    set_aquaria_map_tile_column(cur_col + 20, cur_row, cur_col + 20);
+    set_aquaria_map_attrib_column(cur_col + 20, cur_row, cur_col + 20);
   } else if (cur_col < prev_col) {
-    set_aquaria_map_tile_column(cur_col, cur_row, cur_col % 32);
-    set_aquaria_map_attrib_column(cur_col, cur_row, cur_col % 32);
+    set_aquaria_map_tile_column(cur_col, cur_row, cur_col);
+    set_aquaria_map_attrib_column(cur_col, cur_row, cur_col);
   }
 
   if (cur_row > prev_row) {
-    set_aquaria_map_tile_row(cur_row + 18, (cur_row + 18) % 32, cur_col);
-    set_aquaria_map_attrib_row(cur_row + 18, (cur_row + 18) % 32, cur_col);
+    set_aquaria_map_tile_row(cur_row + 18, cur_row + 18, cur_col);
+    set_aquaria_map_attrib_row(cur_row + 18, cur_row + 18, cur_col);
   } else if (cur_row < prev_row) {
-    set_aquaria_map_tile_row(cur_row, cur_row % 32, cur_col);
-    set_aquaria_map_attrib_row(cur_row, cur_row % 32, cur_col);
+    set_aquaria_map_tile_row(cur_row, cur_row, cur_col);
+    set_aquaria_map_attrib_row(cur_row, cur_row, cur_col);
   }
 
 

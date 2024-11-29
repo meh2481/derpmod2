@@ -1312,7 +1312,7 @@ const unsigned char map1_tilesPLN0[] =
   0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01
 };
 
-extern uint8_t i;
+extern uint8_t i, tmp;
 uint16_t ii;
 void set_aquaria_map_tiles(void) BANKED {
   // Draw the background
@@ -1325,8 +1325,9 @@ void set_aquaria_map_tiles(void) BANKED {
 
 void set_aquaria_map_tile_column(uint8_t col, uint8_t vram_row, uint8_t vram_col) BANKED {
   VBK_REG = VBK_TILES;
+  tmp = vram_col % 32;
   for (i = 0; i < 19; i++) {
-    set_bkg_tiles(vram_col % 32, (vram_row + i) % 32, 1, 1, &map1_tilesPLN0[(i + vram_row) * map1_tilesWidth + col]);
+    set_bkg_tiles(tmp, vram_row + i, 1, 1, &map1_tilesPLN0[(i + vram_row) * map1_tilesWidth + col]);
   }
 }
 
