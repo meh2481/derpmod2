@@ -1325,12 +1325,12 @@ void set_aquaria_map_tiles(void) BANKED {
 
 void set_aquaria_map_tile_column(uint8_t col, uint8_t vram_row, uint8_t vram_col) BANKED {
   VBK_REG = VBK_TILES;
-  for (i = 0; i < 18; i++) {
-    set_bkg_tiles(vram_col, vram_row + i, 1, 1, &map1_tilesPLN0[i * map1_tilesWidth + col]);
+  for (i = 0; i < 19; i++) {
+    set_bkg_tiles(vram_col, vram_row + i, 1, 1, &map1_tilesPLN0[(i + vram_row) * map1_tilesWidth + col]);
   }
 }
 
 void set_aquaria_map_tile_row(uint8_t row, uint8_t vram_row, uint8_t vram_col) BANKED {
   VBK_REG = VBK_TILES;
-  set_bkg_tiles(vram_col, vram_row, 32, 1, &map1_tilesPLN0[row * map1_tilesWidth]);
+  set_bkg_tiles(vram_col, vram_row, 21, 1, &map1_tilesPLN0[row * map1_tilesWidth + vram_col]);
 }
