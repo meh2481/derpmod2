@@ -23,6 +23,8 @@ uint16_t bg_pos_y = 0;
 uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
 
+uint8_t prev_col, prev_row, cur_col, cur_row;
+
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
@@ -48,10 +50,10 @@ void update_aquaria(uint8_t input) NONBANKED {
 
   move_bkg(bg_pos_x & 0xFF, bg_pos_y & 0xFF);
 
-  uint8_t prev_col = prev_bg_pos_x >> 3;
-  uint8_t prev_row = prev_bg_pos_y >> 3;
-  uint8_t cur_col = bg_pos_x >> 3;
-  uint8_t cur_row = bg_pos_y >> 3;
+  prev_col = prev_bg_pos_x >> 3;
+  prev_row = prev_bg_pos_y >> 3;
+  cur_col = bg_pos_x >> 3;
+  cur_row = bg_pos_y >> 3;
 
   if (cur_col > prev_col) {
     set_aquaria_map_tile_column(cur_col + 20, cur_row, (cur_col + 20) % 32);
