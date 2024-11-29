@@ -16,7 +16,7 @@
 #define WIN_X_OFFSET 7
 
 uint8_t i, j, tmp;
-uint8_t gamestate = STATE_START;
+uint8_t gamestate;
 
 void main(void)
 {
@@ -43,7 +43,8 @@ void main(void)
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
-  init_title();
+  // init_title();
+  init_aquaria();
 
   DISPLAY_ON;
   enable_interrupts();

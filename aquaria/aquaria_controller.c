@@ -17,6 +17,12 @@ void init_aquaria(void) NONBANKED {
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 }
 
+uint16_t bg_pos_x = 0;
+uint16_t bg_pos_y = 0;
+
+uint16_t prev_bg_pos_x = 0;
+uint16_t prev_bg_pos_y = 0;
+
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
@@ -24,16 +30,44 @@ void update_aquaria(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
+  prev_bg_pos_x = bg_pos_x;
+  prev_bg_pos_y = bg_pos_y;
+
   if (input & J_LEFT) {
-    scroll_bkg(-1, 0);
+    bg_pos_x--;
   }
   if (input & J_RIGHT) {
-    scroll_bkg(1, 0);
+    bg_pos_x++;
   }
   if (input & J_UP) {
-    scroll_bkg(0, -1);
+    bg_pos_y--;
   }
   if (input & J_DOWN) {
-    scroll_bkg(0, 1);
+    bg_pos_y++;
   }
+
+  move_bkg(bg_pos_x & 0xFF, bg_pos_y & 0xFF);
+
+  uint8_t prev_col = prev_bg_pos_x >> 3;
+  uint8_t prev_row = prev_bg_pos_y >> 3;
+  uint8_t cur_col = bg_pos_x >> 3;
+  uint8_t cur_row = bg_pos_y >> 3;
+
+  if (cur_col > prev_col) {
+    set_aquaria_map_tile_column(cur_col + 20, cur_row, (cur_col + 20) % 32);
+    set_aquaria_map_attrib_column(cur_col + 20, cur_row, (cur_col + 20) % 32);
+  } else if (cur_col < prev_col) {
+    set_aquaria_map_tile_column(cur_col, cur_row, cur_col);
+    set_aquaria_map_attrib_column(cur_col, cur_row, cur_col);
+  }
+
+  if (cur_row > prev_row) {
+    set_aquaria_map_tile_row(cur_row + 18, (cur_row + 18) % 32, cur_col);
+    set_aquaria_map_attrib_row(cur_row + 18, (cur_row + 18) % 32, cur_col);
+  } else if (cur_row < prev_row) {
+    set_aquaria_map_tile_row(cur_row, cur_row, cur_col);
+    set_aquaria_map_attrib_row(cur_row, cur_row, cur_col);
+  }
+
+
 }

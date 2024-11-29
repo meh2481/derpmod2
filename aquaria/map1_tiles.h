@@ -23,10 +23,14 @@
 #define map1_tilesWidth 128
 #define map1_tilesHeight 100
 
-void set_aquaria_map_tiles(void) BANKED;
+extern void set_aquaria_map_tiles(void) BANKED;
+extern void set_aquaria_map_tile_column(uint8_t col, uint8_t vram_row, uint8_t vram_col) BANKED;
+extern void set_aquaria_map_tile_row(uint8_t row, uint8_t vram_row, uint8_t vram_col) BANKED;
 BANKREF_EXTERN(map1_tiles)
 
-void set_aquaria_map_tile_attribs(void) BANKED;
+extern void set_aquaria_map_tile_attribs(void) BANKED;
+extern void set_aquaria_map_attrib_column(uint8_t col, uint8_t vram_row, uint8_t vram_col) BANKED;
+extern void set_aquaria_map_attrib_row(uint8_t row, uint8_t vram_row, uint8_t vram_col) BANKED;
 BANKREF_EXTERN(map1_tileattribs)
 
 #define map1_tiles map1_tilesPLN0

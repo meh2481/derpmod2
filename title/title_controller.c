@@ -28,6 +28,7 @@ palette_color_t tmpPal;
 uint8_t tempR, tempG, tempB;
 
 void init_title(void) NONBANKED {
+  gamestate = STATE_START;
   set_title_bg_tiles_low_palette(); // 2 bg palettes
   set_press_start_text_palette(2);
 

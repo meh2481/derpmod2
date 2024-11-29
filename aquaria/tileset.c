@@ -445,17 +445,10 @@ const unsigned char tileset[] =
 };
 
 void init_aquaria_tileset(void) BANKED {
-  // gamestate = STATE_PLAY;
-  // hUGE_init(&the_traveller);
-
   gb_decompress_bkg_data(0, tileset);
 
   // Set up the palette
   set_bkg_palette(0, 6, tilesetCGBPal);
-
-  // SWITCH_ROM(2);
-  // set_aquaria_map_tiles();
-  // SWITCH_ROM(0);
 }
 
 /* End of TILESET.C */
