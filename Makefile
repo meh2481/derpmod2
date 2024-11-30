@@ -23,7 +23,8 @@ OBJS	= main.o \
 	title/title_bg_tiles_low.o \
 	title/title_controller.o \
 	title/title_text.o \
-	utils/hUGEHelpers.o
+	utils/hUGEHelpers.o \
+	sprite/fishform-body_tiles.c
 
 
 GBDK_DEBUG = ON
