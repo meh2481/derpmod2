@@ -24,6 +24,24 @@ uint16_t prev_bg_pos_y = 0;
 
 uint8_t prev_col, prev_row, cur_col, cur_row;
 
+void show_song_note_sprites(void) {
+  // Spread song note sprites out in a circle around the player sprite
+  move_sprite(1, 84, 108);
+  move_sprite(2, 101, 101);
+  move_sprite(3, 108, 84);
+  move_sprite(4, 101, 67);
+  move_sprite(5, 84, 60);
+  move_sprite(6, 67, 67);
+  move_sprite(7, 60, 84);
+  move_sprite(8, 67, 101);
+}
+
+void hide_song_note_sprites(void) {
+  for(i = 1; i < 9; i++) {
+    move_sprite(i, 0, 0);
+  }
+}
+
 void init_aquaria(void) NONBANKED {
   gamestate = STATE_PLAY;
   init_aquaria_music();
@@ -110,23 +128,28 @@ void update_aquaria(uint8_t input) NONBANKED {
   last_direction = direction;
   direction = 0;
 
-  if (input & J_LEFT) {
-    bg_pos_x--;
-    direction |= DIRECTION_LEFT;
-    last_pressed_horiz = DIRECTION_LEFT;
-  }
-  if (input & J_RIGHT) {
-    bg_pos_x++;
-    direction |= DIRECTION_RIGHT;
-    last_pressed_horiz = DIRECTION_RIGHT;
-  }
-  if (input & J_UP) {
-    bg_pos_y--;
-    direction |= DIRECTION_UP;
-  }
-  if (input & J_DOWN) {
-    bg_pos_y++;
-    direction |= DIRECTION_DOWN;
+  if (input & J_B) {
+    show_song_note_sprites();
+  } else {
+    hide_song_note_sprites();
+    if (input & J_LEFT) {
+      bg_pos_x--;
+      direction |= DIRECTION_LEFT;
+      last_pressed_horiz = DIRECTION_LEFT;
+    }
+    if (input & J_RIGHT) {
+      bg_pos_x++;
+      direction |= DIRECTION_RIGHT;
+      last_pressed_horiz = DIRECTION_RIGHT;
+    }
+    if (input & J_UP) {
+      bg_pos_y--;
+      direction |= DIRECTION_UP;
+    }
+    if (input & J_DOWN) {
+      bg_pos_y++;
+      direction |= DIRECTION_DOWN;
+    }
   }
 
   move_bkg(bg_pos_x & 0xFF, bg_pos_y & 0xFF);
