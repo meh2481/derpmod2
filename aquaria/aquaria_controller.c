@@ -3,7 +3,7 @@
 #include "tileset.h"
 #include "map1_tiles.h"
 #include "../utils/utils.h"
-#include "../sprite/fishform-body_tiles.h"
+#include "../sprite/naija_sprites.h"
 
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
@@ -30,13 +30,28 @@ void init_aquaria(void) NONBANKED {
   set_aquaria_map_tiles();
   set_aquaria_map_tile_attribs();
 
-  // Setup sprites
+  // Setup sprite data
   SPRITES_8x8;
   set_fishform_sprite_tiles(0);
   set_fishform_sprite_palettes(0);
 
+  // Create player sprite
   set_sprite_tile(PLAYER_SPRITE, 0);
   set_sprite_prop(PLAYER_SPRITE, DEFAULT_PLAYER_SPRITE_PROP);
+
+  // Create song note sprites
+  tmp = 0x1; // Current sprite palette
+  tmp_counter = 0;
+  for(i = 0; i < 8; i++) {
+    set_sprite_tile(i + 1, i + 4);
+    set_sprite_prop(i + 1, tmp);
+    tmp_counter++;
+    // Every 3 sprites, change palette
+    if (tmp_counter == 3) {
+      tmp++;
+      tmp_counter = 0;
+    }
+  }
 
   // Center sprite on the screen
   move_sprite(0, 84, 84);

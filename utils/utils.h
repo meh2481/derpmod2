@@ -9,7 +9,7 @@
 #define STATE_PLAY  1
 
 // Globals
-extern uint8_t i, j, tmp;
+extern uint8_t i, j, tmp, tmp_counter;
 extern uint8_t gamestate;
 
 #endif

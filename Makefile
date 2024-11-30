@@ -24,7 +24,7 @@ OBJS	= main.o \
 	title/title_controller.o \
 	title/title_text.o \
 	utils/hUGEHelpers.o \
-	sprite/fishform-body_tiles.c
+	sprite/naija_sprites.c
 
 
 GBDK_DEBUG = ON

@@ -15,7 +15,7 @@
 
 #define WIN_X_OFFSET 7
 
-uint8_t i, j, tmp;
+uint8_t i, j, tmp, tmp_counter;
 uint8_t gamestate;
 
 void main(void)
