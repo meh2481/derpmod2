@@ -19,10 +19,53 @@ uint8_t last_pressed_horiz = 0;
 #define DIRECTION_RIGHT 4
 #define DIRECTION_DOWN  8
 
+uint8_t cur_note = 0;
 uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
 
 uint8_t prev_col, prev_row, cur_col, cur_row;
+
+int8_t vibrate_note_counter = 0;
+
+void update_note(void) {
+  if (cur_note == 0) {
+    return;
+  }
+  uint8_t note_sprite = 0;
+  if (cur_note == DIRECTION_DOWN) {
+    note_sprite = 1;
+  } else if (cur_note == (DIRECTION_DOWN | DIRECTION_RIGHT)) {
+    note_sprite = 2;
+  } else if (cur_note == DIRECTION_RIGHT) {
+    note_sprite = 3;
+  } else if (cur_note == (DIRECTION_RIGHT | DIRECTION_UP)) {
+    note_sprite = 4;
+  } else if (cur_note == DIRECTION_UP) {
+    note_sprite = 5;
+  } else if (cur_note == (DIRECTION_UP | DIRECTION_LEFT)) {
+    note_sprite = 6;
+  } else if (cur_note == DIRECTION_LEFT) {
+    note_sprite = 7;
+  } else { // cur_note == (DIRECTION_LEFT | DIRECTION_DOWN)
+    note_sprite = 8;
+  }
+
+  // Shake the current note back and forth as you sing it
+  if (vibrate_note_counter == 0
+    || vibrate_note_counter == 1
+    || vibrate_note_counter == 6
+    || vibrate_note_counter == 7) {
+    scroll_sprite(note_sprite, 1, 0);
+  } else if (vibrate_note_counter == 2
+    || vibrate_note_counter == 3
+    || vibrate_note_counter == 4
+    || vibrate_note_counter == 5) {
+    scroll_sprite(note_sprite, -1, 0);
+  } else if (vibrate_note_counter == 8) {
+    vibrate_note_counter = -1;
+  }
+  vibrate_note_counter++;
+}
 
 void show_song_note_sprites(void) {
   // Spread song note sprites out in a circle around the player sprite
@@ -130,6 +173,18 @@ void update_aquaria(uint8_t input) NONBANKED {
 
   if (input & J_B) {
     show_song_note_sprites();
+    cur_note = 0;
+    if (input & J_LEFT) {
+      cur_note |= DIRECTION_LEFT;
+    } else if (input & J_RIGHT) {
+      cur_note |= DIRECTION_RIGHT;
+    }
+    if (input & J_UP) {
+      cur_note |= DIRECTION_UP;
+    } else if (input & J_DOWN) {
+      cur_note |= DIRECTION_DOWN;
+    }
+    update_note();
   } else {
     hide_song_note_sprites();
     if (input & J_LEFT) {
