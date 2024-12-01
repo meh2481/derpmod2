@@ -8,6 +8,7 @@
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
 #define DEFAULT_PLAYER_SPRITE_PROP  0x00
+#define MAX_NOTE_SEQUENCE_LENGTH    8
 
 uint16_t bg_pos_x = 0;
 uint16_t bg_pos_y = 0;
@@ -27,8 +28,34 @@ uint8_t prev_col, prev_row, cur_col, cur_row;
 
 int8_t vibrate_note_counter = 0;
 
+uint8_t* note_sequence = {0, 0, 0, 0, 0, 0, 0, 0};
+
+void insert_note_into_sequence(uint8_t note) {
+  for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
+    if (note_sequence[i] == 0) {
+      // Don't duplicate notes
+      if (i > 0 && note_sequence[i - 1] == note) {
+        return;
+      }
+      note_sequence[i] = note;
+      return;
+    }
+  }
+
+  // Note sequence buffer full; shift all notes to the left and insert into the end
+  for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH - 1; i++) {
+    note_sequence[i] = note_sequence[i + 1];
+  }
+  note_sequence[MAX_NOTE_SEQUENCE_LENGTH - 1] = note;
+
+  // TODO: Check note sequence against possible songs
+}
+
 void update_note(void) {
   if (cur_note == 0) {
+    for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
+      note_sequence[i] = 0;
+    }
     return;
   }
   uint8_t note_sprite = 0;
@@ -49,6 +76,7 @@ void update_note(void) {
   } else { // cur_note == (DIRECTION_LEFT | DIRECTION_DOWN)
     note_sprite = 8;
   }
+  insert_note_into_sequence(note_sprite - 1);
 
   // Shake the current note back and forth as you sing it
   if (vibrate_note_counter == 0
