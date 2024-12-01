@@ -109,7 +109,7 @@ void show_song_note_sprites(void) {
 
 void hide_song_note_sprites(void) {
   for(i = 1; i < 9; i++) {
-    move_sprite(i, 0, 0);
+    hide_sprite(i);
   }
 }
 
