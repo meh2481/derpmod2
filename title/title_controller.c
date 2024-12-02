@@ -13,6 +13,7 @@
 #include "../utils/hUGEHelpers.h"
 #include "../utils/utils.h"
 #include "../aquaria/aquaria_controller.h"
+#include "../sfx/sfx.h"
 
 #define WIN_X_OFFSET 7
 #define TITLE_VSYNC_FRAMES 3
@@ -125,6 +126,8 @@ void update_title_win(uint8_t input) NONBANKED {
     fadeValue = 31;
     // Stop music
     hUGE_stop_music();
+    // Play start button sound
+    CBTFX_PLAY_SFX_START_BUTTON;
     // Store palette info for fadeout
     title_fadeout_palette = (palette_color_t*) malloc(24);
     for (i = 0; i < 8; i++) {

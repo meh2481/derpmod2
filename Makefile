@@ -24,7 +24,9 @@ OBJS	= main.o \
 	title/title_controller.o \
 	title/title_text.o \
 	utils/hUGEHelpers.o \
-	sprite/naija_sprites.c
+	sprite/naija_sprites.c \
+	sfx/cbtfx.o \
+	sfx/sfx.o
 
 
 GBDK_DEBUG = ON
