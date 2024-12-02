@@ -4,6 +4,7 @@
 #include "map1_tiles.h"
 #include "../utils/utils.h"
 #include "../sprite/naija_sprites.h"
+#include "../sfx/sfx.h"
 
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
@@ -21,6 +22,7 @@ uint8_t last_pressed_horiz = 0;
 #define DIRECTION_DOWN  8
 
 uint8_t cur_note = 0;
+uint8_t last_note = 0;
 uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
 
@@ -28,7 +30,7 @@ uint8_t prev_col, prev_row, cur_col, cur_row;
 
 int8_t vibrate_note_counter = 0;
 
-uint8_t* note_sequence = {0, 0, 0, 0, 0, 0, 0, 0};
+uint8_t note_sequence[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 void insert_note_into_sequence(uint8_t note) {
   for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
@@ -75,6 +77,9 @@ void update_note(void) {
     note_sprite = 7;
   } else { // cur_note == (DIRECTION_LEFT | DIRECTION_DOWN)
     note_sprite = 8;
+  }
+  if(last_note != cur_note) {
+    CBTFX_init(&(NOTE_LIST[note_sprite - 1][0]));
   }
   insert_note_into_sequence(note_sprite - 1);
 
@@ -201,6 +206,7 @@ void update_aquaria(uint8_t input) NONBANKED {
 
   if (input & J_B) {
     show_song_note_sprites();
+    last_note = cur_note;
     cur_note = 0;
     if (input & J_LEFT) {
       cur_note |= DIRECTION_LEFT;
