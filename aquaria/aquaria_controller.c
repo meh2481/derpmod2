@@ -59,6 +59,7 @@ void stop_note(void) {
   // Stop channel that the notes play on
   hUGE_mute_channel(HT_CH2, HT_CH_MUTE);
   last_note = 0;
+  cur_note = 0;
 }
 
 void update_note(void) {
@@ -237,8 +238,9 @@ void update_aquaria(uint8_t input) NONBANKED {
 
     if (!(input & J_LEFT) && !(input & J_RIGHT) && !(input & J_UP) && !(input & J_DOWN)) {
       stop_note();
+    } else {
+      update_note();
     }
-    update_note();
   } else {
     hide_song_note_sprites();
     stop_note();
