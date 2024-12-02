@@ -53,6 +53,11 @@ void insert_note_into_sequence(uint8_t note) {
   // TODO: Check note sequence against possible songs
 }
 
+void stop_note(void) {
+  // Stop channel that the notes play on
+  hUGE_mute_channel(HT_CH2, HT_CH_MUTE);
+}
+
 void update_note(void) {
   if (cur_note == 0) {
     for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
@@ -218,9 +223,14 @@ void update_aquaria(uint8_t input) NONBANKED {
     } else if (input & J_DOWN) {
       cur_note |= DIRECTION_DOWN;
     }
+
+    if (!(input & J_LEFT) && !(input & J_RIGHT) && !(input & J_UP) && !(input & J_DOWN)) {
+      stop_note();
+    }
     update_note();
   } else {
     hide_song_note_sprites();
+    stop_note();
     if (input & J_LEFT) {
       bg_pos_x--;
       direction |= DIRECTION_LEFT;
