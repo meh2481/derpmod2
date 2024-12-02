@@ -10,6 +10,7 @@
 #define PLAYER_SPRITE               0
 #define DEFAULT_PLAYER_SPRITE_PROP  0x00
 #define MAX_NOTE_SEQUENCE_LENGTH    8
+#define NOTE_FRAMES_LENGTH          0x7F
 
 uint16_t bg_pos_x = 0;
 uint16_t bg_pos_y = 0;
@@ -23,6 +24,7 @@ uint8_t last_pressed_horiz = 0;
 
 uint8_t cur_note = 0;
 uint8_t last_note = 0;
+uint8_t note_length_counter = 0;
 uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
 
@@ -56,6 +58,7 @@ void insert_note_into_sequence(uint8_t note) {
 void stop_note(void) {
   // Stop channel that the notes play on
   hUGE_mute_channel(HT_CH2, HT_CH_MUTE);
+  last_note = 0;
 }
 
 void update_note(void) {
@@ -84,7 +87,15 @@ void update_note(void) {
     note_sprite = 8;
   }
   if(last_note != cur_note) {
+    note_length_counter = 0;
     CBTFX_init(&(NOTE_LIST[note_sprite - 1][0]));
+  } else {
+    note_length_counter++;
+    if (note_length_counter >= NOTE_FRAMES_LENGTH) {
+      // Restart this note after it ends if we're still holding the button
+      note_length_counter = 0;
+      CBTFX_init(&(NOTE_LIST[note_sprite - 1][0]));
+    }
   }
   insert_note_into_sequence(note_sprite - 1);
 
