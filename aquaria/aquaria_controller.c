@@ -41,6 +41,7 @@ uint8_t last_note = 0;
 uint8_t note_length_counter = 0;
 uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
+uint8_t bulb_colors[] = {0,0,0};
 
 uint8_t prev_col, prev_row, cur_col, cur_row;
 
@@ -93,16 +94,19 @@ void setup_sprites(void) {
   }
 
   // Create note bulb sprites
-  // Set note bulb sprite palettes randomized
+  // Set note bulb sprite palettes randomized and store their colors
   uint8_t rand_num = rand() & 0b111;
   set_sprite_prop(9, bulb_palette_from_num(rand_num));
   set_sprite_tile(9, bulb_tile_from_num(rand_num));
+  bulb_colors[0] = rand_num;
   rand_num = rand() & 0b111;
   set_sprite_prop(10, bulb_palette_from_num(rand_num));
   set_sprite_tile(10, bulb_tile_from_num(rand_num));
+  bulb_colors[1] = rand_num;
   rand_num = rand() & 0b111;
   set_sprite_prop(11, bulb_palette_from_num(rand_num));
   set_sprite_tile(11, bulb_tile_from_num(rand_num));
+  bulb_colors[2] = rand_num;
 
   // Center player sprite on the screen
   move_sprite(0, 84, 84);
