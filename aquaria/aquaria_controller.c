@@ -6,6 +6,14 @@
 #include "../sprite/naija_sprites.h"
 #include "../sfx/sfx.h"
 
+// Coordinates of note bulbs, in tiles
+#define NOTE_BULB_X_1               47
+#define NOTE_BULB_Y_1               19
+#define NOTE_BULB_X_2               82
+#define NOTE_BULB_Y_2               70
+#define NOTE_BULB_X_3               20
+#define NOTE_BULB_Y_3               89
+
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
 #define DEFAULT_PLAYER_SPRITE_PROP  0x00
@@ -33,6 +41,64 @@ uint8_t prev_col, prev_row, cur_col, cur_row;
 int8_t vibrate_note_counter = 0;
 
 uint8_t note_sequence[] = {0, 0, 0, 0, 0, 0, 0, 0};
+
+void setup_sprites(void) {
+  SPRITES_8x8;
+  set_fishform_sprite_tiles(0);
+  set_fishform_sprite_palettes(0);
+
+  // Create player sprite
+  set_sprite_tile(PLAYER_SPRITE, 0);
+  set_sprite_prop(PLAYER_SPRITE, DEFAULT_PLAYER_SPRITE_PROP);
+
+  // Create song note sprites
+  tmp = 0x1; // Current sprite palette
+  tmp_counter = 0;
+  for(i = 0; i < 8; i++) {
+    set_sprite_tile(i + 1, i + 4);
+    set_sprite_prop(i + 1, tmp);
+    tmp_counter++;
+    // Every 3 sprites, change palette
+    if (tmp_counter == 3) {
+      tmp++;
+      tmp_counter = 0;
+    }
+  }
+
+  // Create note bulb sprites
+  set_sprite_tile(9, 12);
+  set_sprite_tile(10, 12);
+  set_sprite_tile(11, 12);
+  // Set note bulb sprite palettes (TODO: Randomized)
+  set_sprite_prop(9, 0x1);
+  set_sprite_prop(10, 0x2);
+  set_sprite_prop(11, 0x3);
+
+  // Center player sprite on the screen
+  move_sprite(0, 84, 84);
+}
+
+void update_bulb_sprite(uint8_t sprite_num, int8_t move_x, int8_t move_y, uint8_t bulb_x, uint8_t bulb_y) {
+  // Update song bulb sprites as the background moves
+  uint8_t bg_pos_x_tile = bg_pos_x >> 3;
+  uint8_t bg_pos_y_tile = bg_pos_y >> 3;
+  if (bg_pos_x_tile <= bulb_x && bg_pos_y_tile <= bulb_y && bg_pos_x_tile >= bulb_x - SCREEN_WIDTH_TILES && bg_pos_y_tile >= bulb_y - SCREEN_HEIGHT_TILES) {
+    move_sprite(
+      sprite_num,
+      SCREEN_WIDTH - (((bg_pos_x_tile - bulb_x + 20) << 3) + (bg_pos_x & 0b111)) + 8 + move_x,
+      SCREEN_HEIGHT - (((bg_pos_y_tile - bulb_y + 18) << 3) + (bg_pos_y & 0b111)) + 16 + move_y
+    );
+  } else {
+    hide_sprite(sprite_num);
+  }
+}
+
+void update_sprite_positions(int8_t move_x, int8_t move_y) {
+  // If the note bulb is on the screen, move it with the background
+  update_bulb_sprite(9, move_x, move_y, NOTE_BULB_X_1, NOTE_BULB_Y_1);
+  update_bulb_sprite(10, move_x, move_y, NOTE_BULB_X_2, NOTE_BULB_Y_2);
+  update_bulb_sprite(11, move_x, move_y, NOTE_BULB_X_3, NOTE_BULB_Y_3);
+}
 
 void insert_note_into_sequence(uint8_t note) {
   for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
@@ -142,30 +208,7 @@ void init_aquaria(void) NONBANKED {
   set_aquaria_map_tile_attribs();
 
   // Setup sprite data
-  SPRITES_8x8;
-  set_fishform_sprite_tiles(0);
-  set_fishform_sprite_palettes(0);
-
-  // Create player sprite
-  set_sprite_tile(PLAYER_SPRITE, 0);
-  set_sprite_prop(PLAYER_SPRITE, DEFAULT_PLAYER_SPRITE_PROP);
-
-  // Create song note sprites
-  tmp = 0x1; // Current sprite palette
-  tmp_counter = 0;
-  for(i = 0; i < 8; i++) {
-    set_sprite_tile(i + 1, i + 4);
-    set_sprite_prop(i + 1, tmp);
-    tmp_counter++;
-    // Every 3 sprites, change palette
-    if (tmp_counter == 3) {
-      tmp++;
-      tmp_counter = 0;
-    }
-  }
-
-  // Center sprite on the screen
-  move_sprite(0, 84, 84);
+  setup_sprites();
 
   init_aquaria_tileset();
   // Hide window
@@ -215,6 +258,9 @@ void update_aquaria(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
+  uint8_t moved_bg = 0;
+  int8_t move_x = 0;
+  int8_t move_y = 0;
   prev_bg_pos_x = bg_pos_x;
   prev_bg_pos_y = bg_pos_y;
 
@@ -244,50 +290,62 @@ void update_aquaria(uint8_t input) NONBANKED {
   } else {
     hide_song_note_sprites();
     stop_note();
+    move_x = move_y = 0;
     if (input & J_LEFT) {
       bg_pos_x--;
+      move_x = 1;
+      moved_bg = 1;
       direction |= DIRECTION_LEFT;
       last_pressed_horiz = DIRECTION_LEFT;
     }
     if (input & J_RIGHT) {
       bg_pos_x++;
+      move_x = -1;
+      moved_bg = 1;
       direction |= DIRECTION_RIGHT;
       last_pressed_horiz = DIRECTION_RIGHT;
     }
     if (input & J_UP) {
       bg_pos_y--;
+      move_y = 1;
+      moved_bg = 1;
       direction |= DIRECTION_UP;
     }
     if (input & J_DOWN) {
       bg_pos_y++;
+      move_y = -1;
+      moved_bg = 1;
       direction |= DIRECTION_DOWN;
     }
   }
 
-  move_bkg(bg_pos_x & 0xFF, bg_pos_y & 0xFF);
+  update_sprite_positions(move_x, move_y);
+  if (moved_bg) {
+    move_bkg(bg_pos_x & 0xFF, bg_pos_y & 0xFF);
 
-  prev_col = prev_bg_pos_x >> 3;
-  prev_row = prev_bg_pos_y >> 3;
-  cur_col = bg_pos_x >> 3;
-  cur_row = bg_pos_y >> 3;
+    prev_col = prev_bg_pos_x >> 3;
+    prev_row = prev_bg_pos_y >> 3;
+    cur_col = bg_pos_x >> 3;
+    cur_row = bg_pos_y >> 3;
 
-  if (cur_col > prev_col) {
-    set_aquaria_map_tile_column(cur_col + 20, cur_row, cur_col + 20);
-    set_aquaria_map_attrib_column(cur_col + 20, cur_row, cur_col + 20);
-  } else if (cur_col < prev_col) {
-    set_aquaria_map_tile_column(cur_col, cur_row, cur_col);
-    set_aquaria_map_attrib_column(cur_col, cur_row, cur_col);
-  }
+    if (cur_col > prev_col) {
+      set_aquaria_map_tile_column(cur_col + 20, cur_row, cur_col + 20);
+      set_aquaria_map_attrib_column(cur_col + 20, cur_row, cur_col + 20);
+    } else if (cur_col < prev_col) {
+      set_aquaria_map_tile_column(cur_col, cur_row, cur_col);
+      set_aquaria_map_attrib_column(cur_col, cur_row, cur_col);
+    }
 
-  if (cur_row > prev_row) {
-    set_aquaria_map_tile_row(cur_row + 18, cur_row + 18, cur_col);
-    set_aquaria_map_attrib_row(cur_row + 18, cur_row + 18, cur_col);
-  } else if (cur_row < prev_row) {
-    set_aquaria_map_tile_row(cur_row, cur_row, cur_col);
-    set_aquaria_map_attrib_row(cur_row, cur_row, cur_col);
-  }
+    if (cur_row > prev_row) {
+      set_aquaria_map_tile_row(cur_row + 18, cur_row + 18, cur_col);
+      set_aquaria_map_attrib_row(cur_row + 18, cur_row + 18, cur_col);
+    } else if (cur_row < prev_row) {
+      set_aquaria_map_tile_row(cur_row, cur_row, cur_col);
+      set_aquaria_map_attrib_row(cur_row, cur_row, cur_col);
+    }
 
-  if(last_direction != direction) {
-    update_player_sprite();
+    if(last_direction != direction) {
+      update_player_sprite();
+    }
   }
 }
