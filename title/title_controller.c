@@ -4,6 +4,7 @@
 #include <gb/cgb.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <rand.h>
 #include "title.h"
 #include "title_text.h"
 #include "title_bg_tiles_hi.h"
@@ -122,6 +123,10 @@ void update_title_win(uint8_t input) NONBANKED {
   }
 
   if (input & J_START && fadeValue == 32) {
+    // Init the random number generator
+    uint16_t seed = LY_REG;
+    seed |= (uint16_t)DIV_REG << 8;
+    initrand(seed);
     // Reset fade timer
     fadeValue = 31;
     // Stop music

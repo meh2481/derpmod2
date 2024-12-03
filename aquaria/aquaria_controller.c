@@ -1,4 +1,5 @@
 #include <gb/gb.h>
+#include <rand.h>
 #include "../utils/hUGEHelpers.h"
 #include "tileset.h"
 #include "map1_tiles.h"
@@ -13,6 +14,11 @@
 #define NOTE_BULB_Y_2               70
 #define NOTE_BULB_X_3               20
 #define NOTE_BULB_Y_3               89
+
+#define NOTE_BULB_1                 1
+#define NOTE_BULB_2                 2
+#define NOTE_BULB_3                 4
+uint8_t bulbs_active = NOTE_BULB_1 | NOTE_BULB_2 | NOTE_BULB_3;
 
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
@@ -42,6 +48,16 @@ int8_t vibrate_note_counter = 0;
 
 uint8_t note_sequence[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
+uint8_t bulb_palette_from_num(uint8_t rand_num) {
+  if (rand_num < 3) {
+    return 0x1;
+  } else if (rand_num < 6) {
+    return 0x2;
+  } else {
+    return 0x3;
+  }
+}
+
 void setup_sprites(void) {
   SPRITES_8x8;
   set_fishform_sprite_tiles(0);
@@ -69,10 +85,13 @@ void setup_sprites(void) {
   set_sprite_tile(9, 12);
   set_sprite_tile(10, 12);
   set_sprite_tile(11, 12);
-  // Set note bulb sprite palettes (TODO: Randomized)
-  set_sprite_prop(9, 0x1);
-  set_sprite_prop(10, 0x2);
-  set_sprite_prop(11, 0x3);
+  // Set note bulb sprite palettes randomized
+  uint8_t rand_num = rand() & 0b111;
+  set_sprite_prop(9, bulb_palette_from_num(rand_num));
+  rand_num = rand() & 0b111;
+  set_sprite_prop(10, bulb_palette_from_num(rand_num));
+  rand_num = rand() & 0b111;
+  set_sprite_prop(11, bulb_palette_from_num(rand_num));
 
   // Center player sprite on the screen
   move_sprite(0, 84, 84);
@@ -89,15 +108,22 @@ void update_bulb_sprite(uint8_t sprite_num, int8_t move_x, int8_t move_y, uint8_
       SCREEN_HEIGHT - (((bg_pos_y_tile - bulb_y + 18) << 3) + (bg_pos_y & 0b111)) + 16 + move_y
     );
   } else {
+    // Hide the sprite if it's off the screen
     hide_sprite(sprite_num);
   }
 }
 
 void update_sprite_positions(int8_t move_x, int8_t move_y) {
-  // If the note bulb is on the screen, move it with the background
-  update_bulb_sprite(9, move_x, move_y, NOTE_BULB_X_1, NOTE_BULB_Y_1);
-  update_bulb_sprite(10, move_x, move_y, NOTE_BULB_X_2, NOTE_BULB_Y_2);
-  update_bulb_sprite(11, move_x, move_y, NOTE_BULB_X_3, NOTE_BULB_Y_3);
+  // If the note bulbs are on the screen, move them with the background
+  if (bulbs_active & NOTE_BULB_1) {
+    update_bulb_sprite(9, move_x, move_y, NOTE_BULB_X_1, NOTE_BULB_Y_1);
+  }
+  if (bulbs_active & NOTE_BULB_2) {
+    update_bulb_sprite(10, move_x, move_y, NOTE_BULB_X_2, NOTE_BULB_Y_2);
+  }
+  if (bulbs_active & NOTE_BULB_3) {
+    update_bulb_sprite(11, move_x, move_y, NOTE_BULB_X_3, NOTE_BULB_Y_3);
+  }
 }
 
 void insert_note_into_sequence(uint8_t note) {
