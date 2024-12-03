@@ -41,7 +41,17 @@ uint8_t last_note = 0;
 uint8_t note_length_counter = 0;
 uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
-uint8_t bulb_colors[] = {0,0,0};
+
+#define BULB_SING_TIMER 0xB4  // 3 secs
+uint8_t bulb_colors[] = {0, 0, 0};
+uint8_t bulbs_open[] = {0, 0, 0};
+uint8_t bulb_onscreen = 0;
+uint8_t orig_bulb_tile = 0;
+uint8_t vibrate_bulb_counter = 0;
+uint8_t onscreen_bulb_x = 0;
+uint8_t onscreen_bulb_y = 0;
+// Note to palette (bulb colors above)
+const uint8_t note_palette_remap[] = {1, 2, 0, 4, 3, 5, 7, 6};
 
 uint8_t prev_col, prev_row, cur_col, cur_row;
 
@@ -117,26 +127,35 @@ void update_bulb_sprite(uint8_t sprite_num, int8_t move_x, int8_t move_y, uint8_
   uint8_t bg_pos_x_tile = bg_pos_x >> 3;
   uint8_t bg_pos_y_tile = bg_pos_y >> 3;
   if (bg_pos_x_tile <= bulb_x && bg_pos_y_tile <= bulb_y && bg_pos_x_tile >= bulb_x - SCREEN_WIDTH_TILES && bg_pos_y_tile >= bulb_y - SCREEN_HEIGHT_TILES) {
+    onscreen_bulb_x = SCREEN_WIDTH - (((bg_pos_x_tile - bulb_x + 20) << 3) + (bg_pos_x & 0b111)) + 8 + move_x;
+    onscreen_bulb_y = SCREEN_HEIGHT - (((bg_pos_y_tile - bulb_y + 18) << 3) + (bg_pos_y & 0b111)) + 16 + move_y;
     move_sprite(
       sprite_num,
-      SCREEN_WIDTH - (((bg_pos_x_tile - bulb_x + 20) << 3) + (bg_pos_x & 0b111)) + 8 + move_x,
-      SCREEN_HEIGHT - (((bg_pos_y_tile - bulb_y + 18) << 3) + (bg_pos_y & 0b111)) + 16 + move_y
+      onscreen_bulb_x,
+      onscreen_bulb_y
     );
+    if (bulb_onscreen == 0 && bulbs_open[sprite_num - 9] == 0) {
+      bulb_onscreen = sprite_num;
+      orig_bulb_tile = get_sprite_tile(sprite_num);
+    }
   } else {
     // Hide the sprite if it's off the screen
     hide_sprite(sprite_num);
+    if (bulb_onscreen == sprite_num) {
+      bulb_onscreen = 0;
+    }
   }
 }
 
 void update_sprite_positions(int8_t move_x, int8_t move_y) {
   // If the note bulbs are on the screen, move them with the background
-  if (bulbs_active & NOTE_BULB_1) {
+  if (bulbs_active & NOTE_BULB_1 && bulbs_open[0] == 0) {
     update_bulb_sprite(9, move_x, move_y, NOTE_BULB_X_1, NOTE_BULB_Y_1);
   }
-  if (bulbs_active & NOTE_BULB_2) {
+  if (bulbs_active & NOTE_BULB_2 && bulbs_open[1] == 0) {
     update_bulb_sprite(10, move_x, move_y, NOTE_BULB_X_2, NOTE_BULB_Y_2);
   }
-  if (bulbs_active & NOTE_BULB_3) {
+  if (bulbs_active & NOTE_BULB_3 && bulbs_open[2] == 0) {
     update_bulb_sprite(11, move_x, move_y, NOTE_BULB_X_3, NOTE_BULB_Y_3);
   }
 }
@@ -167,6 +186,10 @@ void stop_note(void) {
   hUGE_mute_channel(HT_CH2, HT_CH_MUTE);
   last_note = 0;
   cur_note = 0;
+  // Reset bulb animation if it hasn't broken yet
+  if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0) {
+    set_sprite_tile(bulb_onscreen, orig_bulb_tile);
+  }
 }
 
 void update_note(void) {
@@ -222,6 +245,28 @@ void update_note(void) {
     vibrate_note_counter = -1;
   }
   vibrate_note_counter++;
+
+  // Shake the current bulb if there's one onscreen (TODO: And in range, and only if singing correct note)
+  if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0 && note_palette_remap[note_sprite - 1] == bulb_colors[bulb_onscreen - 9]) {
+    if (vibrate_bulb_counter & 0b100) {
+      set_sprite_tile(bulb_onscreen, orig_bulb_tile + 3);
+    } else {
+      set_sprite_tile(bulb_onscreen, orig_bulb_tile);
+    }
+    vibrate_bulb_counter++;
+    if (vibrate_bulb_counter > BULB_SING_TIMER) {
+      // Open bulb (TODO: Drops stuff)
+      vibrate_bulb_counter = 0;
+      bulbs_open[bulb_onscreen - 9] = 1;
+      hide_sprite(bulb_onscreen);
+      bulb_onscreen = 0;
+    }
+  } else if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0 && note_palette_remap[note_sprite - 1] != bulb_colors[bulb_onscreen - 9]) {
+    vibrate_bulb_counter = 0;
+    set_sprite_tile(bulb_onscreen, orig_bulb_tile);
+  } else {
+    vibrate_bulb_counter = 0;
+  }
 }
 
 void show_song_note_sprites(void) {
