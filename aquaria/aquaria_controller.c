@@ -58,6 +58,17 @@ uint8_t bulb_palette_from_num(uint8_t rand_num) {
   }
 }
 
+uint8_t bulb_tile_from_num(uint8_t rand_num) {
+  if (rand_num < 3) {
+    rand_num -= 0;
+  } else if (rand_num < 6) {
+    rand_num -= 3;
+  } else {
+    rand_num -= 6;
+  }
+  return rand_num % 3 + 12;
+}
+
 void setup_sprites(void) {
   SPRITES_8x8;
   set_fishform_sprite_tiles(0);
@@ -82,16 +93,16 @@ void setup_sprites(void) {
   }
 
   // Create note bulb sprites
-  set_sprite_tile(9, 12);
-  set_sprite_tile(10, 12);
-  set_sprite_tile(11, 12);
   // Set note bulb sprite palettes randomized
   uint8_t rand_num = rand() & 0b111;
   set_sprite_prop(9, bulb_palette_from_num(rand_num));
+  set_sprite_tile(9, bulb_tile_from_num(rand_num));
   rand_num = rand() & 0b111;
   set_sprite_prop(10, bulb_palette_from_num(rand_num));
+  set_sprite_tile(10, bulb_tile_from_num(rand_num));
   rand_num = rand() & 0b111;
   set_sprite_prop(11, bulb_palette_from_num(rand_num));
+  set_sprite_tile(11, bulb_tile_from_num(rand_num));
 
   // Center player sprite on the screen
   move_sprite(0, 84, 84);
