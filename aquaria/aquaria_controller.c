@@ -260,6 +260,7 @@ void update_note(void) {
       bulbs_open[bulb_onscreen - 9] = 1;
       hide_sprite(bulb_onscreen);
       bulb_onscreen = 0;
+      CBTFX_PLAY_SFX_OPEN_PLANT;
     }
   } else if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0 && note_palette_remap[note_sprite - 1] != bulb_colors[bulb_onscreen - 9]) {
     vibrate_bulb_counter = 0;
