@@ -22,14 +22,15 @@ uint8_t bulbs_active = NOTE_BULB_1 | NOTE_BULB_2 | NOTE_BULB_3;
 
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
-#define DEFAULT_PLAYER_SPRITE_PROP  0x00
+#define DEFAULT_PLAYER_SPRITE_PROP  0
 #define MAX_NOTE_SEQUENCE_LENGTH    8
 #define NOTE_FRAMES_LENGTH          0x7F
 
-uint16_t bg_pos_x = 0;
-uint16_t bg_pos_y = 0;
-uint8_t direction = 0;
-uint8_t last_direction = 0;
+uint8_t moved_bg = 1;
+uint16_t bg_pos_x = 32;
+uint16_t bg_pos_y = 128;
+uint8_t direction = 4;
+uint8_t last_direction = 4;
 uint8_t last_pressed_horiz = 0;
 #define DIRECTION_LEFT  1
 #define DIRECTION_UP    2
@@ -43,6 +44,7 @@ uint16_t prev_bg_pos_x = 0;
 uint16_t prev_bg_pos_y = 0;
 
 #define BULB_SING_TIMER 0xB4  // 3 secs
+#define SING_BULB_DISTANCE 36
 uint8_t bulb_colors[] = {0, 0, 0};
 uint8_t bulbs_open[] = {0, 0, 0};
 uint8_t bulb_onscreen = 0;
@@ -87,7 +89,7 @@ void setup_sprites(void) {
 
   // Create player sprite
   set_sprite_tile(PLAYER_SPRITE, 0);
-  set_sprite_prop(PLAYER_SPRITE, DEFAULT_PLAYER_SPRITE_PROP);
+  set_sprite_prop(PLAYER_SPRITE, DEFAULT_PLAYER_SPRITE_PROP | S_FLIPX);
 
   // Create song note sprites
   tmp = 0x1; // Current sprite palette
@@ -246,21 +248,32 @@ void update_note(void) {
   }
   vibrate_note_counter++;
 
-  // Shake the current bulb if there's one onscreen (TODO: And in range, and only if singing correct note)
+  // Shake the current bulb if there's one onscreen (only if singing correct note)
   if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0 && note_palette_remap[note_sprite - 1] == bulb_colors[bulb_onscreen - 9]) {
-    if (vibrate_bulb_counter & 0b100) {
-      set_sprite_tile(bulb_onscreen, orig_bulb_tile + 3);
-    } else {
-      set_sprite_tile(bulb_onscreen, orig_bulb_tile);
+    // Only if in range
+    int8_t distance_x = (int8_t)(84) - ((int8_t)(onscreen_bulb_x));
+    if (distance_x < 0) {
+      distance_x = -distance_x;
     }
-    vibrate_bulb_counter++;
-    if (vibrate_bulb_counter > BULB_SING_TIMER) {
-      // Open bulb (TODO: Drops stuff)
-      vibrate_bulb_counter = 0;
-      bulbs_open[bulb_onscreen - 9] = 1;
-      hide_sprite(bulb_onscreen);
-      bulb_onscreen = 0;
-      CBTFX_PLAY_SFX_OPEN_PLANT;
+    int8_t distance_y = (int8_t)(84) - ((int8_t)(onscreen_bulb_y));
+    if (distance_y < 0) {
+      distance_y = -distance_y;
+    }
+    if (distance_x < SING_BULB_DISTANCE && distance_y < SING_BULB_DISTANCE) {
+      if (vibrate_bulb_counter & 0b100) {
+        set_sprite_tile(bulb_onscreen, orig_bulb_tile + 3);
+      } else {
+        set_sprite_tile(bulb_onscreen, orig_bulb_tile);
+      }
+      vibrate_bulb_counter++;
+      if (vibrate_bulb_counter > BULB_SING_TIMER) {
+        // Open bulb (TODO: Drops stuff)
+        vibrate_bulb_counter = 0;
+        bulbs_open[bulb_onscreen - 9] = 1;
+        hide_sprite(bulb_onscreen);
+        bulb_onscreen = 0;
+        CBTFX_PLAY_SFX_OPEN_PLANT;
+      }
     }
   } else if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0 && note_palette_remap[note_sprite - 1] != bulb_colors[bulb_onscreen - 9]) {
     vibrate_bulb_counter = 0;
@@ -345,7 +358,6 @@ void update_aquaria(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
-  uint8_t moved_bg = 0;
   int8_t move_x = 0;
   int8_t move_y = 0;
   prev_bg_pos_x = bg_pos_x;
