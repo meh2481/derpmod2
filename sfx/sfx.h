@@ -36,6 +36,8 @@
 	extern const unsigned char NOTE_HI_C[];
 	#define CBTFX_PLAY_SFX_OPEN_PLANT CBTFX_init(&SFX_OPEN_PLANT[0])
 	extern const unsigned char SFX_OPEN_PLANT[];
+	#define CBTFX_PLAY_SFX_PICKUP CBTFX_init(&SFX_PICKUP[0])
+	extern const unsigned char SFX_PICKUP[];
 
 	extern const unsigned char* NOTE_LIST[];
 
