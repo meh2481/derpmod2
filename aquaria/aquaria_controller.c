@@ -415,24 +415,58 @@ void update_aquaria(uint8_t input) NONBANKED {
       last_pressed_horiz = DIRECTION_LEFT;
     }
     if (input & J_RIGHT) {
-      bg_pos_x++;
-      move_x = -1;
-      moved_bg = 1;
+      uint16_t player_sprite_right_x = bg_pos_x + 84;
+      uint16_t player_sprite_right_y = bg_pos_y + 72;
+      // Check if we can move right
+      if (player_sprite_right_x % 8 == 0) {
+        uint8_t tile_right = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, player_sprite_right_y >> 3);
+        if (is_passable_tile(tile_right)) {
+          bg_pos_x++;
+          move_x = -1;
+          moved_bg = 1;
+        }
+      } else {
+        bg_pos_x++;
+        move_x = -1;
+        moved_bg = 1;
+      }
       direction |= DIRECTION_RIGHT;
       last_pressed_horiz = DIRECTION_RIGHT;
     }
     if (input & J_UP) {
-      if (bg_pos_y > 0) {
+      uint16_t player_sprite_up_x = bg_pos_x + 80;
+      uint16_t player_sprite_up_y = bg_pos_y + 68;
+      // Check if we can move up
+      if (player_sprite_up_y % 8 == 0) {
+        uint8_t tile_up = get_aquaria_map_tile(player_sprite_up_x >> 3, (player_sprite_up_y - 1) >> 3);
+        if (is_passable_tile(tile_up)) {
+          bg_pos_y--;
+          move_y = 1;
+          moved_bg = 1;
+        }
+      } else {
         bg_pos_y--;
+        move_y = 1;
+        moved_bg = 1;
       }
-      move_y = 1;
-      moved_bg = 1;
       direction |= DIRECTION_UP;
     }
     if (input & J_DOWN) {
-      bg_pos_y++;
-      move_y = -1;
-      moved_bg = 1;
+      uint16_t player_sprite_down_x = bg_pos_x + 80;
+      uint16_t player_sprite_down_y = bg_pos_y + 76;
+      // Check if we can move down
+      if (player_sprite_down_y % 8 == 0) {
+        uint8_t tile_down = get_aquaria_map_tile(player_sprite_down_x >> 3, (player_sprite_down_y + 1) >> 3);
+        if (is_passable_tile(tile_down)) {
+          bg_pos_y++;
+          move_y = -1;
+          moved_bg = 1;
+        }
+      } else {
+        bg_pos_y++;
+        move_y = -1;
+        moved_bg = 1;
+      }
       direction |= DIRECTION_DOWN;
     }
   }
