@@ -26,6 +26,7 @@
 extern void set_aquaria_map_tiles(void) BANKED;
 extern void set_aquaria_map_tile_column(uint8_t col, uint8_t vram_row, uint8_t vram_col) BANKED;
 extern void set_aquaria_map_tile_row(uint8_t row, uint8_t vram_row, uint8_t vram_col) BANKED;
+extern uint8_t get_aquaria_map_tile(uint8_t row, uint8_t col) BANKED;
 BANKREF_EXTERN(map1_tiles)
 
 extern void set_aquaria_map_tile_attribs(void) BANKED;

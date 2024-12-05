@@ -87,7 +87,7 @@ void setup_sprites(void) {
   set_fishform_sprite_tiles(0);
   set_fishform_sprite_palettes(0);
 
-  // Create player sprite
+  // Create player sprite, facing right
   set_sprite_tile(PLAYER_SPRITE, 0);
   set_sprite_prop(PLAYER_SPRITE, DEFAULT_PLAYER_SPRITE_PROP | S_FLIPX);
 
@@ -351,6 +351,11 @@ void update_player_sprite(void) NONBANKED {
   }
 }
 
+uint8_t is_passable_tile(uint8_t tile) {
+  // impassable tiles in our tilemap
+  return tile != 0x1 && (tile < 184 || tile > 192);
+}
+
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
@@ -391,9 +396,21 @@ void update_aquaria(uint8_t input) NONBANKED {
     stop_note();
     move_x = move_y = 0;
     if (input & J_LEFT) {
-      bg_pos_x--;
-      move_x = 1;
-      moved_bg = 1;
+      uint16_t player_sprite_left_x = bg_pos_x + 76;
+      uint16_t player_sprite_left_y = bg_pos_y + 72;
+      // Check if we can move left
+      if (player_sprite_left_x % 8 == 0) {
+        uint8_t tile_left = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, player_sprite_left_y >> 3);
+        if (is_passable_tile(tile_left)) {
+          bg_pos_x--;
+          move_x = 1;
+          moved_bg = 1;
+        }
+      } else {
+        bg_pos_x--;
+        move_x = 1;
+        moved_bg = 1;
+      }
       direction |= DIRECTION_LEFT;
       last_pressed_horiz = DIRECTION_LEFT;
     }
@@ -405,7 +422,9 @@ void update_aquaria(uint8_t input) NONBANKED {
       last_pressed_horiz = DIRECTION_RIGHT;
     }
     if (input & J_UP) {
-      bg_pos_y--;
+      if (bg_pos_y > 0) {
+        bg_pos_y--;
+      }
       move_y = 1;
       moved_bg = 1;
       direction |= DIRECTION_UP;

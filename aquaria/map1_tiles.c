@@ -1335,3 +1335,7 @@ void set_aquaria_map_tile_row(uint8_t row, uint8_t vram_row, uint8_t vram_col) B
   VBK_REG = VBK_TILES;
   set_bkg_tiles(vram_col % 32, vram_row % 32, 21, 1, &map1_tilesPLN0[row * map1_tilesWidth + vram_col]);
 }
+
+uint8_t get_aquaria_map_tile(uint8_t col, uint8_t row) BANKED {
+  return map1_tilesPLN0[row * map1_tilesWidth + col];
+}
