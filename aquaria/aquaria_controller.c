@@ -400,8 +400,9 @@ void update_aquaria(uint8_t input) NONBANKED {
       uint16_t player_sprite_left_y = bg_pos_y + 72;
       // Check if we can move left
       if (player_sprite_left_x % 8 == 0) {
-        uint8_t tile_left = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, player_sprite_left_y >> 3);
-        if (is_passable_tile(tile_left)) {
+        uint8_t tile_left = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, (player_sprite_left_y - 4) >> 3);
+        uint8_t tile_left2 = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, (player_sprite_left_y + 3) >> 3);
+        if (is_passable_tile(tile_left) && is_passable_tile(tile_left2)) {
           bg_pos_x--;
           move_x = 1;
           moved_bg = 1;
@@ -419,8 +420,9 @@ void update_aquaria(uint8_t input) NONBANKED {
       uint16_t player_sprite_right_y = bg_pos_y + 72;
       // Check if we can move right
       if (player_sprite_right_x % 8 == 0) {
-        uint8_t tile_right = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, player_sprite_right_y >> 3);
-        if (is_passable_tile(tile_right)) {
+        uint8_t tile_right = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, (player_sprite_right_y - 4) >> 3);
+        uint8_t tile_right2 = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, (player_sprite_right_y + 3) >> 3);
+        if (is_passable_tile(tile_right) && is_passable_tile(tile_right2)) {
           bg_pos_x++;
           move_x = -1;
           moved_bg = 1;
@@ -438,8 +440,9 @@ void update_aquaria(uint8_t input) NONBANKED {
       uint16_t player_sprite_up_y = bg_pos_y + 68;
       // Check if we can move up
       if (player_sprite_up_y % 8 == 0) {
-        uint8_t tile_up = get_aquaria_map_tile(player_sprite_up_x >> 3, (player_sprite_up_y - 1) >> 3);
-        if (is_passable_tile(tile_up)) {
+        uint8_t tile_up = get_aquaria_map_tile((player_sprite_up_x - 4) >> 3, (player_sprite_up_y - 1) >> 3);
+        uint8_t tile_up2 = get_aquaria_map_tile((player_sprite_up_x + 3) >> 3, (player_sprite_up_y - 1) >> 3);
+        if (is_passable_tile(tile_up) && is_passable_tile(tile_up2)) {
           bg_pos_y--;
           move_y = 1;
           moved_bg = 1;
@@ -456,8 +459,9 @@ void update_aquaria(uint8_t input) NONBANKED {
       uint16_t player_sprite_down_y = bg_pos_y + 76;
       // Check if we can move down
       if (player_sprite_down_y % 8 == 0) {
-        uint8_t tile_down = get_aquaria_map_tile(player_sprite_down_x >> 3, (player_sprite_down_y + 1) >> 3);
-        if (is_passable_tile(tile_down)) {
+        uint8_t tile_down = get_aquaria_map_tile((player_sprite_down_x - 4) >> 3, (player_sprite_down_y + 1) >> 3);
+        uint8_t tile_down2 = get_aquaria_map_tile((player_sprite_down_x + 3) >> 3, (player_sprite_down_y + 1) >> 3);
+        if (is_passable_tile(tile_down) && is_passable_tile(tile_down2)) {
           bg_pos_y++;
           move_y = -1;
           moved_bg = 1;
