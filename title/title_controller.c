@@ -16,7 +16,6 @@
 #include "../aquaria/aquaria_controller.h"
 #include "../sfx/sfx.h"
 
-#define WIN_X_OFFSET 7
 #define TITLE_VSYNC_FRAMES 3
 #define NUM_TITLE_TEXT_TILES 54
 
@@ -34,10 +33,15 @@ void init_title(void) NONBANKED {
   set_title_bg_tiles_low_palette(); // 2 bg palettes
   set_press_start_text_palette(2);
 
+  // Display the window covering everything
+  move_win(WIN_X_OFFSET, 0);
+
   // Initialize the background tiles
   set_title_bg_tiles_low();
   set_title_bg_tiles_hi();
+  VBK_REG = VBK_BANK_1;
   set_font_tiles(353 - 256);  // Font tiles
+  VBK_REG = VBK_BANK_0;
 
   // Draw the background
   set_title_bg_screen();

@@ -6,6 +6,8 @@
 #include "../utils/utils.h"
 #include "../sprite/naija_sprites.h"
 #include "../sfx/sfx.h"
+#include "../font/font_tiles.h"
+#include "../title/press_start.h"
 
 // Coordinates of note bulbs, in tiles
 #define NOTE_BULB_X_1               47
@@ -311,8 +313,17 @@ void init_aquaria(void) NONBANKED {
   setup_sprites();
 
   init_aquaria_tileset();
+  set_press_start_text_palette(6);
+
+  VBK_REG = VBK_BANK_1;
+  set_font_tiles(0);  // Font tiles
+
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+
+  VBK_REG = VBK_BANK_1;
+  render_string("Aquaria", 0);
+  VBK_REG = VBK_BANK_0;
 }
 
 void update_player_sprite(void) NONBANKED {
