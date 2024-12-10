@@ -155,12 +155,6 @@ void set_font_tiles(uint8_t start_idx) BANKED {
 uint8_t tile;
 
 void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
-  // Draw top border
-  VBK_REG = VBK_TILES;
-  set_win_tiles(0, 0, 20, 1, top_bot_textbox_tiles);
-  VBK_REG = VBK_ATTRIBUTES;
-  set_win_tiles(0, 0, 20, 1, top_textbox_attribs);
-
   // Draw string
   uint8_t str_len = strlen(str);
   uint8_t cur_height = 1;
@@ -168,15 +162,6 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
   int8_t ii;
   for (ii = 0; ii + cur_idx < str_len; ii++) {
     if (str[cur_idx + ii] == '\n') {
-      // Fill out rest of the line with spaces
-      for (i = ii + 1; i < 19; i++) {
-        VBK_REG = VBK_TILES;
-        tile = vram_start_idx;
-        set_win_tiles(i, cur_height, 1, 1, &tile);
-        VBK_REG = VBK_ATTRIBUTES;
-        tile = 0x8E;
-        set_win_tiles(i, cur_height, 1, 1, &tile);
-      }
       // Go to next line
       cur_height++;
       cur_idx += ii + 1;
@@ -192,15 +177,6 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
         word_len++;
       }
       if (ii + word_len > 18) {
-        // Fill out rest of the line with spaces
-        for (i = ii + 1; i < 19; i++) {
-          VBK_REG = VBK_TILES;
-          tile = vram_start_idx;
-          set_win_tiles(i, cur_height, 1, 1, &tile);
-          VBK_REG = VBK_ATTRIBUTES;
-          tile = 0x8E;
-          set_win_tiles(i, cur_height, 1, 1, &tile);
-        }
         // Go to next line
         cur_height++;
         cur_idx += ii + 1;
@@ -220,15 +196,51 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
     }
   }
 
-  // Draw the rest of the line with spaces
-  for (i = ii + 1; i < 19; i++) {
-    VBK_REG = VBK_TILES;
-    tile = vram_start_idx;
-    set_win_tiles(i, cur_height, 1, 1, &tile);
-    VBK_REG = VBK_ATTRIBUTES;
-    tile = 0x8E;
-    set_win_tiles(i, cur_height, 1, 1, &tile);
+  VBK_REG = VBK_TILES;
+}
+
+uint8_t string_height(uint8_t* str) BANKED {
+  uint8_t str_len = strlen(str);
+  uint8_t cur_height = 1;
+  uint8_t cur_idx = 0;
+  int8_t ii;
+  for (ii = 0; ii + cur_idx < str_len; ii++) {
+    if (str[cur_idx + ii] == '\n') {
+      cur_height++;
+      cur_idx += ii + 1;
+      ii = 0;
+    }
+    if (str[cur_idx + ii] == ' ') {
+      uint8_t word_len = 0;
+      for (i = 1; i + cur_idx + ii < str_len; i++) {
+        if (str[cur_idx + ii + i] == ' ' || str[cur_idx + ii + i] == '\n') {
+          break;
+        }
+        word_len++;
+      }
+      if (ii + word_len > 18) {
+        cur_height++;
+        cur_idx += ii + 1;
+        ii = 0;
+      }
+    }
+    if (ii == 18) {
+      cur_height++;
+      cur_idx += 18;
+      ii = -1;
+    }
   }
+  return cur_height;
+}
+
+void render_textbox(uint8_t* str, uint8_t vram_start_idx) BANKED {
+  uint8_t cur_height = string_height(str);
+
+  // Draw top border
+  VBK_REG = VBK_TILES;
+  set_win_tiles(0, 0, 20, 1, top_bot_textbox_tiles);
+  VBK_REG = VBK_ATTRIBUTES;
+  set_win_tiles(0, 0, 20, 1, top_textbox_attribs);
 
   // Draw bottom border
   VBK_REG = VBK_TILES;
@@ -254,6 +266,18 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
     VBK_REG = VBK_ATTRIBUTES;
     tile = 0xAE;
     set_win_tiles(19, i, 1, 1, &tile);
+  }
+
+  // Fill in middle
+  for (i = 1; i < cur_height + 1; i++) {
+    for (j = 1; j < 19; j++) {
+      tile = vram_start_idx;
+      VBK_REG = VBK_TILES;
+      set_win_tiles(j, i, 1, 1, &tile);
+      VBK_REG = VBK_ATTRIBUTES;
+      tile = 0x8E;
+      set_win_tiles(j, i, 1, 1, &tile);
+    }
   }
 
   VBK_REG = VBK_TILES;
