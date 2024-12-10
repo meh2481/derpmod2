@@ -322,7 +322,8 @@ void init_aquaria(void) NONBANKED {
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   VBK_REG = VBK_BANK_1;
-  render_string("Aquaria was here and it was cool yeah bro totally wicked", 0);
+  // render_string("For as long as I can remember, I came here to think about beans.", 0);
+  render_string("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
   VBK_REG = VBK_BANK_0;
 }
 

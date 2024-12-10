@@ -136,6 +136,18 @@ const unsigned char font_tiles[] =
   0x68,0x00,0x00
 };
 
+const uint8_t top_bot_textbox_tiles[] = {
+  0x5B, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5B
+};
+
+const uint8_t top_textbox_attribs[] = {
+  0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0x8E, 0xAE
+};
+
+const uint8_t bottom_textbox_attribs[] = {
+  0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xCE, 0xEE
+};
+
 void set_font_tiles(uint8_t start_idx) BANKED {
   gb_decompress_bkg_data(start_idx, font_tiles);
 }
@@ -144,26 +156,10 @@ uint8_t tile;
 
 void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
   // Draw top border
-  tile = 91;
   VBK_REG = VBK_TILES;
-  set_win_tiles(0, 0, 1, 1, &tile);
+  set_win_tiles(0, 0, 20, 1, top_bot_textbox_tiles);
   VBK_REG = VBK_ATTRIBUTES;
-  tile = 0x8E;
-  set_win_tiles(0, 0, 1, 1, &tile);
-  for (i = 1; i < 19; i++) {
-    VBK_REG = VBK_TILES;
-    tile = 92;
-    set_win_tiles(i, 0, 1, 1, &tile);
-    VBK_REG = VBK_ATTRIBUTES;
-    tile = 0x8E;
-    set_win_tiles(i, 0, 1, 1, &tile);
-  }
-  tile = 91;
-  VBK_REG = VBK_TILES;
-  set_win_tiles(19, 0, 1, 1, &tile);
-  VBK_REG = VBK_ATTRIBUTES;
-  tile = 0xAE;
-  set_win_tiles(19, 0, 1, 1, &tile);
+  set_win_tiles(0, 0, 20, 1, top_textbox_attribs);
 
   // Draw string
   uint8_t str_len = strlen(str);
@@ -235,26 +231,10 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
   }
 
   // Draw bottom border
-  tile = 91;
   VBK_REG = VBK_TILES;
-  set_win_tiles(0, cur_height+1, 1, 1, &tile);
+  set_win_tiles(0, cur_height+1, 20, 1, top_bot_textbox_tiles);
   VBK_REG = VBK_ATTRIBUTES;
-  tile = 0xCE;
-  set_win_tiles(0, cur_height+1, 1, 1, &tile);
-  for (i = 1; i < 19; i++) {
-    VBK_REG = VBK_TILES;
-    tile = 92;
-    set_win_tiles(i, cur_height+1, 1, 1, &tile);
-    VBK_REG = VBK_ATTRIBUTES;
-    tile = 0xCE;
-    set_win_tiles(i, cur_height+1, 1, 1, &tile);
-  }
-  tile = 91;
-  VBK_REG = VBK_TILES;
-  set_win_tiles(19, cur_height+1, 1, 1, &tile);
-  VBK_REG = VBK_ATTRIBUTES;
-  tile = 0xEE;
-  set_win_tiles(19, cur_height+1, 1, 1, &tile);
+  set_win_tiles(0, cur_height+1, 20, 1, bottom_textbox_attribs);
 
   // Draw left side
   for (i = 1; i < cur_height + 1; i++) {
