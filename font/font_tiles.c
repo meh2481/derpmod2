@@ -171,6 +171,20 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
   uint8_t cur_idx = 0;
   int8_t ii;
   for (ii = 0; ii + cur_idx < str_len; ii++) {
+    if (str[cur_idx + ii] == '\n') {
+      // Fill out rest of the line with spaces
+      for (i = ii + 1; i < 19; i++) {
+        VBK_REG = VBK_TILES;
+        tile = vram_start_idx;
+        set_win_tiles(i, cur_height, 1, 1, &tile);
+        VBK_REG = VBK_ATTRIBUTES;
+        tile = 0x8E;
+        set_win_tiles(i, cur_height, 1, 1, &tile);
+      }
+      cur_height++;
+      cur_idx += ii + 1;
+      ii = 0;
+    }
     tile = str[cur_idx + ii] + vram_start_idx - 0x20;
     VBK_REG = VBK_TILES;
     set_win_tiles(ii+1, cur_height, 1, 1, &tile);
@@ -185,7 +199,7 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
   }
 
   // Draw the rest of the line with spaces
-  for (i = str_len + 1; i < 19; i++) {
+  for (i = ii + 1; i < 19; i++) {
     VBK_REG = VBK_TILES;
     tile = vram_start_idx;
     set_win_tiles(i, cur_height, 1, 1, &tile);
@@ -225,21 +239,16 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
     tile = 0x8E;
     set_win_tiles(0, i, 1, 1, &tile);
   }
-  // tile = 93;
-  // VBK_REG = VBK_TILES;
-  // set_win_tiles(0, 1, 1, 1, &tile);
-  // VBK_REG = VBK_ATTRIBUTES;
-  // tile = 0x8E;
-  // set_win_tiles(0, 1, 1, 1, &tile);
 
   // Draw right side
-  tile = 93;
-  VBK_REG = VBK_TILES;
-  set_win_tiles(19, 1, 1, 1, &tile);
-  VBK_REG = VBK_ATTRIBUTES;
-  tile = 0xAE;
-  set_win_tiles(19, 1, 1, 1, &tile);
-
+  for (i = 1; i < cur_height + 1; i++) {
+    tile = 93;
+    VBK_REG = VBK_TILES;
+    set_win_tiles(19, i, 1, 1, &tile);
+    VBK_REG = VBK_ATTRIBUTES;
+    tile = 0xAE;
+    set_win_tiles(19, i, 1, 1, &tile);
+  }
 
   VBK_REG = VBK_TILES;
 
