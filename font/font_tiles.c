@@ -167,54 +167,70 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
 
   // Draw string
   uint8_t str_len = strlen(str);
-  for (i = 0; i < str_len; i++) {
-    tile = str[i] + vram_start_idx - 0x20;
+  uint8_t cur_height = 1;
+  uint8_t cur_idx = 0;
+  int8_t ii;
+  for (ii = 0; ii + cur_idx < str_len; ii++) {
+    tile = str[cur_idx + ii] + vram_start_idx - 0x20;
     VBK_REG = VBK_TILES;
-    set_win_tiles(i+1, 1, 1, 1, &tile);
+    set_win_tiles(ii+1, cur_height, 1, 1, &tile);
     VBK_REG = VBK_ATTRIBUTES;
     tile = 0x8E;
-    set_win_tiles(i+1, 1, 1, 1, &tile);
+    set_win_tiles(ii+1, cur_height, 1, 1, &tile);
+    if (ii == 18) {
+      cur_height++;
+      cur_idx += 18;
+      ii = -1;
+    }
   }
 
   // Draw the rest of the line with spaces
   for (i = str_len + 1; i < 19; i++) {
     VBK_REG = VBK_TILES;
     tile = vram_start_idx;
-    set_win_tiles(i, 1, 1, 1, &tile);
+    set_win_tiles(i, cur_height, 1, 1, &tile);
     VBK_REG = VBK_ATTRIBUTES;
     tile = 0x8E;
-    set_win_tiles(i, 1, 1, 1, &tile);
+    set_win_tiles(i, cur_height, 1, 1, &tile);
   }
 
   // Draw bottom border
   tile = 91;
   VBK_REG = VBK_TILES;
-  set_win_tiles(0, 2, 1, 1, &tile);
+  set_win_tiles(0, cur_height+1, 1, 1, &tile);
   VBK_REG = VBK_ATTRIBUTES;
   tile = 0xCE;
-  set_win_tiles(0, 2, 1, 1, &tile);
+  set_win_tiles(0, cur_height+1, 1, 1, &tile);
   for (i = 1; i < 19; i++) {
     VBK_REG = VBK_TILES;
     tile = 92;
-    set_win_tiles(i, 2, 1, 1, &tile);
+    set_win_tiles(i, cur_height+1, 1, 1, &tile);
     VBK_REG = VBK_ATTRIBUTES;
     tile = 0xCE;
-    set_win_tiles(i, 2, 1, 1, &tile);
+    set_win_tiles(i, cur_height+1, 1, 1, &tile);
   }
   tile = 91;
   VBK_REG = VBK_TILES;
-  set_win_tiles(19, 2, 1, 1, &tile);
+  set_win_tiles(19, cur_height+1, 1, 1, &tile);
   VBK_REG = VBK_ATTRIBUTES;
   tile = 0xEE;
-  set_win_tiles(19, 2, 1, 1, &tile);
+  set_win_tiles(19, cur_height+1, 1, 1, &tile);
 
   // Draw left side
-  tile = 93;
-  VBK_REG = VBK_TILES;
-  set_win_tiles(0, 1, 1, 1, &tile);
-  VBK_REG = VBK_ATTRIBUTES;
-  tile = 0x8E;
-  set_win_tiles(0, 1, 1, 1, &tile);
+  for (i = 1; i < cur_height + 1; i++) {
+    tile = 93;
+    VBK_REG = VBK_TILES;
+    set_win_tiles(0, i, 1, 1, &tile);
+    VBK_REG = VBK_ATTRIBUTES;
+    tile = 0x8E;
+    set_win_tiles(0, i, 1, 1, &tile);
+  }
+  // tile = 93;
+  // VBK_REG = VBK_TILES;
+  // set_win_tiles(0, 1, 1, 1, &tile);
+  // VBK_REG = VBK_ATTRIBUTES;
+  // tile = 0x8E;
+  // set_win_tiles(0, 1, 1, 1, &tile);
 
   // Draw right side
   tile = 93;
@@ -227,7 +243,7 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
 
   VBK_REG = VBK_TILES;
 
-  move_win(WIN_X_OFFSET, (SCREEN_HEIGHT_TILES - 3) * 8);
+  move_win(WIN_X_OFFSET, (SCREEN_HEIGHT_TILES - (2 + cur_height)) * 8);
 }
 
 /* End of FONT_TILES.C */

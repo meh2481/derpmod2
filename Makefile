@@ -30,8 +30,8 @@ OBJS	= main.o \
 
 
 GBDK_DEBUG = ON
-# Force MBC1 and force Gameboy Color
-LCCFLAGS = -Wl-yt3 -Wl-yo4 -Wl-ya4 -autobank -Wm-yt0x19 -Wm-yoA -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
+# Force MBC5 and force Gameboy Color
+LCCFLAGS = -Wl-yt3 -Wl-yo16 -Wl-ya16 -autobank -Wm-yt0x19 -Wm-yoA -Wm-yC -Wm-yn"DERP2" -Wl-llib/hUGEDriver.lib
 ifdef GBDK_DEBUG
 	LCCFLAGS += -debug -v
 endif
@@ -46,4 +46,4 @@ all:	$(BINS)
 	$(LCC) -debug -v -c -o $@ $<
 
 clean:
-	rm -f *.o **/*.lst *.map *.gbc *~ *.rel *.cdb *.ihx *.lnk **/*.sym **/*.asm *.noi **/*.rst **/*.adb
+	rm -f **/*.o **/*.lst *.map *.gbc *~ *.rel *.cdb *.ihx *.lnk **/*.sym **/*.asm *.noi **/*.rst **/*.adb
