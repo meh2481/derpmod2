@@ -322,7 +322,7 @@ void init_aquaria(void) NONBANKED {
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   VBK_REG = VBK_BANK_1;
-  render_string("Aquaria was here\nand it was cool\nyeah bro totally\nwicked", 0);
+  render_string("Aquaria was here and it was cool yeah bro totally wicked", 0);
   VBK_REG = VBK_BANK_0;
 }
 

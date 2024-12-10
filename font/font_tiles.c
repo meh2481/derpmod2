@@ -181,9 +181,35 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
         tile = 0x8E;
         set_win_tiles(i, cur_height, 1, 1, &tile);
       }
+      // Go to next line
       cur_height++;
       cur_idx += ii + 1;
       ii = 0;
+    }
+    if (str[cur_idx + ii] == ' ') {
+      // Check to see if this word fits on this line
+      uint8_t word_len = 0;
+      for (i = 1; i + cur_idx + ii < str_len; i++) {
+        if (str[cur_idx + ii + i] == ' ' || str[cur_idx + ii + i] == '\n') {
+          break;
+        }
+        word_len++;
+      }
+      if (ii + word_len > 18) {
+        // Fill out rest of the line with spaces
+        for (i = ii + 1; i < 19; i++) {
+          VBK_REG = VBK_TILES;
+          tile = vram_start_idx;
+          set_win_tiles(i, cur_height, 1, 1, &tile);
+          VBK_REG = VBK_ATTRIBUTES;
+          tile = 0x8E;
+          set_win_tiles(i, cur_height, 1, 1, &tile);
+        }
+        // Go to next line
+        cur_height++;
+        cur_idx += ii + 1;
+        ii = 0;
+      }
     }
     tile = str[cur_idx + ii] + vram_start_idx - 0x20;
     VBK_REG = VBK_TILES;
