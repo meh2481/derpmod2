@@ -56,6 +56,7 @@ uint8_t onscreen_bulb_x = 0;
 uint8_t onscreen_bulb_y = 0;
 // Note to palette (bulb colors above)
 const uint8_t note_palette_remap[] = {1, 2, 0, 4, 3, 5, 7, 6};
+const uint8_t* text_string = "My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.";
 
 uint8_t prev_col, prev_row, cur_col, cur_row;
 
@@ -323,8 +324,8 @@ void init_aquaria(void) NONBANKED {
 
   VBK_REG = VBK_BANK_1;
   // render_string("For as long as I can remember, I came here to think about beans.", 0);
-  render_textbox("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
-  render_string("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
+  render_textbox(text_string, 0);
+  // render_string("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
   VBK_REG = VBK_BANK_0;
 }
 
@@ -369,12 +370,16 @@ uint8_t is_passable_tile(uint8_t tile) {
   return tile != 0x1 && (tile < 184 || tile > 192);
 }
 
+uint8_t cur_string_char = 0;
+
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
   SWITCH_ROM(BANK(aquaria_music));
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
+
+  render_next_string_char(text_string, cur_string_char++, 0);
 
   int8_t move_x = 0;
   int8_t move_y = 0;

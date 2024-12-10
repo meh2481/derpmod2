@@ -26,9 +26,10 @@
 #define __font_tiles_h_INCLUDE
 
 extern void set_font_tiles(uint8_t start_idx) BANKED;
-extern void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED;
-extern uint8_t string_height(uint8_t* str) BANKED;
-extern void render_textbox(uint8_t* str, uint8_t vram_start_idx) BANKED;
+extern void render_string(const uint8_t* str, uint8_t vram_start_idx) BANKED;
+extern void render_next_string_char(const uint8_t* str, uint8_t character, uint8_t vram_start_idx) BANKED;
+extern uint8_t string_height(const uint8_t* str) BANKED;
+extern void render_textbox(const uint8_t* str, uint8_t vram_start_idx) BANKED;
 
 #endif
 

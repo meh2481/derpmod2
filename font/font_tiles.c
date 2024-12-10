@@ -154,7 +154,7 @@ void set_font_tiles(uint8_t start_idx) BANKED {
 
 uint8_t tile;
 
-void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
+void render_string(const uint8_t* str, uint8_t vram_start_idx) BANKED {
   // Draw string
   uint8_t str_len = strlen(str);
   uint8_t cur_height = 1;
@@ -199,7 +199,60 @@ void render_string(uint8_t* str, uint8_t vram_start_idx) BANKED {
   VBK_REG = VBK_TILES;
 }
 
-uint8_t string_height(uint8_t* str) BANKED {
+void render_next_string_char(const uint8_t* str, uint8_t character, uint8_t vram_start_idx) BANKED {
+  // Draw string
+  uint8_t str_len = strlen(str);
+  if (character >= str_len) {
+    return;
+  }
+  uint8_t cur_height = 1;
+  uint8_t cur_idx = 0;
+  int8_t ii;
+  for (ii = 0; ii + cur_idx < str_len; ii++) {
+    if (str[cur_idx + ii] == '\n') {
+      // Go to next line
+      cur_height++;
+      cur_idx += ii + 1;
+      ii = 0;
+    }
+    if (str[cur_idx + ii] == ' ') {
+      // Check to see if this word fits on this line
+      uint8_t word_len = 0;
+      for (i = 1; i + cur_idx + ii < str_len; i++) {
+        if (str[cur_idx + ii + i] == ' ' || str[cur_idx + ii + i] == '\n') {
+          break;
+        }
+        word_len++;
+      }
+      if (ii + word_len > 18) {
+        // Go to next line
+        cur_height++;
+        cur_idx += ii + 1;
+        ii = 0;
+      }
+    }
+    if (ii + cur_idx == character) {
+      tile = str[cur_idx + ii] + vram_start_idx - 0x20;
+      VBK_REG = VBK_TILES;
+      set_win_tiles(ii+1, cur_height, 1, 1, &tile);
+      VBK_REG = VBK_ATTRIBUTES;
+      tile = 0x8E;
+      set_win_tiles(ii+1, cur_height, 1, 1, &tile);
+    }
+    if (ii == 18) {
+      cur_height++;
+      cur_idx += 18;
+      ii = -1;
+    }
+    if (ii + cur_idx == character) {
+      break;
+    }
+  }
+
+  VBK_REG = VBK_TILES;
+}
+
+uint8_t string_height(const uint8_t* str) BANKED {
   uint8_t str_len = strlen(str);
   uint8_t cur_height = 1;
   uint8_t cur_idx = 0;
@@ -233,7 +286,7 @@ uint8_t string_height(uint8_t* str) BANKED {
   return cur_height;
 }
 
-void render_textbox(uint8_t* str, uint8_t vram_start_idx) BANKED {
+void render_textbox(const uint8_t* str, uint8_t vram_start_idx) BANKED {
   uint8_t cur_height = string_height(str);
 
   // Draw top border
