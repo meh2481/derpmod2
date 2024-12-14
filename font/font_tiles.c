@@ -268,12 +268,25 @@ void render_next_string_char(const uint8_t* str, uint8_t character, uint8_t vram
   VBK_REG = VBK_TILES;
 }
 
-void render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_start_idx) BANKED {
+uint8_t render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_start_idx) BANKED {
   uint8_t cur_row = character / 18;
   uint8_t cur_col = character % 18;
 
+  // Skip to next row if the rest of the line is only spaces
+  uint8_t str_len = strlen(dialogue_strings[str_id][cur_row]);
+  uint8_t ii;
+  for (ii = cur_col; ii < str_len; ii++) {
+    if (dialogue_strings[str_id][cur_row][ii] != ' ') {
+      break;
+    }
+  }
+  if (ii == str_len) {
+    cur_row++;
+    cur_col = 0;
+  }
+
   if (cur_row >= dialogue_heights[str_id]) {
-    return;
+    return character;
   }
 
   tile = dialogue_strings[str_id][cur_row][cur_col] + vram_start_idx - 0x20;
@@ -284,6 +297,7 @@ void render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_
   set_win_tiles(cur_col+1, cur_row+1, 1, 1, &tile);
 
   VBK_REG = VBK_TILES;
+  return character + 1;
 }
 
 uint8_t string_height(const uint8_t* str) BANKED {

@@ -28,7 +28,7 @@
 extern void set_font_tiles(uint8_t start_idx) BANKED;
 extern void render_string(const uint8_t* str, uint8_t vram_start_idx) BANKED;
 extern void render_next_string_char(const uint8_t* str, uint8_t character, uint8_t vram_start_idx) BANKED;
-extern void render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_start_idx) BANKED;
+extern uint8_t render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_start_idx) BANKED;
 extern uint8_t string_height(const uint8_t* str) BANKED;
 extern void render_textbox(const uint8_t* str, uint8_t vram_start_idx) BANKED;
 extern void render_textbox_id(uint8_t str_id, uint8_t vram_start_idx) BANKED;

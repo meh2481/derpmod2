@@ -383,7 +383,7 @@ void update_aquaria(uint8_t input) NONBANKED {
 
   // render_next_string_char(text_string, cur_string_char++, 0);
   if (display_dialog == 1) {
-    render_next_string_char_id(TEXT_STRING_TAKEOVER_WORLD, cur_string_char++, 0);
+    cur_string_char = render_next_string_char_id(TEXT_STRING_TAKEOVER_WORLD, cur_string_char, 0);
   }
 
   int8_t move_x = 0;
