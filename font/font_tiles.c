@@ -29,6 +29,22 @@
 
 BANKREF(font_tiles)
 
+const char* dialogue_strings[][7] = {
+  { // TEXT_STRING_TAKEOVER_WORLD
+    "My Mom told me all",
+    "sorts of things.  ",
+    "\"Let\'s take over  ",
+    "the world!\", \"You ",
+    "must murder your  ",
+    "husband!\", that   ",
+    "sort of thing.    ",
+  },
+};
+
+const uint8_t dialogue_heights[] = {
+  7,
+};
+
 /* Start of tile array. */
 const unsigned char font_tiles[] =
 {
@@ -252,6 +268,24 @@ void render_next_string_char(const uint8_t* str, uint8_t character, uint8_t vram
   VBK_REG = VBK_TILES;
 }
 
+void render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_start_idx) BANKED {
+  uint8_t cur_row = character / 18;
+  uint8_t cur_col = character % 18;
+
+  if (cur_row >= dialogue_heights[str_id]) {
+    return;
+  }
+
+  tile = dialogue_strings[str_id][cur_row][cur_col] + vram_start_idx - 0x20;
+  VBK_REG = VBK_TILES;
+  set_win_tiles(cur_col+1, cur_row+1, 1, 1, &tile);
+  VBK_REG = VBK_ATTRIBUTES;
+  tile = 0x8E;
+  set_win_tiles(cur_col+1, cur_row+1, 1, 1, &tile);
+
+  VBK_REG = VBK_TILES;
+}
+
 uint8_t string_height(const uint8_t* str) BANKED {
   uint8_t str_len = strlen(str);
   uint8_t cur_height = 1;
@@ -288,6 +322,58 @@ uint8_t string_height(const uint8_t* str) BANKED {
 
 void render_textbox(const uint8_t* str, uint8_t vram_start_idx) BANKED {
   uint8_t cur_height = string_height(str);
+
+  // Draw top border
+  VBK_REG = VBK_TILES;
+  set_win_tiles(0, 0, 20, 1, top_bot_textbox_tiles);
+  VBK_REG = VBK_ATTRIBUTES;
+  set_win_tiles(0, 0, 20, 1, top_textbox_attribs);
+
+  // Draw bottom border
+  VBK_REG = VBK_TILES;
+  set_win_tiles(0, cur_height+1, 20, 1, top_bot_textbox_tiles);
+  VBK_REG = VBK_ATTRIBUTES;
+  set_win_tiles(0, cur_height+1, 20, 1, bottom_textbox_attribs);
+
+  // Draw left side
+  for (i = 1; i < cur_height + 1; i++) {
+    tile = 93;
+    VBK_REG = VBK_TILES;
+    set_win_tiles(0, i, 1, 1, &tile);
+    VBK_REG = VBK_ATTRIBUTES;
+    tile = 0x8E;
+    set_win_tiles(0, i, 1, 1, &tile);
+  }
+
+  // Draw right side
+  for (i = 1; i < cur_height + 1; i++) {
+    tile = 93;
+    VBK_REG = VBK_TILES;
+    set_win_tiles(19, i, 1, 1, &tile);
+    VBK_REG = VBK_ATTRIBUTES;
+    tile = 0xAE;
+    set_win_tiles(19, i, 1, 1, &tile);
+  }
+
+  // Fill in middle
+  for (i = 1; i < cur_height + 1; i++) {
+    for (j = 1; j < 19; j++) {
+      tile = vram_start_idx;
+      VBK_REG = VBK_TILES;
+      set_win_tiles(j, i, 1, 1, &tile);
+      VBK_REG = VBK_ATTRIBUTES;
+      tile = 0x8E;
+      set_win_tiles(j, i, 1, 1, &tile);
+    }
+  }
+
+  VBK_REG = VBK_TILES;
+
+  move_win(WIN_X_OFFSET, (SCREEN_HEIGHT_TILES - (2 + cur_height)) * 8);
+}
+
+void render_textbox_id(uint8_t str_id, uint8_t vram_start_idx) BANKED {
+  uint8_t cur_height = dialogue_heights[str_id];
 
   // Draw top border
   VBK_REG = VBK_TILES;
