@@ -5,6 +5,8 @@
 #include "../aquaria/aquaria_controller.h"
 #include "../title/press_start.h"
 #include "../utils/hUGEHelpers.h"
+#include "mia_hug_map.h"
+#include "mia_hug_tiles.h"
 
 int8_t cur_string_char = 0;
 uint8_t cur_string = 0;
@@ -14,7 +16,14 @@ void init_intro(void) NONBANKED {
   gamestate = STATE_INTRO;
   init_pajama_music();
 
+  // Display the window covering everything
+  move_win(WIN_X_OFFSET, 0);
+
+  init_mia_hug_tiles(0, 0);
+  draw_mia_hug_bg(6, 0);
+
   set_press_start_text_palette(6);
+
 
   VBK_REG = VBK_BANK_1;
   set_font_tiles(0);  // Font tiles

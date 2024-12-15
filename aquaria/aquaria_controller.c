@@ -306,26 +306,22 @@ void hide_song_note_sprites(void) {
 void init_aquaria(void) NONBANKED {
   gamestate = STATE_PLAY;
   init_aquaria_music();
+
+  // Display the window covering everything
+  init_win(0);
+  move_win(WIN_X_OFFSET, 0);
+
   set_aquaria_map_tiles();
   set_aquaria_map_tile_attribs();
 
-  // Setup sprite data
-  setup_sprites();
-
   init_aquaria_tileset();
-
-  // VBK_REG = VBK_BANK_1;
-  // set_font_tiles(0);  // Font tiles
 
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
-  // VBK_REG = VBK_BANK_1;
-  // // render_string("For as long as I can remember, I came here to think about beans.", 0);
-  // // render_textbox(text_string, 0);
-  // render_textbox_id(TEXT_STRING_TAKEOVER_WORLD, 0);
-  // // render_string("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
-  // VBK_REG = VBK_BANK_0;
+  // Setup sprite data
+  setup_sprites();
+
 }
 
 void update_player_sprite(void) NONBANKED {

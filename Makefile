@@ -28,7 +28,9 @@ OBJS	= main.o \
 	sprite/naija_sprites.c \
 	sfx/cbtfx.o \
 	sfx/sfx.o \
-	intro/intro_controller.o
+	intro/intro_controller.o \
+	intro/mia_hug_map.o \
+	intro/mia_hug_tiles.o
 
 
 GBDK_DEBUG = ON
