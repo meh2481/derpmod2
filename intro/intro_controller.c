@@ -4,6 +4,7 @@
 #include "../font/font_tiles.h"
 #include "../aquaria/aquaria_controller.h"
 #include "../title/press_start.h"
+#include "../utils/hUGEHelpers.h"
 
 int8_t cur_string_char = 0;
 uint8_t cur_string = 0;
@@ -11,6 +12,7 @@ uint8_t pressed_a = 0;
 
 void init_intro(void) NONBANKED {
   gamestate = STATE_INTRO;
+  init_pajama_music();
 
   set_press_start_text_palette(6);
 
@@ -22,11 +24,18 @@ void init_intro(void) NONBANKED {
 }
 
 void update_intro(uint8_t input) NONBANKED {
+  // Switch to pajama music bank to update music
+  uint8_t previous_bank = _current_bank;
+  SWITCH_ROM(BANK(pajama_music));
+  hUGE_dosound();
+  SWITCH_ROM(previous_bank);
+
   if (input & J_A && !pressed_a) {
     pressed_a = 1;
     if (cur_string_char == -1) {
       cur_string++;
       if (cur_string == 6) {
+        hUGE_stop_music();
         gamestate = STATE_PLAY;
         init_aquaria();
         return;

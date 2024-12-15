@@ -11,6 +11,7 @@ void hUGE_stop_music(void) NONBANKED {
 BANKREF_EXTERN(title_music)
 BANKREF_EXTERN(aquaria_music)
 BANKREF_EXTERN(vvvvvv_music)
+BANKREF_EXTERN(pajama_music)
 
 extern const hUGESong_t space_odyssey;
 
@@ -36,5 +37,14 @@ void init_vvvvvv_music(void) NONBANKED {
   uint8_t previous_bank = _current_bank;
   SWITCH_ROM(BANK(vvvvvv_music));
   hUGE_init(&pressure_cooker);
+  SWITCH_ROM(previous_bank);
+}
+
+extern const hUGESong_t pajama_jam;
+
+void init_pajama_music(void) NONBANKED {
+  uint8_t previous_bank = _current_bank;
+  SWITCH_ROM(BANK(pajama_music));
+  hUGE_init(&pajama_jam);
   SWITCH_ROM(previous_bank);
 }

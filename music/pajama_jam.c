@@ -1,6 +1,9 @@
 #include "hUGEDriver.h"
 #include <stddef.h>
 
+#pragma bank 255
+BANKREF(pajama_music)
+
 static const unsigned char order_cnt = 40;
 
 static const unsigned char P0[] = {
