@@ -56,7 +56,6 @@ uint8_t onscreen_bulb_x = 0;
 uint8_t onscreen_bulb_y = 0;
 // Note to palette (bulb colors above)
 const uint8_t note_palette_remap[] = {1, 2, 0, 4, 3, 5, 7, 6};
-const uint8_t* text_string = "My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.";
 
 uint8_t prev_col, prev_row, cur_col, cur_row;
 
@@ -314,20 +313,19 @@ void init_aquaria(void) NONBANKED {
   setup_sprites();
 
   init_aquaria_tileset();
-  set_press_start_text_palette(6);
 
-  VBK_REG = VBK_BANK_1;
-  set_font_tiles(0);  // Font tiles
+  // VBK_REG = VBK_BANK_1;
+  // set_font_tiles(0);  // Font tiles
 
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
-  VBK_REG = VBK_BANK_1;
-  // render_string("For as long as I can remember, I came here to think about beans.", 0);
-  // render_textbox(text_string, 0);
-  render_textbox_id(TEXT_STRING_TAKEOVER_WORLD, 0);
-  // render_string("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
-  VBK_REG = VBK_BANK_0;
+  // VBK_REG = VBK_BANK_1;
+  // // render_string("For as long as I can remember, I came here to think about beans.", 0);
+  // // render_textbox(text_string, 0);
+  // render_textbox_id(TEXT_STRING_TAKEOVER_WORLD, 0);
+  // // render_string("My Mom told me all sorts of things. \"Let\'s take over the world!\", \"You must murder your husband!\", that sort of thing.", 0);
+  // VBK_REG = VBK_BANK_0;
 }
 
 void update_player_sprite(void) NONBANKED {
@@ -371,8 +369,8 @@ uint8_t is_passable_tile(uint8_t tile) {
   return tile != 0x1 && (tile < 184 || tile > 192);
 }
 
-uint8_t cur_string_char = 0;
-uint8_t display_dialog = 1;
+// uint8_t cur_string_char = 0;
+// uint8_t display_dialog = 1;
 
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
@@ -382,9 +380,9 @@ void update_aquaria(uint8_t input) NONBANKED {
   SWITCH_ROM(previous_bank);
 
   // render_next_string_char(text_string, cur_string_char++, 0);
-  if (display_dialog == 1) {
-    cur_string_char = render_next_string_char_id(TEXT_STRING_TAKEOVER_WORLD, cur_string_char, 0);
-  }
+  // if (display_dialog == 1) {
+  //   cur_string_char = render_next_string_char_id(TEXT_STRING_TAKEOVER_WORLD, cur_string_char, 0);
+  // }
 
   int8_t move_x = 0;
   int8_t move_y = 0;
@@ -394,11 +392,11 @@ void update_aquaria(uint8_t input) NONBANKED {
   last_direction = direction;
   direction = 0;
 
-  if (input != 0) {
-    display_dialog = 0;
-    // Hide window
-    move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
-  }
+  // if (input != 0) {
+  //   display_dialog = 0;
+  //   // Hide window
+  //   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+  // }
 
   if (input & J_B) {
     show_song_note_sprites();

@@ -13,7 +13,7 @@
 #include "../font/font_tiles.h"
 #include "../utils/hUGEHelpers.h"
 #include "../utils/utils.h"
-#include "../aquaria/aquaria_controller.h"
+#include "../intro/intro_controller.h"
 #include "../sfx/sfx.h"
 
 #define TITLE_VSYNC_FRAMES 3
@@ -100,10 +100,8 @@ void update_title_win(uint8_t input) NONBANKED {
     if (fadeValue == 0) {
       free(title_fadeout_palette);
       fadeValue = 32;
-      // Hide screen behind window
-      move_win(WIN_X_OFFSET, 0);
-      // Start game
-      init_aquaria();
+      // Start intro
+      init_intro();
       return;
     } else {
       for (i = 0; i < 12; i++) {

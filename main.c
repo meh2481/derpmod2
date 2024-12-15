@@ -12,6 +12,7 @@
 #include "utils/utils.h"
 #include "aquaria/aquaria_controller.h"
 #include "title/title_controller.h"
+#include "intro/intro_controller.h"
 #include "sfx/cbtfx.h"
 
 #define WIN_X_OFFSET 7
@@ -57,8 +58,10 @@ void main(void)
       update_title_win(i);
     } else if (gamestate == STATE_PLAY) {
       update_aquaria(i);
+    } else if (gamestate == STATE_INTRO) {
+      update_intro(i);
     }
-    // Update SFX after hUGE so sounds play over music
+    // Update SFX after hUGE (updated in methods above) so sounds play over music
     CBTFX_update();
   }
 }

@@ -26,7 +26,8 @@ OBJS	= main.o \
 	utils/hUGEHelpers.o \
 	sprite/naija_sprites.c \
 	sfx/cbtfx.o \
-	sfx/sfx.o
+	sfx/sfx.o \
+	intro/intro_controller.o
 
 
 GBDK_DEBUG = ON

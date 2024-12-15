@@ -29,20 +29,43 @@
 
 BANKREF(font_tiles)
 
-const char* dialogue_strings[][7] = {
+const char* dialogue_strings[][6] = {
   { // TEXT_STRING_TAKEOVER_WORLD
-    "My Mom told me all",
-    "sorts of things.  ",
+    "My Mom would      ",
+    "always give me all",
+    "sorts of good     ",
+    "advice.           ",
+  }, {
     "\"Let\'s take over  ",
     "the world!\", \"You ",
     "must murder your  ",
     "husband!\", that   ",
     "sort of thing.    ",
-  },
+  }, {
+    "Now that I think  ",
+    "about it, most of ",
+    "this advice was   ",
+    "quite bad.        ",
+  }, {
+    "However, she did  ",
+    "also tell me \"You ",
+    "are what you eat,\"",
+    "which not gonna   ",
+    "lie is pretty     ",
+    "valid.            ",
+  }, {
+    "Especially since  ",
+    "yesterday I ate a ",
+    "whole lot of fish,",
+  }, {
+    "and now I can\'t   ",
+    "change out of fish",
+    "form.             ",
+  }
 };
 
 const uint8_t dialogue_heights[] = {
-  7,
+  4, 5, 4, 6, 3, 3
 };
 
 /* Start of tile array. */
@@ -170,107 +193,13 @@ void set_font_tiles(uint8_t start_idx) BANKED {
 
 uint8_t tile;
 
-void render_string(const uint8_t* str, uint8_t vram_start_idx) BANKED {
-  // Draw string
-  uint8_t str_len = strlen(str);
-  uint8_t cur_height = 1;
-  uint8_t cur_idx = 0;
-  int8_t ii;
-  for (ii = 0; ii + cur_idx < str_len; ii++) {
-    if (str[cur_idx + ii] == '\n') {
-      // Go to next line
-      cur_height++;
-      cur_idx += ii + 1;
-      ii = 0;
-    }
-    if (str[cur_idx + ii] == ' ') {
-      // Check to see if this word fits on this line
-      uint8_t word_len = 0;
-      for (i = 1; i + cur_idx + ii < str_len; i++) {
-        if (str[cur_idx + ii + i] == ' ' || str[cur_idx + ii + i] == '\n') {
-          break;
-        }
-        word_len++;
-      }
-      if (ii + word_len > 18) {
-        // Go to next line
-        cur_height++;
-        cur_idx += ii + 1;
-        ii = 0;
-      }
-    }
-    tile = str[cur_idx + ii] + vram_start_idx - 0x20;
-    VBK_REG = VBK_TILES;
-    set_win_tiles(ii+1, cur_height, 1, 1, &tile);
-    VBK_REG = VBK_ATTRIBUTES;
-    tile = 0x8E;
-    set_win_tiles(ii+1, cur_height, 1, 1, &tile);
-    if (ii == 18) {
-      cur_height++;
-      cur_idx += 18;
-      ii = -1;
-    }
+int8_t render_next_string_char_id(uint8_t str_id, int8_t character, uint8_t vram_start_idx) BANKED {
+  if (character == -1) {
+    return -1;
   }
 
-  VBK_REG = VBK_TILES;
-}
-
-void render_next_string_char(const uint8_t* str, uint8_t character, uint8_t vram_start_idx) BANKED {
-  // Draw string
-  uint8_t str_len = strlen(str);
-  if (character >= str_len) {
-    return;
-  }
-  uint8_t cur_height = 1;
-  uint8_t cur_idx = 0;
-  int8_t ii;
-  for (ii = 0; ii + cur_idx < str_len; ii++) {
-    if (str[cur_idx + ii] == '\n') {
-      // Go to next line
-      cur_height++;
-      cur_idx += ii + 1;
-      ii = 0;
-    }
-    if (str[cur_idx + ii] == ' ') {
-      // Check to see if this word fits on this line
-      uint8_t word_len = 0;
-      for (i = 1; i + cur_idx + ii < str_len; i++) {
-        if (str[cur_idx + ii + i] == ' ' || str[cur_idx + ii + i] == '\n') {
-          break;
-        }
-        word_len++;
-      }
-      if (ii + word_len > 18) {
-        // Go to next line
-        cur_height++;
-        cur_idx += ii + 1;
-        ii = 0;
-      }
-    }
-    if (ii + cur_idx == character) {
-      tile = str[cur_idx + ii] + vram_start_idx - 0x20;
-      VBK_REG = VBK_TILES;
-      set_win_tiles(ii+1, cur_height, 1, 1, &tile);
-      VBK_REG = VBK_ATTRIBUTES;
-      tile = 0x8E;
-      set_win_tiles(ii+1, cur_height, 1, 1, &tile);
-    }
-    if (ii == 18) {
-      cur_height++;
-      cur_idx += 18;
-      ii = -1;
-    }
-    if (ii + cur_idx == character) {
-      break;
-    }
-  }
-
-  VBK_REG = VBK_TILES;
-}
-
-uint8_t render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vram_start_idx) BANKED {
-  uint8_t cur_row = character / 18;
-  uint8_t cur_col = character % 18;
+  uint8_t cur_row = (uint8_t)character / 18;
+  uint8_t cur_col = (uint8_t)character % 18;
 
   // Skip to next row if the rest of the line is only spaces
   uint8_t str_len = strlen(dialogue_strings[str_id][cur_row]);
@@ -286,7 +215,7 @@ uint8_t render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vr
   }
 
   if (cur_row >= dialogue_heights[str_id]) {
-    return character;
+    return -1;
   }
 
   tile = dialogue_strings[str_id][cur_row][cur_col] + vram_start_idx - 0x20;
@@ -300,95 +229,11 @@ uint8_t render_next_string_char_id(uint8_t str_id, uint8_t character, uint8_t vr
   return character + 1;
 }
 
-uint8_t string_height(const uint8_t* str) BANKED {
-  uint8_t str_len = strlen(str);
-  uint8_t cur_height = 1;
-  uint8_t cur_idx = 0;
-  int8_t ii;
-  for (ii = 0; ii + cur_idx < str_len; ii++) {
-    if (str[cur_idx + ii] == '\n') {
-      cur_height++;
-      cur_idx += ii + 1;
-      ii = 0;
-    }
-    if (str[cur_idx + ii] == ' ') {
-      uint8_t word_len = 0;
-      for (i = 1; i + cur_idx + ii < str_len; i++) {
-        if (str[cur_idx + ii + i] == ' ' || str[cur_idx + ii + i] == '\n') {
-          break;
-        }
-        word_len++;
-      }
-      if (ii + word_len > 18) {
-        cur_height++;
-        cur_idx += ii + 1;
-        ii = 0;
-      }
-    }
-    if (ii == 18) {
-      cur_height++;
-      cur_idx += 18;
-      ii = -1;
-    }
-  }
-  return cur_height;
-}
-
-void render_textbox(const uint8_t* str, uint8_t vram_start_idx) BANKED {
-  uint8_t cur_height = string_height(str);
-
-  // Draw top border
-  VBK_REG = VBK_TILES;
-  set_win_tiles(0, 0, 20, 1, top_bot_textbox_tiles);
-  VBK_REG = VBK_ATTRIBUTES;
-  set_win_tiles(0, 0, 20, 1, top_textbox_attribs);
-
-  // Draw bottom border
-  VBK_REG = VBK_TILES;
-  set_win_tiles(0, cur_height+1, 20, 1, top_bot_textbox_tiles);
-  VBK_REG = VBK_ATTRIBUTES;
-  set_win_tiles(0, cur_height+1, 20, 1, bottom_textbox_attribs);
-
-  // Draw left side
-  for (i = 1; i < cur_height + 1; i++) {
-    tile = 93;
-    VBK_REG = VBK_TILES;
-    set_win_tiles(0, i, 1, 1, &tile);
-    VBK_REG = VBK_ATTRIBUTES;
-    tile = 0x8E;
-    set_win_tiles(0, i, 1, 1, &tile);
-  }
-
-  // Draw right side
-  for (i = 1; i < cur_height + 1; i++) {
-    tile = 93;
-    VBK_REG = VBK_TILES;
-    set_win_tiles(19, i, 1, 1, &tile);
-    VBK_REG = VBK_ATTRIBUTES;
-    tile = 0xAE;
-    set_win_tiles(19, i, 1, 1, &tile);
-  }
-
-  // Fill in middle
-  for (i = 1; i < cur_height + 1; i++) {
-    for (j = 1; j < 19; j++) {
-      tile = vram_start_idx;
-      VBK_REG = VBK_TILES;
-      set_win_tiles(j, i, 1, 1, &tile);
-      VBK_REG = VBK_ATTRIBUTES;
-      tile = 0x8E;
-      set_win_tiles(j, i, 1, 1, &tile);
-    }
-  }
-
-  VBK_REG = VBK_TILES;
-
-  move_win(WIN_X_OFFSET, (SCREEN_HEIGHT_TILES - (2 + cur_height)) * 8);
-}
-
 void render_textbox_id(uint8_t str_id, uint8_t vram_start_idx) BANKED {
   uint8_t cur_height = dialogue_heights[str_id];
 
+  move_win(WIN_X_OFFSET, (SCREEN_HEIGHT_TILES - (2 + cur_height)) * 8);
+
   // Draw top border
   VBK_REG = VBK_TILES;
   set_win_tiles(0, 0, 20, 1, top_bot_textbox_tiles);
@@ -434,8 +279,6 @@ void render_textbox_id(uint8_t str_id, uint8_t vram_start_idx) BANKED {
   }
 
   VBK_REG = VBK_TILES;
-
-  move_win(WIN_X_OFFSET, (SCREEN_HEIGHT_TILES - (2 + cur_height)) * 8);
 }
 
 /* End of FONT_TILES.C */
