@@ -11,6 +11,8 @@
 #include "mia_brainwash_map.h"
 #include "naija_crystal_tiles.h"
 #include "naija_crystal_map.h"
+#include "fishform_gasp_tiles.h"
+#include "fishform_gasp_map.h"
 
 int8_t cur_string_char = 0;
 uint8_t cur_string = 0;
@@ -70,6 +72,8 @@ void update_intro(uint8_t input) NONBANKED {
         case 5:
           break;
         case 6:
+          init_fishform_gasp_tiles(0, 0);
+          draw_fishform_gasp_bg(4, 2);
           break;
         case 7:
           hUGE_stop_music();

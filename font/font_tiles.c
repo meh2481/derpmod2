@@ -49,7 +49,7 @@ const char* dialogue_strings[][7] = {
   }, {
     "Good thing        ",
     "following it      ",
-    "didn\'t have any  ",
+    "didn\'t have any   ",
     "dire consequences!",
   }, {
     "However, she did  ",

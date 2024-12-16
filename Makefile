@@ -34,7 +34,9 @@ OBJS	= main.o \
 	intro/mia_brainwash_map.o \
 	intro/mia_brainwash_tiles.o \
 	intro/naija_crystal_map.o \
-	intro/naija_crystal_tiles.o
+	intro/naija_crystal_tiles.o \
+	intro/fishform_gasp_map.o \
+	intro/fishform_gasp_tiles.o
 
 
 GBDK_DEBUG = ON
