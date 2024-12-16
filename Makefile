@@ -58,4 +58,4 @@ all:	$(BINS)
 	$(LCC) -debug -v -c -o $@ $<
 
 clean:
-	rm -f **/*.o **/*.lst *.map *.gbc *~ *.rel *.cdb *.ihx *.lnk **/*.sym **/*.asm *.noi **/*.rst **/*.adb
+	rm -f main.o main.asm derp.asm derp.lst derp.rst derp.asm derp.adb main.adb main.lst main.adb derp.sym main.sym main.rst **/*.o **/*.lst *.map *.gbc *~ *.rel *.cdb *.ihx *.lnk **/*.sym **/*.asm *.noi **/*.rst **/*.adb
