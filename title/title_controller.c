@@ -124,7 +124,7 @@ void update_title_win(uint8_t input) NONBANKED {
     }
   }
 
-  if (input & J_START && fadeValue == 32) {
+  if ((input & J_START || input & J_A) && fadeValue == 32) {
     // Init the random number generator
     uint16_t seed = LY_REG;
     seed |= (uint16_t)DIV_REG << 8;

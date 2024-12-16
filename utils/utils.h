@@ -12,6 +12,7 @@
 #define STATE_START 0
 #define STATE_PLAY  1
 #define STATE_INTRO 2
+#define STATE_LOGO  3
 
 // Globals
 extern uint8_t i, j, tmp, tmp_counter;

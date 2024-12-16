@@ -13,6 +13,7 @@
 #include "aquaria/aquaria_controller.h"
 #include "title/title_controller.h"
 #include "intro/intro_controller.h"
+#include "logos/logo_controller.h"
 #include "sfx/cbtfx.h"
 
 #define WIN_X_OFFSET 7
@@ -47,8 +48,9 @@ void main(void)
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
-  init_title();
+  // init_title();
   // init_aquaria();
+  init_logo();
 
   DISPLAY_ON;
   enable_interrupts();
@@ -62,6 +64,8 @@ void main(void)
       update_aquaria(i);
     } else if (gamestate == STATE_INTRO) {
       update_intro(i);
+    } else if (gamestate == STATE_LOGO) {
+      update_logo(i);
     }
     // Update SFX after hUGE (updated in methods above) so sounds play over music
     CBTFX_update();

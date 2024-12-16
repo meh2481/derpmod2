@@ -38,7 +38,12 @@ OBJS	= main.o \
 	intro/fishform_gasp_map.o \
 	intro/fishform_gasp_tiles.o \
 	intro/swordfish_steak_map.o \
-	intro/swordfish_steak_tiles.o
+	intro/swordfish_steak_tiles.o \
+	logos/discord_logo_map.o \
+	logos/discord_logo_tiles.o \
+	logos/game_by_daxar_logo_map.o \
+	logos/game_by_daxar_logo_tiles.o \
+	logos/logo_controller.o
 
 
 GBDK_DEBUG = ON

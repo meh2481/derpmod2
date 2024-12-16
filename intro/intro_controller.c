@@ -81,7 +81,6 @@ void update_intro(uint8_t input) NONBANKED {
           break;
         case 7:
           hUGE_stop_music();
-          gamestate = STATE_PLAY;
           init_aquaria();
           return;
       }
