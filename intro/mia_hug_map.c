@@ -41,8 +41,6 @@ const unsigned char mia_hug_mapPLN0[] =
   0x5A,0x5B,0x5C,0x5D,0x5E,0x5F,0x60,0x61,0x62
 };
 
-extern uint8_t i, j;
-
 void draw_mia_hug_bg(uint8_t tile_x, uint8_t tile_y) BANKED {
   // Draw the whole screen in tile 99, palette 1
   VBK_REG = VBK_TILES;

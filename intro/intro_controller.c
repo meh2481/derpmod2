@@ -7,6 +7,8 @@
 #include "../utils/hUGEHelpers.h"
 #include "mia_hug_map.h"
 #include "mia_hug_tiles.h"
+#include "mia_brainwash_tiles.h"
+#include "mia_brainwash_map.h"
 
 int8_t cur_string_char = 0;
 uint8_t cur_string = 0;
@@ -19,11 +21,10 @@ void init_intro(void) NONBANKED {
   // Display the window covering everything
   move_win(WIN_X_OFFSET, 0);
 
-  init_mia_hug_tiles(0, 0);
-  draw_mia_hug_bg(6, 0);
+  init_mia_brainwash_tiles(0, 0);
+  draw_mia_brainwash_bg(4, 0);
 
   set_press_start_text_palette(6);
-
 
   VBK_REG = VBK_BANK_1;
   set_font_tiles(0);  // Font tiles
@@ -43,11 +44,24 @@ void update_intro(uint8_t input) NONBANKED {
     pressed_a = 1;
     if (cur_string_char == -1) {
       cur_string++;
-      if (cur_string == 6) {
-        hUGE_stop_music();
-        gamestate = STATE_PLAY;
-        init_aquaria();
-        return;
+      switch (cur_string) {
+        case 1:
+          init_mia_hug_tiles(0, 0);
+          draw_mia_hug_bg(6, 0);
+          break;
+        case 2:
+          break;
+        case 3:
+          break;
+        case 4:
+          break;
+        case 5:
+          break;
+        case 6:
+          hUGE_stop_music();
+          gamestate = STATE_PLAY;
+          init_aquaria();
+          return;
       }
       cur_string_char = 0;
       render_textbox_id(cur_string, 0);

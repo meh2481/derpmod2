@@ -30,7 +30,9 @@ OBJS	= main.o \
 	sfx/sfx.o \
 	intro/intro_controller.o \
 	intro/mia_hug_map.o \
-	intro/mia_hug_tiles.o
+	intro/mia_hug_tiles.o \
+	intro/mia_brainwash_map.o \
+	intro/mia_brainwash_tiles.o
 
 
 GBDK_DEBUG = ON
