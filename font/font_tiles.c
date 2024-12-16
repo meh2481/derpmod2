@@ -29,7 +29,7 @@
 
 BANKREF(font_tiles)
 
-const char* dialogue_strings[][6] = {
+const char* dialogue_strings[][7] = {
   { // TEXT_STRING_TAKEOVER_WORLD
     "My Mom would      ",
     "always give me all",
@@ -46,6 +46,11 @@ const char* dialogue_strings[][6] = {
     "about it, most of ",
     "this advice was   ",
     "quite bad.        ",
+  }, {
+    "Good thing        ",
+    "following it      ",
+    "didn\'t have any  ",
+    "dire consequences!",
   }, {
     "However, she did  ",
     "also tell me \"You ",
@@ -65,7 +70,7 @@ const char* dialogue_strings[][6] = {
 };
 
 const uint8_t dialogue_heights[] = {
-  4, 5, 4, 6, 3, 3
+  4, 5, 4, 4, 6, 3, 3
 };
 
 /* Start of tile array. */

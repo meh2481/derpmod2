@@ -9,6 +9,8 @@
 #include "mia_hug_tiles.h"
 #include "mia_brainwash_tiles.h"
 #include "mia_brainwash_map.h"
+#include "naija_crystal_tiles.h"
+#include "naija_crystal_map.h"
 
 int8_t cur_string_char = 0;
 uint8_t cur_string = 0;
@@ -50,14 +52,26 @@ void update_intro(uint8_t input) NONBANKED {
           draw_mia_hug_bg(6, 0);
           break;
         case 2:
+          VBK_REG = VBK_TILES;
+          init_bkg(175);
+          VBK_REG = VBK_ATTRIBUTES;
+          init_bkg(1);
           break;
         case 3:
+          init_naija_crystal_tiles(0, 0);
+          draw_naija_crystal_bg(5, 0);
           break;
         case 4:
+          VBK_REG = VBK_TILES;
+          init_bkg(175);
+          VBK_REG = VBK_ATTRIBUTES;
+          init_bkg(1);
           break;
         case 5:
           break;
         case 6:
+          break;
+        case 7:
           hUGE_stop_music();
           gamestate = STATE_PLAY;
           init_aquaria();

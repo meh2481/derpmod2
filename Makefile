@@ -32,7 +32,9 @@ OBJS	= main.o \
 	intro/mia_hug_map.o \
 	intro/mia_hug_tiles.o \
 	intro/mia_brainwash_map.o \
-	intro/mia_brainwash_tiles.o
+	intro/mia_brainwash_tiles.o \
+	intro/naija_crystal_map.o \
+	intro/naija_crystal_tiles.o
 
 
 GBDK_DEBUG = ON
