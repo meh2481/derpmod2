@@ -36,7 +36,9 @@ OBJS	= main.o \
 	intro/naija_crystal_map.o \
 	intro/naija_crystal_tiles.o \
 	intro/fishform_gasp_map.o \
-	intro/fishform_gasp_tiles.o
+	intro/fishform_gasp_tiles.o \
+	intro/swordfish_steak_map.o \
+	intro/swordfish_steak_tiles.o
 
 
 GBDK_DEBUG = ON

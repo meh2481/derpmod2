@@ -61,7 +61,8 @@ const char* dialogue_strings[][7] = {
   }, {
     "Especially since  ",
     "yesterday I ate a ",
-    "whole lot of fish,",
+    "whole lot of      ",
+    "swordfish steak,  ",
   }, {
     "and now I can\'t   ",
     "change out of fish",
@@ -70,7 +71,7 @@ const char* dialogue_strings[][7] = {
 };
 
 const uint8_t dialogue_heights[] = {
-  4, 5, 4, 4, 6, 3, 3
+  4, 5, 4, 4, 6, 4, 3
 };
 
 /* Start of tile array. */

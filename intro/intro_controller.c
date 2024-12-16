@@ -13,6 +13,8 @@
 #include "naija_crystal_map.h"
 #include "fishform_gasp_tiles.h"
 #include "fishform_gasp_map.h"
+#include "swordfish_steak_tiles.h"
+#include "swordfish_steak_map.h"
 
 int8_t cur_string_char = 0;
 uint8_t cur_string = 0;
@@ -70,6 +72,8 @@ void update_intro(uint8_t input) NONBANKED {
           init_bkg(1);
           break;
         case 5:
+          init_swordfish_steak_tiles(0, 0);
+          draw_swordfish_steak_bg(6, 3);
           break;
         case 6:
           init_fishform_gasp_tiles(0, 0);
