@@ -9,6 +9,8 @@
 #include "../font/font_tiles.h"
 #include "../title/press_start.h"
 
+#define NOCLIP 0
+
 // Coordinates of note bulbs, in tiles
 #define NOTE_BULB_X_1               47
 #define NOTE_BULB_Y_1               19
@@ -121,6 +123,14 @@ void setup_sprites(void) {
   set_sprite_prop(11, bulb_palette_from_num(rand_num));
   set_sprite_tile(11, bulb_tile_from_num(rand_num));
   bulb_colors[2] = rand_num;
+
+  // Create swordfish steak sprites
+  set_sprite_prop(12, 4);
+  set_sprite_tile(12, 18);
+  set_sprite_prop(13, 4);
+  set_sprite_tile(13, 18);
+  set_sprite_prop(14, 4);
+  set_sprite_tile(14, 18);
 
   // Center player sprite on the screen
   move_sprite(0, 84, 84);
@@ -369,8 +379,12 @@ void update_player_sprite(void) NONBANKED {
 }
 
 uint8_t is_passable_tile(uint8_t tile) {
+#if NOCLIP
+  return 1;
+#else
   // impassable tiles in our tilemap
   return tile != 0x1 && (tile < 184 || tile > 192);
+#endif
 }
 
 void update_aquaria(uint8_t input) NONBANKED {

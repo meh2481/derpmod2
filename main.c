@@ -48,8 +48,8 @@ void main(void)
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
-  // init_aquaria();
-  init_logo();
+  init_aquaria();
+  // init_logo();
 
   DISPLAY_ON;
   enable_interrupts();
