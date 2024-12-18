@@ -9,7 +9,14 @@
 #include "../font/font_tiles.h"
 #include "../title/press_start.h"
 
-#define NOCLIP 0
+#define NOCLIP 1
+
+#define STEAK_X_1 808//+4
+#define STEAK_Y_1 104//+12
+#define STEAK_X_2 840//+4
+#define STEAK_Y_2 104//+12
+#define STEAK_X_3 824//+4
+#define STEAK_Y_3 128//+12
 
 // Coordinates of note bulbs, in tiles
 #define NOTE_BULB_X_1               47
@@ -161,6 +168,8 @@ void update_bulb_sprite(uint8_t sprite_num, int8_t move_x, int8_t move_y, uint8_
   }
 }
 
+uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_1 - 1;
+
 void update_sprite_positions(int8_t move_x, int8_t move_y) {
   // If the note bulbs are on the screen, move them with the background
   if (bulbs_active & NOTE_BULB_1 && bulbs_open[0] == 0) {
@@ -171,6 +180,28 @@ void update_sprite_positions(int8_t move_x, int8_t move_y) {
   }
   if (bulbs_active & NOTE_BULB_3 && bulbs_open[2] == 0) {
     update_bulb_sprite(11, move_x, move_y, NOTE_BULB_X_3, NOTE_BULB_Y_3);
+  }
+  // Update swordfish steak sprites
+  if (cur_swordfish_string > TEXT_SWORDFISH_STEAK_1 - 1) {
+    if (bg_pos_x < STEAK_X_1+4 && bg_pos_y < STEAK_Y_1+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_1 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_1) {
+      move_sprite(12, STEAK_X_1 - bg_pos_x + 4 + move_x, STEAK_Y_1 - bg_pos_y + 12 + move_y);
+    } else {
+      hide_sprite(12);
+    }
+  }
+  if (cur_swordfish_string > TEXT_SWORDFISH_STEAK_1) {
+    if (bg_pos_x < STEAK_X_2+4 && bg_pos_y < STEAK_Y_2+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_2 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_2) {
+      move_sprite(13, STEAK_X_2 - bg_pos_x + 4 + move_x, STEAK_Y_2 - bg_pos_y + 12 + move_y);
+    } else {
+      hide_sprite(13);
+    }
+  }
+  if (cur_swordfish_string > TEXT_SWORDFISH_STEAK_2) {
+    if (bg_pos_x < STEAK_X_3+4 && bg_pos_y < STEAK_Y_3+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_3 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_3) {
+      move_sprite(14, STEAK_X_3 - bg_pos_x + 4 + move_x, STEAK_Y_3 - bg_pos_y + 12 + move_y);
+    } else {
+      hide_sprite(14);
+    }
   }
 }
 
@@ -208,7 +239,6 @@ void stop_note(void) {
 
 int8_t cur_swordfish_string_char = -1;
 uint8_t display_dialog = 0;
-uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_1 - 1;
 
 void update_note(void) {
   if (cur_note == 0) {
