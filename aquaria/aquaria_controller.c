@@ -182,21 +182,21 @@ void update_sprite_positions(int8_t move_x, int8_t move_y) {
     update_bulb_sprite(11, move_x, move_y, NOTE_BULB_X_3, NOTE_BULB_Y_3);
   }
   // Update swordfish steak sprites
-  if (cur_swordfish_string > TEXT_SWORDFISH_STEAK_1 - 1) {
+  if (cur_swordfish_string >= TEXT_SWORDFISH_STEAK_1) {
     if (bg_pos_x < STEAK_X_1+4 && bg_pos_y < STEAK_Y_1+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_1 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_1) {
       move_sprite(12, STEAK_X_1 - bg_pos_x + 4 + move_x, STEAK_Y_1 - bg_pos_y + 12 + move_y);
     } else {
       hide_sprite(12);
     }
   }
-  if (cur_swordfish_string > TEXT_SWORDFISH_STEAK_1) {
+  if (cur_swordfish_string >= TEXT_SWORDFISH_STEAK_2) {
     if (bg_pos_x < STEAK_X_2+4 && bg_pos_y < STEAK_Y_2+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_2 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_2) {
       move_sprite(13, STEAK_X_2 - bg_pos_x + 4 + move_x, STEAK_Y_2 - bg_pos_y + 12 + move_y);
     } else {
       hide_sprite(13);
     }
   }
-  if (cur_swordfish_string > TEXT_SWORDFISH_STEAK_2) {
+  if (cur_swordfish_string >= TEXT_SWORDFISH_STEAK_3) {
     if (bg_pos_x < STEAK_X_3+4 && bg_pos_y < STEAK_Y_3+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_3 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_3) {
       move_sprite(14, STEAK_X_3 - bg_pos_x + 4 + move_x, STEAK_Y_3 - bg_pos_y + 12 + move_y);
     } else {
