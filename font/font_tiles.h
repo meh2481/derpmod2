@@ -31,6 +31,9 @@ extern void render_textbox_id(uint8_t str_id, uint8_t vram_start_idx) BANKED;
 
 // String IDs
 #define TEXT_STRING_TAKEOVER_WORLD  0
+#define TEXT_SWORDFISH_STEAK_1      7
+#define TEXT_SWORDFISH_STEAK_2      8
+#define TEXT_SWORDFISH_STEAK_3      9
 
 #endif
 

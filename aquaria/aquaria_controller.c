@@ -196,6 +196,10 @@ void stop_note(void) {
   }
 }
 
+int8_t cur_swordfish_string_char = -1;
+uint8_t display_dialog = 0;
+uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_1 - 1;
+
 void update_note(void) {
   if (cur_note == 0) {
     for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
@@ -269,12 +273,16 @@ void update_note(void) {
       }
       vibrate_bulb_counter++;
       if (vibrate_bulb_counter > BULB_SING_TIMER) {
-        // Open bulb (TODO: Drops stuff)
+        // Open bulb
         vibrate_bulb_counter = 0;
         bulbs_open[bulb_onscreen - 9] = 1;
         hide_sprite(bulb_onscreen);
         bulb_onscreen = 0;
         CBTFX_PLAY_SFX_OPEN_PLANT;
+        cur_swordfish_string_char = 0;
+        display_dialog = 1;
+        cur_swordfish_string++;
+        render_textbox_id(cur_swordfish_string, 0);
       }
     }
   } else if (bulb_onscreen && bulbs_open[bulb_onscreen - 9] == 0 && note_palette_remap[note_sprite - 1] != bulb_colors[bulb_onscreen - 9]) {
@@ -365,9 +373,6 @@ uint8_t is_passable_tile(uint8_t tile) {
   return tile != 0x1 && (tile < 184 || tile > 192);
 }
 
-// uint8_t cur_string_char = 0;
-// uint8_t display_dialog = 1;
-
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
@@ -375,10 +380,9 @@ void update_aquaria(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
-  // render_next_string_char(text_string, cur_string_char++, 0);
-  // if (display_dialog == 1) {
-  //   cur_string_char = render_next_string_char_id(TEXT_STRING_TAKEOVER_WORLD, cur_string_char, 0);
-  // }
+  if (cur_swordfish_string_char != -1) {
+    cur_swordfish_string_char = render_next_string_char_id(cur_swordfish_string, cur_swordfish_string_char, 0);
+  }
 
   int8_t move_x = 0;
   int8_t move_y = 0;
@@ -388,11 +392,11 @@ void update_aquaria(uint8_t input) NONBANKED {
   last_direction = direction;
   direction = 0;
 
-  // if (input != 0) {
-  //   display_dialog = 0;
-  //   // Hide window
-  //   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
-  // }
+  if (input & J_A && display_dialog == 1 && cur_swordfish_string_char == -1) {
+    display_dialog = 0;
+    // Hide window
+    move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+  }
 
   if (input & J_B) {
     show_song_note_sprites();
@@ -418,83 +422,85 @@ void update_aquaria(uint8_t input) NONBANKED {
     hide_song_note_sprites();
     stop_note();
     move_x = move_y = 0;
-    if (input & J_LEFT) {
-      uint16_t player_sprite_left_x = bg_pos_x + 76;
-      uint16_t player_sprite_left_y = bg_pos_y + 72;
-      // Check if we can move left
-      if (player_sprite_left_x % 8 == 0) {
-        uint8_t tile_left = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, (player_sprite_left_y - 4) >> 3);
-        uint8_t tile_left2 = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, (player_sprite_left_y + 3) >> 3);
-        if (is_passable_tile(tile_left) && is_passable_tile(tile_left2)) {
+    if (!display_dialog) {
+      if (input & J_LEFT) {
+        uint16_t player_sprite_left_x = bg_pos_x + 76;
+        uint16_t player_sprite_left_y = bg_pos_y + 72;
+        // Check if we can move left
+        if (player_sprite_left_x % 8 == 0) {
+          uint8_t tile_left = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, (player_sprite_left_y - 4) >> 3);
+          uint8_t tile_left2 = get_aquaria_map_tile((player_sprite_left_x - 1) >> 3, (player_sprite_left_y + 3) >> 3);
+          if (is_passable_tile(tile_left) && is_passable_tile(tile_left2)) {
+            bg_pos_x--;
+            move_x = 1;
+            moved_bg = 1;
+          }
+        } else {
           bg_pos_x--;
           move_x = 1;
           moved_bg = 1;
         }
-      } else {
-        bg_pos_x--;
-        move_x = 1;
-        moved_bg = 1;
+        direction |= DIRECTION_LEFT;
+        last_pressed_horiz = DIRECTION_LEFT;
       }
-      direction |= DIRECTION_LEFT;
-      last_pressed_horiz = DIRECTION_LEFT;
-    }
-    if (input & J_RIGHT) {
-      uint16_t player_sprite_right_x = bg_pos_x + 84;
-      uint16_t player_sprite_right_y = bg_pos_y + 72;
-      // Check if we can move right
-      if (player_sprite_right_x % 8 == 0) {
-        uint8_t tile_right = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, (player_sprite_right_y - 4) >> 3);
-        uint8_t tile_right2 = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, (player_sprite_right_y + 3) >> 3);
-        if (is_passable_tile(tile_right) && is_passable_tile(tile_right2)) {
+      if (input & J_RIGHT) {
+        uint16_t player_sprite_right_x = bg_pos_x + 84;
+        uint16_t player_sprite_right_y = bg_pos_y + 72;
+        // Check if we can move right
+        if (player_sprite_right_x % 8 == 0) {
+          uint8_t tile_right = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, (player_sprite_right_y - 4) >> 3);
+          uint8_t tile_right2 = get_aquaria_map_tile((player_sprite_right_x + 1) >> 3, (player_sprite_right_y + 3) >> 3);
+          if (is_passable_tile(tile_right) && is_passable_tile(tile_right2)) {
+            bg_pos_x++;
+            move_x = -1;
+            moved_bg = 1;
+          }
+        } else {
           bg_pos_x++;
           move_x = -1;
           moved_bg = 1;
         }
-      } else {
-        bg_pos_x++;
-        move_x = -1;
-        moved_bg = 1;
+        direction |= DIRECTION_RIGHT;
+        last_pressed_horiz = DIRECTION_RIGHT;
       }
-      direction |= DIRECTION_RIGHT;
-      last_pressed_horiz = DIRECTION_RIGHT;
-    }
-    if (input & J_UP) {
-      uint16_t player_sprite_up_x = bg_pos_x + 80;
-      uint16_t player_sprite_up_y = bg_pos_y + 68;
-      // Check if we can move up
-      if (player_sprite_up_y % 8 == 0) {
-        uint8_t tile_up = get_aquaria_map_tile((player_sprite_up_x - 4) >> 3, (player_sprite_up_y - 1) >> 3);
-        uint8_t tile_up2 = get_aquaria_map_tile((player_sprite_up_x + 3) >> 3, (player_sprite_up_y - 1) >> 3);
-        if (is_passable_tile(tile_up) && is_passable_tile(tile_up2)) {
+      if (input & J_UP) {
+        uint16_t player_sprite_up_x = bg_pos_x + 80;
+        uint16_t player_sprite_up_y = bg_pos_y + 68;
+        // Check if we can move up
+        if (player_sprite_up_y % 8 == 0) {
+          uint8_t tile_up = get_aquaria_map_tile((player_sprite_up_x - 4) >> 3, (player_sprite_up_y - 1) >> 3);
+          uint8_t tile_up2 = get_aquaria_map_tile((player_sprite_up_x + 3) >> 3, (player_sprite_up_y - 1) >> 3);
+          if (is_passable_tile(tile_up) && is_passable_tile(tile_up2)) {
+            bg_pos_y--;
+            move_y = 1;
+            moved_bg = 1;
+          }
+        } else {
           bg_pos_y--;
           move_y = 1;
           moved_bg = 1;
         }
-      } else {
-        bg_pos_y--;
-        move_y = 1;
-        moved_bg = 1;
+        direction |= DIRECTION_UP;
       }
-      direction |= DIRECTION_UP;
-    }
-    if (input & J_DOWN) {
-      uint16_t player_sprite_down_x = bg_pos_x + 80;
-      uint16_t player_sprite_down_y = bg_pos_y + 76;
-      // Check if we can move down
-      if (player_sprite_down_y % 8 == 0) {
-        uint8_t tile_down = get_aquaria_map_tile((player_sprite_down_x - 4) >> 3, (player_sprite_down_y + 1) >> 3);
-        uint8_t tile_down2 = get_aquaria_map_tile((player_sprite_down_x + 3) >> 3, (player_sprite_down_y + 1) >> 3);
-        if (is_passable_tile(tile_down) && is_passable_tile(tile_down2)) {
+      if (input & J_DOWN) {
+        uint16_t player_sprite_down_x = bg_pos_x + 80;
+        uint16_t player_sprite_down_y = bg_pos_y + 76;
+        // Check if we can move down
+        if (player_sprite_down_y % 8 == 0) {
+          uint8_t tile_down = get_aquaria_map_tile((player_sprite_down_x - 4) >> 3, (player_sprite_down_y + 1) >> 3);
+          uint8_t tile_down2 = get_aquaria_map_tile((player_sprite_down_x + 3) >> 3, (player_sprite_down_y + 1) >> 3);
+          if (is_passable_tile(tile_down) && is_passable_tile(tile_down2)) {
+            bg_pos_y++;
+            move_y = -1;
+            moved_bg = 1;
+          }
+        } else {
           bg_pos_y++;
           move_y = -1;
           moved_bg = 1;
         }
-      } else {
-        bg_pos_y++;
-        move_y = -1;
-        moved_bg = 1;
+        direction |= DIRECTION_DOWN;
       }
-      direction |= DIRECTION_DOWN;
     }
   }
 

@@ -67,11 +67,23 @@ const char* dialogue_strings[][7] = {
     "and now I can\'t   ",
     "change out of fish",
     "form.             ",
+  }, {
+    // TEXT_SWORDFISH_STEAK_1
+    "Got a swordfish   ",
+    "steak!            "
+  }, {
+    // TEXT_SWORDFISH_STEAK_2
+    "Got ANOTHER       ",
+    "swordfish steak!  "
+  }, {
+    // TEXT_SWORDFISH_STEAK_3
+    "WHY IS IT ALL     ",
+    "SWORDFISH STEAK?! "
   }
 };
 
 const uint8_t dialogue_heights[] = {
-  4, 5, 4, 4, 6, 4, 3
+  4, 5, 4, 4, 6, 4, 3, 2, 2, 2
 };
 
 /* Start of tile array. */
