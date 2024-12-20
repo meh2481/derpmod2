@@ -11,12 +11,24 @@
 
 #define NOCLIP 1
 
-#define STEAK_X_1 808//+4
-#define STEAK_Y_1 104//+12
-#define STEAK_X_2 840//+4
-#define STEAK_Y_2 104//+12
-#define STEAK_X_3 824//+4
-#define STEAK_Y_3 128//+12
+#define STEAK_X_1 808
+#define STEAK_Y_1 104
+#define STEAK_X_2 840
+#define STEAK_Y_2 104
+#define STEAK_X_3 824
+#define STEAK_Y_3 128
+#define GATE_X_1  820
+#define GATE_Y_1  107
+#define GATE_X_2  828
+#define GATE_Y_2  107
+#define GATE_X_3  820
+#define GATE_Y_3  115
+#define GATE_X_4  828
+#define GATE_Y_4  115
+
+#define WARP_SPRITE_TILE_START 19
+#define WARP_SPRITE_TILE_END   22
+uint8_t cur_warp_sprite = WARP_SPRITE_TILE_START;
 
 // Coordinates of note bulbs, in tiles
 #define NOTE_BULB_X_1               47
@@ -139,6 +151,16 @@ void setup_sprites(void) {
   set_sprite_prop(14, 4);
   set_sprite_tile(14, 18);
 
+  // Create warp gate sprite
+  set_sprite_prop(15, 5);
+  set_sprite_tile(15, 19);
+  set_sprite_prop(16, 5 | S_FLIPX);
+  set_sprite_tile(16, 19);
+  set_sprite_prop(17, 5 | S_FLIPY);
+  set_sprite_tile(17, 19);
+  set_sprite_prop(18, 5 | S_FLIPX | S_FLIPY);
+  set_sprite_tile(18, 19);
+
   // Center player sprite on the screen
   move_sprite(0, 84, 84);
 }
@@ -168,6 +190,14 @@ void update_bulb_sprite(uint8_t sprite_num, int8_t move_x, int8_t move_y, uint8_
   }
 }
 
+void scroll_sprite_in_screen(uint8_t sprite_num, int8_t move_x, int8_t move_y, uint16_t sprite_x, uint16_t sprite_y) {
+  if (bg_pos_x < sprite_x+4 && bg_pos_y < sprite_y+4 && bg_pos_x + SCREEN_WIDTH+4 > sprite_x && bg_pos_y + SCREEN_HEIGHT+4 > sprite_y) {
+      move_sprite(sprite_num, sprite_x - bg_pos_x + 4 + move_x, sprite_y - bg_pos_y + 12 + move_y);
+    } else {
+      hide_sprite(sprite_num);
+    }
+}
+
 uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_1 - 1;
 
 void update_sprite_positions(int8_t move_x, int8_t move_y) {
@@ -183,25 +213,18 @@ void update_sprite_positions(int8_t move_x, int8_t move_y) {
   }
   // Update swordfish steak sprites
   if (cur_swordfish_string >= TEXT_SWORDFISH_STEAK_1) {
-    if (bg_pos_x < STEAK_X_1+4 && bg_pos_y < STEAK_Y_1+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_1 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_1) {
-      move_sprite(12, STEAK_X_1 - bg_pos_x + 4 + move_x, STEAK_Y_1 - bg_pos_y + 12 + move_y);
-    } else {
-      hide_sprite(12);
-    }
+    scroll_sprite_in_screen(12, move_x, move_y, STEAK_X_1, STEAK_Y_1);
   }
   if (cur_swordfish_string >= TEXT_SWORDFISH_STEAK_2) {
-    if (bg_pos_x < STEAK_X_2+4 && bg_pos_y < STEAK_Y_2+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_2 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_2) {
-      move_sprite(13, STEAK_X_2 - bg_pos_x + 4 + move_x, STEAK_Y_2 - bg_pos_y + 12 + move_y);
-    } else {
-      hide_sprite(13);
-    }
+    scroll_sprite_in_screen(13, move_x, move_y, STEAK_X_2, STEAK_Y_2);
   }
   if (cur_swordfish_string >= TEXT_SWORDFISH_STEAK_3) {
-    if (bg_pos_x < STEAK_X_3+4 && bg_pos_y < STEAK_Y_3+4 && bg_pos_x + SCREEN_WIDTH+4 > STEAK_X_3 && bg_pos_y + SCREEN_HEIGHT+4 > STEAK_Y_3) {
-      move_sprite(14, STEAK_X_3 - bg_pos_x + 4 + move_x, STEAK_Y_3 - bg_pos_y + 12 + move_y);
-    } else {
-      hide_sprite(14);
-    }
+    scroll_sprite_in_screen(14, move_x, move_y, STEAK_X_3, STEAK_Y_3);
+    // Also show warp gate
+    scroll_sprite_in_screen(15, move_x, move_y, GATE_X_1, GATE_Y_1);
+    scroll_sprite_in_screen(16, move_x, move_y, GATE_X_2, GATE_Y_2);
+    scroll_sprite_in_screen(17, move_x, move_y, GATE_X_3, GATE_Y_3);
+    scroll_sprite_in_screen(18, move_x, move_y, GATE_X_4, GATE_Y_4);
   }
 }
 
@@ -417,6 +440,8 @@ uint8_t is_passable_tile(uint8_t tile) {
 #endif
 }
 
+uint8_t warp_sprite_anim_delay = 0;
+
 void update_aquaria(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
@@ -426,6 +451,20 @@ void update_aquaria(uint8_t input) NONBANKED {
 
   if (cur_swordfish_string_char != -1) {
     cur_swordfish_string_char = render_next_string_char_id(cur_swordfish_string, cur_swordfish_string_char, 0);
+  }
+
+  // Update warp gate sprite
+  warp_sprite_anim_delay++;
+  if (warp_sprite_anim_delay > 2) {
+    cur_warp_sprite++;
+    if (cur_warp_sprite > WARP_SPRITE_TILE_END) {
+      cur_warp_sprite = WARP_SPRITE_TILE_START;
+    }
+    set_sprite_tile(15, cur_warp_sprite);
+    set_sprite_tile(16, cur_warp_sprite);
+    set_sprite_tile(17, cur_warp_sprite);
+    set_sprite_tile(18, cur_warp_sprite);
+    warp_sprite_anim_delay = 0;
   }
 
   int8_t move_x = 0;
