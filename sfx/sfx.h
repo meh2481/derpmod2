@@ -38,6 +38,8 @@
 	extern const unsigned char SFX_OPEN_PLANT[];
 	#define CBTFX_PLAY_SFX_PICKUP CBTFX_init(&SFX_PICKUP[0])
 	extern const unsigned char SFX_PICKUP[];
+	#define CBTFX_PLAY_SFX_WARP CBTFX_init(&SFX_WARP[0])
+	extern const unsigned char SFX_WARP[];
 
 	extern const unsigned char* NOTE_LIST[];
 

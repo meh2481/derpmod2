@@ -198,7 +198,7 @@ void scroll_sprite_in_screen(uint8_t sprite_num, int8_t move_x, int8_t move_y, u
     }
 }
 
-uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_1 - 1;
+uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_3; //1 - 1;
 
 void update_sprite_positions(int8_t move_x, int8_t move_y) {
   // If the note bulbs are on the screen, move them with the background
@@ -225,6 +225,15 @@ void update_sprite_positions(int8_t move_x, int8_t move_y) {
     scroll_sprite_in_screen(16, move_x, move_y, GATE_X_2, GATE_Y_2);
     scroll_sprite_in_screen(17, move_x, move_y, GATE_X_3, GATE_Y_3);
     scroll_sprite_in_screen(18, move_x, move_y, GATE_X_4, GATE_Y_4);
+
+    // If player is in warp gate, warp out
+    if (bg_pos_x + 80 > GATE_X_1 - 4 && bg_pos_y + 72 > GATE_Y_1 - 4 && bg_pos_x + 80 < GATE_X_1 + 12 && bg_pos_y + 72 < GATE_Y_1 + 12) {
+      // Play warp sound
+      CBTFX_PLAY_SFX_WARP;
+      // TODO: Warp out
+      bg_pos_x -= 32;
+      bg_pos_y += 128;
+    }
   }
 }
 
