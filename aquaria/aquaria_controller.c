@@ -199,6 +199,7 @@ void scroll_sprite_in_screen(uint8_t sprite_num, int8_t move_x, int8_t move_y, u
 }
 
 uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_3; //1 - 1;
+uint8_t warping = 0;
 
 void update_sprite_positions(int8_t move_x, int8_t move_y) {
   // If the note bulbs are on the screen, move them with the background
@@ -228,8 +229,10 @@ void update_sprite_positions(int8_t move_x, int8_t move_y) {
 
     // If player is in warp gate, warp out
     if (bg_pos_x + 80 > GATE_X_1 - 4 && bg_pos_y + 72 > GATE_Y_1 - 4 && bg_pos_x + 80 < GATE_X_1 + 12 && bg_pos_y + 72 < GATE_Y_1 + 12) {
+      hUGE_stop_music();
       // Play warp sound
       CBTFX_PLAY_SFX_WARP;
+      warping = 1;
       // TODO: Warp out
       bg_pos_x -= 32;
       bg_pos_y += 128;
@@ -452,11 +455,13 @@ uint8_t is_passable_tile(uint8_t tile) {
 uint8_t warp_sprite_anim_delay = 0;
 
 void update_aquaria(uint8_t input) NONBANKED {
-  // Switch to title music bank to update music
-  uint8_t previous_bank = _current_bank;
-  SWITCH_ROM(BANK(aquaria_music));
-  hUGE_dosound();
-  SWITCH_ROM(previous_bank);
+  if (!warping) {
+    // Switch to title music bank to update music
+    uint8_t previous_bank = _current_bank;
+    SWITCH_ROM(BANK(aquaria_music));
+    hUGE_dosound();
+    SWITCH_ROM(previous_bank);
+  }
 
   if (cur_swordfish_string_char != -1) {
     cur_swordfish_string_char = render_next_string_char_id(cur_swordfish_string, cur_swordfish_string_char, 0);
