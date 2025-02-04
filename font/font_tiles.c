@@ -79,6 +79,61 @@ const char* dialogue_strings[][7] = {
     // TEXT_SWORDFISH_STEAK_3
     "WHY IS IT ALL     ",
     "SWORDFISH STEAK?! "
+  }, {
+    // TEXT_STRING_WARP_SUCCESS
+    "Oh geez, this     ",
+    "doesn\'t look      ",
+    "right.            "
+  }, {
+    "Stupid gate.      ",
+    "What\'s wrong with ",
+    "it?               "
+  }, {
+    "Well, when all    ",
+    "else fails, read  ",
+    "the manual.       "
+  }, {
+    "Let\'s see.       "
+  }, {
+    "\"Under no        ",
+    "circumstances are ",
+    "you to use this   ",
+    "warp gate with    "
+  }, {
+    "precisely three   ",
+    "steak as a power  ",
+    "source.\"          "
+  }, {
+    "Huh.              "
+  }, {
+    "Well, joke\'s on   ",
+    "them, cuz I got my",
+    "legs back.        "
+  }, {
+    // TEXT_STRING_SEEN_LI
+    "I\'m seeing him    ",
+    "everywhere.       "
+  }, {
+    // TEXT_STRING_CLUB_SIGN
+    "The sign says:    "
+  }, {
+    "\"This is the cool ",
+    "kids club. Only   ",
+    "cool kids         ",
+    "allowed.\"         "
+  }, {
+    "I\'m not cool      ",
+    "enough already?   ",
+    "How dare they.    "
+  }, {
+    // TEXT_STRING_SUNGLASSES_GET
+    "Oh sweet! A       ",
+    "totally rad pair  ",
+    "of shades.        "
+  }, {
+    "Only a total      ",
+    "canvas would think",
+    "this isn\'t cool.  "
   }
 };
 

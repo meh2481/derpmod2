@@ -43,7 +43,12 @@ OBJS	= main.o \
 	logos/discord_logo_tiles.o \
 	logos/game_by_daxar_logo_map.o \
 	logos/game_by_daxar_logo_tiles.o \
-	logos/logo_controller.o
+	logos/logo_controller.o \
+	vvvvvv/vvvvvv_map.o \
+	vvvvvv/vvvvvv_map2.o \
+	vvvvvv/vvvvvv_mapattribs.o \
+	vvvvvv/vvvvvv_mapattribs2.o \
+	vvvvvv/vvvvvv_tiles.o
 
 
 GBDK_DEBUG = ON
