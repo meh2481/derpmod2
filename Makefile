@@ -48,7 +48,8 @@ OBJS	= main.o \
 	vvvvvv/vvvvvv_map2.o \
 	vvvvvv/vvvvvv_mapattribs.o \
 	vvvvvv/vvvvvv_mapattribs2.o \
-	vvvvvv/vvvvvv_tiles.o
+	vvvvvv/vvvvvv_tiles.o \
+	vvvvvv/vvvvvv_controller.o
 
 
 GBDK_DEBUG = ON

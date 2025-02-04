@@ -14,6 +14,7 @@
 #include "title/title_controller.h"
 #include "intro/intro_controller.h"
 #include "logos/logo_controller.h"
+#include "vvvvvv/vvvvvv_controller.h"
 #include "sfx/cbtfx.h"
 
 #define WIN_X_OFFSET 7
@@ -49,7 +50,8 @@ void main(void)
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   // init_aquaria();
-  init_logo();
+  // init_logo();
+  init_vvvvvv();
 
   DISPLAY_ON;
   enable_interrupts();
@@ -65,6 +67,8 @@ void main(void)
       update_intro(i);
     } else if (gamestate == STATE_LOGO) {
       update_logo(i);
+    } else if (gamestate == STATE_VVVVVV) {
+      update_vvvvvv(i);
     }
     // Update SFX after hUGE (updated in methods above) so sounds play over music
     CBTFX_update();
