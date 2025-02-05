@@ -12,6 +12,9 @@
 #define NUM_SCREENS_Y      7
 #define HALF_NUM_SCREENS_Y 4
 
+#define PALETTE_FLIPLINES  1
+#define PALETTE_SAVEPOINTS 2
+
 extern uint8_t i;
 uint16_t curScreenX;
 uint16_t curScreenY;
@@ -32,6 +35,12 @@ void draw_screen(void) {
 
   // Set the palette for this screen
   set_vvvvvv_room_palette(curScreenX + curScreenY * NUM_SCREENS_X);
+
+  // Set the palette for objects (black bg, white obj)
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 0, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 1, RGB(31,31,31));
+  set_bkg_palette_entry(PALETTE_SAVEPOINTS, 0, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_SAVEPOINTS, 1, RGB(31,31,31));
 }
 
 void init_vvvvvv(void) NONBANKED {
