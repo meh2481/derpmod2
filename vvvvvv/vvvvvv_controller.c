@@ -8,6 +8,7 @@
 #include "../utils/utils.h"
 #include "../sfx/sfx.h"
 #include "../font/font_tiles.h"
+#include "minimap_tiles.h"
 
 #define NUM_SCREENS_X      7
 #define NUM_SCREENS_Y      7
@@ -16,11 +17,27 @@
 #define PALETTE_FLIPLINES  1
 #define PALETTE_SAVEPOINTS 2
 
-extern uint8_t i;
+extern uint8_t i, j, tmp;
 uint16_t curScreenX;
 uint16_t curScreenY;
+uint8_t mapMenu;
+
+uint8_t cur_pressing_arrow;
+uint8_t cur_pressing_start;
+
+uint8_t seenScreens[7][7] = {
+  {0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0},
+  {0, 0, 0, 0, 0, 0, 0}
+};
 
 void draw_screen(void) {
+  seenScreens[curScreenX][curScreenY] = 1;
+
   // Handle our different banks for portions of the map
   if (curScreenY > 3) {
     for (i = 0; i < SCREEN_HEIGHT_TILES; i++) {
@@ -61,16 +78,31 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, 0);
 
   curScreenX = curScreenY = 0;
+  cur_pressing_arrow = 0;
+  cur_pressing_start = 0;
+  mapMenu = 0;
 
   init_vvvvvv_tileset();
+  VBK_REG = VBK_BANK_1;
+  init_vvvvvv_minimap_tiles(1);
+  // tmp = 0;
+  // set_win_data(0, 1, &tmp);
+  VBK_REG = VBK_BANK_0;
+
+  VBK_REG = VBK_ATTRIBUTES;
+  for (i = 0; i < SCREEN_WIDTH_TILES; i++) {
+    for (j = 0; j < SCREEN_HEIGHT_TILES; j++) {
+      // Set to bank 1
+      set_win_tile_xy(i, j, 8);
+    }
+  }
+  VBK_REG = VBK_TILES;
 
   draw_screen();
 
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 }
-
-uint8_t cur_pressing_arrow = 0;
 
 void update_vvvvvv(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
@@ -118,5 +150,29 @@ void update_vvvvvv(uint8_t input) NONBANKED {
 
   if (!(input & J_LEFT) && !(input & J_RIGHT) && !(input & J_UP) && !(input & J_DOWN)) {
     cur_pressing_arrow = 0;
+  }
+
+  if (input & J_START) {
+    // Holding start shows the map
+    if (!mapMenu) {
+      mapMenu = 1;
+      // Display the window in the lower right
+      move_win(111, 88);
+      HIDE_SPRITES;
+      // Draw the map
+      for (i = 0; i < NUM_SCREENS_X; i++) {
+        for (j = 0; j < NUM_SCREENS_Y; j++) {
+          if (seenScreens[i][j]) {
+            set_win_tile_xy(i, j, NUM_SCREENS_X * j + i + 1);
+          }
+        }
+      }
+    }
+  } else {
+    if (mapMenu) {
+      mapMenu = 0;
+      move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+      SHOW_SPRITES;
+    }
   }
 }
