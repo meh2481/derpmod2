@@ -39,6 +39,8 @@ void draw_screen(void) {
   // Set the palette for objects (black bg, white obj)
   set_bkg_palette_entry(PALETTE_FLIPLINES, 0, RGB(0,0,0));
   set_bkg_palette_entry(PALETTE_FLIPLINES, 1, RGB(31,31,31));
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 2, RGB(18,10,21));
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 3, RGB(10,6,13));
   set_bkg_palette_entry(PALETTE_SAVEPOINTS, 0, RGB(0,0,0));
   set_bkg_palette_entry(PALETTE_SAVEPOINTS, 1, RGB(31,31,31));
 }
