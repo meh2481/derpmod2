@@ -1,5 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
+#include <stdint.h>
 
 // Global defines
 #define SCREEN_WIDTH 160

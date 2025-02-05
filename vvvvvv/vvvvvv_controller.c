@@ -3,6 +3,7 @@
 #include "../utils/hUGEHelpers.h"
 #include "vvvvvv_tiles.h"
 #include "vvvvvv_map.h"
+#include "vvvvvv_palettes.h"
 #include "../utils/utils.h"
 #include "../sfx/sfx.h"
 #include "../font/font_tiles.h"
@@ -16,6 +17,7 @@ uint16_t curScreenX;
 uint16_t curScreenY;
 
 void draw_screen(void) {
+  // Handle our different banks for portions of the map
   if (curScreenY > 3) {
     for (i = 0; i < SCREEN_HEIGHT_TILES; i++) {
       set_vvvvvv_map_tile_row2(SCREEN_HEIGHT_TILES * (curScreenY-4) + i, curScreenX * SCREEN_WIDTH_TILES, i);
@@ -27,6 +29,9 @@ void draw_screen(void) {
       set_vvvvvv_map_attrib_row(SCREEN_HEIGHT_TILES * curScreenY + i, curScreenX * SCREEN_WIDTH_TILES, i);
     }
   }
+
+  // Set the palette for this screen
+  set_vvvvvv_room_palette(curScreenX + curScreenY * NUM_SCREENS_X);
 }
 
 void init_vvvvvv(void) NONBANKED {
