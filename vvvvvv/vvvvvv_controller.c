@@ -4,6 +4,7 @@
 #include "vvvvvv_tiles.h"
 #include "vvvvvv_map.h"
 #include "vvvvvv_palettes.h"
+#include "sprite_tileset_tiles.h"
 #include "../utils/utils.h"
 #include "../sfx/sfx.h"
 #include "../font/font_tiles.h"
@@ -43,6 +44,13 @@ void draw_screen(void) {
   set_bkg_palette_entry(PALETTE_FLIPLINES, 3, RGB(10,6,13));
   set_bkg_palette_entry(PALETTE_SAVEPOINTS, 0, RGB(0,0,0));
   set_bkg_palette_entry(PALETTE_SAVEPOINTS, 1, RGB(31,31,31));
+
+  // Set sprite data
+  init_vvvvvv_sprite_tiles();
+  init_vvvvvv_sprite_palettes(0);
+
+  SPRITES_8x16;
+  move_sprite(0, 80+8 - 4, 72+16 - 8);
 }
 
 void init_vvvvvv(void) NONBANKED {

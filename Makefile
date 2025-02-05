@@ -50,8 +50,8 @@ OBJS	= main.o \
 	vvvvvv/vvvvvv_mapattribs2.o \
 	vvvvvv/vvvvvv_tiles.o \
 	vvvvvv/vvvvvv_controller.o \
-	vvvvvv/vvvvvv_palettes.o
-
+	vvvvvv/vvvvvv_palettes.o \
+	vvvvvv/sprite_tileset_tiles.o
 
 GBDK_DEBUG = ON
 # Force MBC5 and force Gameboy Color
