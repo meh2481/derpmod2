@@ -18,6 +18,8 @@
 #define PALETTE_SAVEPOINTS 2
 #define PALETTE_MINIMAP    3
 
+#define MINIMAP_BLINK_AMOUNT 20
+
 extern uint8_t i, j, tmp;
 uint16_t curScreenX;
 uint16_t curScreenY;
@@ -55,7 +57,7 @@ void draw_screen(void) {
   // Set the palette for this screen
   set_vvvvvv_room_palette(curScreenX + curScreenY * NUM_SCREENS_X);
 
-  // Set the palette for objects (black bg, white obj)
+  // Set the palette for objects (black bg, white obj, blue minimap)
   set_bkg_palette_entry(PALETTE_FLIPLINES, 0, RGB(0,0,0));
   set_bkg_palette_entry(PALETTE_FLIPLINES, 1, RGB(31,31,31));
   set_bkg_palette_entry(PALETTE_FLIPLINES, 2, RGB(18,10,21));
@@ -107,6 +109,9 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 }
 
+uint8_t minimap_blink_counter = 0;
+uint8_t minimap_blink_on = 1;
+
 void update_vvvvvv(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
   uint8_t previous_bank = _current_bank;
@@ -119,6 +124,23 @@ void update_vvvvvv(uint8_t input) NONBANKED {
   }
 
   if (input & J_START) {
+    // Blink minimap
+    minimap_blink_counter++;
+    if (minimap_blink_counter > MINIMAP_BLINK_AMOUNT) {
+      if (minimap_blink_on) {
+        minimap_blink_on = 0;
+        VBK_REG = VBK_ATTRIBUTES;
+        set_win_tile_xy(curScreenX, curScreenY, 0x8);
+        VBK_REG = VBK_TILES;
+      } else {
+        minimap_blink_on = 1;
+        VBK_REG = VBK_ATTRIBUTES;
+        set_win_tile_xy(curScreenX, curScreenY, 0x8 | PALETTE_MINIMAP);
+        VBK_REG = VBK_TILES;
+      }
+      minimap_blink_counter = 0;
+    }
+
     // Holding start shows the map
     if (!mapMenu) {
       mapMenu = 1;
@@ -131,7 +153,7 @@ void update_vvvvvv(uint8_t input) NONBANKED {
           if (seenScreens[i][j]) {
             set_win_tile_xy(i, j, NUM_SCREENS_X * j + i + 1);
             VBK_REG = VBK_ATTRIBUTES;
-            if (curScreenX == i && curScreenY == j) {
+            if (curScreenX == i && curScreenY == j && minimap_blink_counter) {
               // Bank 1, palette for minimap
               set_win_tile_xy(i, j, 0x8 | PALETTE_MINIMAP);
             } else {
@@ -144,6 +166,8 @@ void update_vvvvvv(uint8_t input) NONBANKED {
       }
     }
   } else {
+    minimap_blink_counter = 0;
+    minimap_blink_on = 1;
     if (mapMenu) {
       mapMenu = 0;
       move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
