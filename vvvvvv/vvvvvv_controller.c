@@ -19,9 +19,26 @@
 #define PALETTE_MINIMAP    3
 #define PALETTE_MAP_FOG    4
 
+#define WINDOW_MAP_X       95
+#define WINDOW_MAP_Y       72
+
+#define START_MINIMAP_TILES_IDX 94
+
 #define MINIMAP_BLINK_AMOUNT 20
 
-extern uint8_t i, j, tmp;
+const uint8_t top_bot_mapbox_tiles[] = {
+  0x5B, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5C, 0x5B
+};
+
+const uint8_t top_mapbox_attribs[] = {
+  0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88, 0xA8
+};
+
+const uint8_t bottom_mapbox_attribs[] = {
+  0xC8, 0xC8, 0xC8, 0xC8, 0xC8, 0xC8, 0xC8, 0xC8, 0xE8
+};
+
+extern uint8_t i, j, tmp, tile;
 uint16_t curScreenX;
 uint16_t curScreenY;
 uint8_t mapMenu;
@@ -38,6 +55,40 @@ uint8_t seenScreens[7][7] = {
   {0, 0, 0, 0, 0, 0, 0},
   {0, 0, 0, 0, 0, 0, 0}
 };
+
+void draw_window_box(void) {
+  // Draw top border
+  VBK_REG = VBK_TILES;
+  set_win_tiles(0, 0, 9, 1, top_bot_mapbox_tiles);
+  VBK_REG = VBK_ATTRIBUTES;
+  set_win_tiles(0, 0, 9, 1, top_mapbox_attribs);
+
+  // Draw bottom border
+  VBK_REG = VBK_TILES;
+  set_win_tiles(0, 8, 9, 1, top_bot_mapbox_tiles);
+  VBK_REG = VBK_ATTRIBUTES;
+  set_win_tiles(0, 8, 9, 1, bottom_mapbox_attribs);
+
+  // Draw left side
+  for (i = 1; i < 8; i++) {
+    tile = 93;
+    VBK_REG = VBK_TILES;
+    set_win_tiles(0, i, 1, 1, &tile);
+    VBK_REG = VBK_ATTRIBUTES;
+    tile = 0x88;
+    set_win_tiles(0, i, 1, 1, &tile);
+  }
+
+  // Draw right side
+  for (i = 1; i < 8; i++) {
+    tile = 93;
+    VBK_REG = VBK_TILES;
+    set_win_tiles(8, i, 1, 1, &tile);
+    VBK_REG = VBK_ATTRIBUTES;
+    tile = 0xA8;
+    set_win_tiles(8, i, 1, 1, &tile);
+  }
+}
 
 void draw_screen(void) {
   seenScreens[curScreenX][curScreenY] = 1;
@@ -93,22 +144,25 @@ void init_vvvvvv(void) NONBANKED {
 
   init_vvvvvv_tileset();
   VBK_REG = VBK_BANK_1;
-  init_vvvvvv_minimap_tiles(1);
+  set_font_tiles(0);
+  init_vvvvvv_minimap_tiles(START_MINIMAP_TILES_IDX+1);
   VBK_REG = VBK_BANK_0;
 
+  // Hide window
+  move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+
+  // Set window to bank 1, map fog palette
   VBK_REG = VBK_ATTRIBUTES;
   for (i = 0; i < SCREEN_WIDTH_TILES; i++) {
     for (j = 0; j < SCREEN_HEIGHT_TILES; j++) {
-      // Set to bank 1, map fog palette
       set_win_tile_xy(i, j, 8 | PALETTE_MAP_FOG);
     }
   }
   VBK_REG = VBK_TILES;
 
-  draw_screen();
+  draw_window_box();
 
-  // Hide window
-  move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+  draw_screen();
 }
 
 uint8_t minimap_blink_counter = 0;
@@ -132,12 +186,12 @@ void update_vvvvvv(uint8_t input) NONBANKED {
       if (minimap_blink_on) {
         minimap_blink_on = 0;
         VBK_REG = VBK_ATTRIBUTES;
-        set_win_tile_xy(curScreenX, curScreenY, 0x8);
+        set_win_tile_xy(curScreenX+1, curScreenY+1, 0x8);
         VBK_REG = VBK_TILES;
       } else {
         minimap_blink_on = 1;
         VBK_REG = VBK_ATTRIBUTES;
-        set_win_tile_xy(curScreenX, curScreenY, 0x8 | PALETTE_MINIMAP);
+        set_win_tile_xy(curScreenX+1, curScreenY+1, 0x8 | PALETTE_MINIMAP);
         VBK_REG = VBK_TILES;
       }
       minimap_blink_counter = 0;
@@ -147,20 +201,20 @@ void update_vvvvvv(uint8_t input) NONBANKED {
     if (!mapMenu) {
       mapMenu = 1;
       // Display the window in the lower right
-      move_win(111, 88);
+      move_win(WINDOW_MAP_X, WINDOW_MAP_Y);
       HIDE_SPRITES;
       // Draw the map
       for (i = 0; i < NUM_SCREENS_X; i++) {
         for (j = 0; j < NUM_SCREENS_Y; j++) {
           if (seenScreens[i][j]) {
-            set_win_tile_xy(i, j, NUM_SCREENS_X * j + i + 1);
+            set_win_tile_xy(i+1, j+1, NUM_SCREENS_X * j + i + START_MINIMAP_TILES_IDX + 1);
             VBK_REG = VBK_ATTRIBUTES;
             if (curScreenX == i && curScreenY == j && minimap_blink_counter) {
               // Bank 1, palette for minimap
-              set_win_tile_xy(i, j, 0x8 | PALETTE_MINIMAP);
+              set_win_tile_xy(i+1, j+1, 0x8 | PALETTE_MINIMAP);
             } else {
               // Bank 1
-              set_win_tile_xy(i, j, 8);
+              set_win_tile_xy(i+1, j+1, 8);
             }
             VBK_REG = VBK_TILES;
           }
