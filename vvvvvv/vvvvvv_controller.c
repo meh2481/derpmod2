@@ -17,6 +17,7 @@
 #define PALETTE_FLIPLINES  1
 #define PALETTE_SAVEPOINTS 2
 #define PALETTE_MINIMAP    3
+#define PALETTE_MAP_FOG    4
 
 #define MINIMAP_BLINK_AMOUNT 20
 
@@ -68,6 +69,7 @@ void draw_screen(void) {
   set_bkg_palette_entry(PALETTE_MINIMAP, 1, RGB(0,31,31));
   set_bkg_palette_entry(PALETTE_MINIMAP, 2, RGB(0,25,25));
   set_bkg_palette_entry(PALETTE_MINIMAP, 3, RGB(0,15,15));
+  set_bkg_palette_entry(PALETTE_MAP_FOG, 0, RGB(10,10,10));
 
   // Set sprite data
   init_vvvvvv_sprite_tiles();
@@ -97,8 +99,8 @@ void init_vvvvvv(void) NONBANKED {
   VBK_REG = VBK_ATTRIBUTES;
   for (i = 0; i < SCREEN_WIDTH_TILES; i++) {
     for (j = 0; j < SCREEN_HEIGHT_TILES; j++) {
-      // Set to bank 1
-      set_win_tile_xy(i, j, 8);
+      // Set to bank 1, map fog palette
+      set_win_tile_xy(i, j, 8 | PALETTE_MAP_FOG);
     }
   }
   VBK_REG = VBK_TILES;
