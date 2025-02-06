@@ -16,6 +16,7 @@
 
 #define PALETTE_FLIPLINES  1
 #define PALETTE_SAVEPOINTS 2
+#define PALETTE_MINIMAP    3
 
 extern uint8_t i, j, tmp;
 uint16_t curScreenX;
@@ -61,6 +62,10 @@ void draw_screen(void) {
   set_bkg_palette_entry(PALETTE_FLIPLINES, 3, RGB(10,6,13));
   set_bkg_palette_entry(PALETTE_SAVEPOINTS, 0, RGB(0,0,0));
   set_bkg_palette_entry(PALETTE_SAVEPOINTS, 1, RGB(31,31,31));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 0, RGB(0,10,10));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 1, RGB(0,31,31));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 2, RGB(0,25,25));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 3, RGB(0,15,15));
 
   // Set sprite data
   init_vvvvvv_sprite_tiles();
@@ -85,8 +90,6 @@ void init_vvvvvv(void) NONBANKED {
   init_vvvvvv_tileset();
   VBK_REG = VBK_BANK_1;
   init_vvvvvv_minimap_tiles(1);
-  // tmp = 0;
-  // set_win_data(0, 1, &tmp);
   VBK_REG = VBK_BANK_0;
 
   VBK_REG = VBK_ATTRIBUTES;
@@ -111,43 +114,6 @@ void update_vvvvvv(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
-  if (!cur_pressing_arrow) {
-    if (input & J_LEFT) {
-      if (curScreenX == 0) {
-        curScreenX = NUM_SCREENS_X - 1;
-      } else {
-        curScreenX--;
-      }
-      draw_screen();
-      cur_pressing_arrow = 1;
-    } else if (input & J_RIGHT) {
-      if (curScreenX == NUM_SCREENS_X - 1) {
-        curScreenX = 0;
-      } else {
-        curScreenX++;
-      }
-      draw_screen();
-      cur_pressing_arrow = 1;
-    }
-    if (input & J_UP) {
-      if (curScreenY == 0) {
-        curScreenY = NUM_SCREENS_Y - 1;
-      } else {
-        curScreenY--;
-      }
-      draw_screen();
-      cur_pressing_arrow = 1;
-    } else if (input & J_DOWN) {
-      if (curScreenY == NUM_SCREENS_Y - 1) {
-        curScreenY = 0;
-      } else {
-        curScreenY++;
-      }
-      draw_screen();
-      cur_pressing_arrow = 1;
-    }
-  }
-
   if (!(input & J_LEFT) && !(input & J_RIGHT) && !(input & J_UP) && !(input & J_DOWN)) {
     cur_pressing_arrow = 0;
   }
@@ -164,6 +130,15 @@ void update_vvvvvv(uint8_t input) NONBANKED {
         for (j = 0; j < NUM_SCREENS_Y; j++) {
           if (seenScreens[i][j]) {
             set_win_tile_xy(i, j, NUM_SCREENS_X * j + i + 1);
+            VBK_REG = VBK_ATTRIBUTES;
+            if (curScreenX == i && curScreenY == j) {
+              // Bank 1, palette for minimap
+              set_win_tile_xy(i, j, 0x8 | PALETTE_MINIMAP);
+            } else {
+              // Bank 1
+              set_win_tile_xy(i, j, 8);
+            }
+            VBK_REG = VBK_TILES;
           }
         }
       }
@@ -173,6 +148,44 @@ void update_vvvvvv(uint8_t input) NONBANKED {
       mapMenu = 0;
       move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
       SHOW_SPRITES;
+    }
+
+    // Only allow moving if map is off
+    if (!cur_pressing_arrow) {
+      if (input & J_LEFT) {
+        if (curScreenX == 0) {
+          curScreenX = NUM_SCREENS_X - 1;
+        } else {
+          curScreenX--;
+        }
+        draw_screen();
+        cur_pressing_arrow = 1;
+      } else if (input & J_RIGHT) {
+        if (curScreenX == NUM_SCREENS_X - 1) {
+          curScreenX = 0;
+        } else {
+          curScreenX++;
+        }
+        draw_screen();
+        cur_pressing_arrow = 1;
+      }
+      if (input & J_UP) {
+        if (curScreenY == 0) {
+          curScreenY = NUM_SCREENS_Y - 1;
+        } else {
+          curScreenY--;
+        }
+        draw_screen();
+        cur_pressing_arrow = 1;
+      } else if (input & J_DOWN) {
+        if (curScreenY == NUM_SCREENS_Y - 1) {
+          curScreenY = 0;
+        } else {
+          curScreenY++;
+        }
+        draw_screen();
+        cur_pressing_arrow = 1;
+      }
     }
   }
 }
