@@ -42,6 +42,10 @@ extern uint8_t i, j, tmp, tile;
 uint16_t curScreenX;
 uint16_t curScreenY;
 uint8_t mapMenu;
+// Center of player sprite
+uint8_t playerSpriteX;
+uint8_t playerSpriteY;
+uint8_t playerFlipped;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -127,7 +131,32 @@ void draw_screen(void) {
   init_vvvvvv_sprite_palettes(0);
 
   SPRITES_8x16;
-  move_sprite(0, 80+8 - 4, 72+16 - 8);
+  playerSpriteX = 80 - 4;
+  playerSpriteY = 72 - 8;
+  playerFlipped = 0;
+  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+}
+
+void update_player(uint8_t input) {
+  if (!cur_pressing_arrow) {
+    if (input & J_LEFT) {
+      if (curScreenX == 0) {
+        curScreenX = NUM_SCREENS_X - 1;
+      } else {
+        curScreenX--;
+      }
+      draw_screen();
+      cur_pressing_arrow = 1;
+    } else if (input & J_RIGHT) {
+      if (curScreenX == NUM_SCREENS_X - 1) {
+        curScreenX = 0;
+      } else {
+        curScreenX++;
+      }
+      draw_screen();
+      cur_pressing_arrow = 1;
+    }
+  }
 }
 
 void init_vvvvvv(void) NONBANKED {
@@ -231,41 +260,6 @@ void update_vvvvvv(uint8_t input) NONBANKED {
     }
 
     // Only allow moving if map is off
-    if (!cur_pressing_arrow) {
-      if (input & J_LEFT) {
-        if (curScreenX == 0) {
-          curScreenX = NUM_SCREENS_X - 1;
-        } else {
-          curScreenX--;
-        }
-        draw_screen();
-        cur_pressing_arrow = 1;
-      } else if (input & J_RIGHT) {
-        if (curScreenX == NUM_SCREENS_X - 1) {
-          curScreenX = 0;
-        } else {
-          curScreenX++;
-        }
-        draw_screen();
-        cur_pressing_arrow = 1;
-      }
-      if (input & J_UP) {
-        if (curScreenY == 0) {
-          curScreenY = NUM_SCREENS_Y - 1;
-        } else {
-          curScreenY--;
-        }
-        draw_screen();
-        cur_pressing_arrow = 1;
-      } else if (input & J_DOWN) {
-        if (curScreenY == NUM_SCREENS_Y - 1) {
-          curScreenY = 0;
-        } else {
-          curScreenY++;
-        }
-        draw_screen();
-        cur_pressing_arrow = 1;
-      }
-    }
+    update_player(input);
   }
 }
