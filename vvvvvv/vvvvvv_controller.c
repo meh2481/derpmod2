@@ -166,7 +166,8 @@ void init_vvvvvv(void) NONBANKED {
   init_win(0);
   move_win(WIN_X_OFFSET, 0);
 
-  curScreenX = curScreenY = 0;
+  curScreenX = 0;
+  curScreenY = 6;
   cur_pressing_arrow = 0;
   cur_pressing_start = 0;
   mapMenu = 0;
