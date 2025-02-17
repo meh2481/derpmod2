@@ -787,3 +787,8 @@ void set_vvvvvv_map_tile_row2(uint8_t row, uint8_t col, uint8_t vram_row) BANKED
   VBK_REG = VBK_TILES;
   set_bkg_tiles(0, vram_row, 20, 1, &vvvvvv_mapBLK1PLN0[row * vvvvvv_mapWidth + col]);
 }
+
+uint8_t get_vvvvvv_map_tile2(uint8_t col, uint8_t row) BANKED {
+  // TODO: Subtract from col to get the right address
+  return vvvvvv_mapBLK1PLN0[(row - 4) * vvvvvv_mapWidth + col];
+}

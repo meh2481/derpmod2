@@ -137,24 +137,66 @@ void draw_screen(void) {
   move_sprite(0, playerSpriteX+8, playerSpriteY+16);
 }
 
+uint8_t isOnGround = 0;
+uint8_t map_tile;
+
 void update_player(uint8_t input) {
-  if (!cur_pressing_arrow) {
-    if (input & J_LEFT) {
-      if (curScreenX == 0) {
-        curScreenX = NUM_SCREENS_X - 1;
+  if (!playerFlipped) {
+    // Check collisions with tiles below the player
+    if (playerSpriteY % 8 == 0) {
+      if (curScreenY > 3) {
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
       } else {
-        curScreenX--;
+        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
       }
-      draw_screen();
-      cur_pressing_arrow = 1;
-    } else if (input & J_RIGHT) {
-      if (curScreenX == NUM_SCREENS_X - 1) {
-        curScreenX = 0;
+      if (map_tile == 0) {
+        // Fall down
+        playerSpriteY += 2;
+        move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+        isOnGround = 0;
       } else {
-        curScreenX++;
+        // Stop falling
+        isOnGround = 1;
       }
-      draw_screen();
-      cur_pressing_arrow = 1;
+    } else {
+      // Fall down
+      playerSpriteY += 2;
+      move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+      isOnGround = 0;
+    }
+  } else {
+    // Check collisions with tiles above the player
+    if (playerSpriteY % 8 == 0) {
+      if (curScreenY > 3) {
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + playerSpriteY / 8);
+      } else {
+        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + playerSpriteY / 8);
+      }
+      if (map_tile == 0) {
+        // Fall up
+        playerSpriteY -= 2;
+        move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+        isOnGround = 0;
+      } else {
+        // Stop falling
+        isOnGround = 1;
+      }
+    } else {
+      // Fall up
+      playerSpriteY -= 2;
+      move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+      isOnGround = 0;
+    }
+  }
+
+  // Flip player when pressing button
+  if(input & J_A) {
+    if (!playerFlipped) {
+      playerFlipped = 1;
+      set_sprite_prop(0, S_FLIPX);
+    } else {
+      playerFlipped = 0;
+      set_sprite_prop(0, 0);
     }
   }
 }
@@ -168,7 +210,6 @@ void init_vvvvvv(void) NONBANKED {
 
   curScreenX = 0;
   curScreenY = 6;
-  cur_pressing_arrow = 0;
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -204,10 +245,6 @@ void update_vvvvvv(uint8_t input) NONBANKED {
   SWITCH_ROM(BANK(vvvvvv_music));
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
-
-  if (!(input & J_LEFT) && !(input & J_RIGHT) && !(input & J_UP) && !(input & J_DOWN)) {
-    cur_pressing_arrow = 0;
-  }
 
   if (input & J_START) {
     // Blink minimap
