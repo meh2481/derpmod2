@@ -19,7 +19,9 @@
 #define PALETTE_MINIMAP    3
 #define PALETTE_MAP_FOG    4
 
-#define MAX_FALL_AMOUNT    4
+#define PLAYER_SPRITE      0
+#define FALL_AMOUNT        4
+#define PLAYER_MOVE_SPEED  2
 
 #define WINDOW_MAP_X       95
 #define WINDOW_MAP_Y       72
@@ -127,7 +129,7 @@ uint8_t is_vvvvvv_passable_tile(uint8_t tile) {
 }
 
 void fall_down(void) {
-  playerSpriteY += 2;
+  playerSpriteY += FALL_AMOUNT;
   isOnGround = 0;
 
   if(playerSpriteY > SCREEN_HEIGHT) {
@@ -136,18 +138,18 @@ void fall_down(void) {
     curScreenY++;
     draw_screen();
   }
-  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+  move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
 
 void fall_up(void) {
-  playerSpriteY -= 2;
+  playerSpriteY -= FALL_AMOUNT;
   if(playerSpriteY <= -16) {
     // Player fell off top of screen, reset to bottom
-    playerSpriteY += SCREEN_HEIGHT - 16;
+    playerSpriteY += SCREEN_HEIGHT + 16;
     curScreenY--;
     draw_screen();
   }
-  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+  move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   isOnGround = 0;
 }
 
@@ -204,6 +206,25 @@ void update_player(uint8_t input) {
     }
   } else if (!(input & J_A) && isOnGround) {
     playerCanFlip = 1;
+  }
+
+  // Move left and right
+  if(input & J_LEFT) {
+    playerSpriteX -= PLAYER_MOVE_SPEED;
+    if (playerSpriteX < -8) {
+      playerSpriteX += SCREEN_WIDTH;
+      curScreenX--;
+      draw_screen();
+    }
+    move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
+  } else if(input & J_RIGHT) {
+    playerSpriteX += PLAYER_MOVE_SPEED;
+    if (playerSpriteX > SCREEN_WIDTH) {
+      playerSpriteX -= SCREEN_WIDTH + 8;
+      curScreenX++;
+      draw_screen();
+    }
+    move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   }
 }
 
@@ -263,7 +284,7 @@ void init_vvvvvv(void) NONBANKED {
   playerSpriteY = 72 - 8;
   playerFlipped = playerCanFlip = 0;
   curFallAmount = 0;
-  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+  move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
 
 uint8_t minimap_blink_counter = 0;
