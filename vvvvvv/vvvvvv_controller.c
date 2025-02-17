@@ -46,6 +46,7 @@ uint8_t mapMenu;
 uint8_t playerSpriteX;
 uint8_t playerSpriteY;
 uint8_t playerFlipped;
+uint8_t playerCanFlip;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -133,7 +134,7 @@ void draw_screen(void) {
   SPRITES_8x16;
   playerSpriteX = 80 - 4;
   playerSpriteY = 72 - 8;
-  playerFlipped = 0;
+  playerFlipped = playerCanFlip = 0;
   move_sprite(0, playerSpriteX+8, playerSpriteY+16);
 }
 
@@ -145,9 +146,9 @@ void update_player(uint8_t input) {
     // Check collisions with tiles below the player
     if (playerSpriteY % 8 == 0) {
       if (curScreenY > 3) {
-        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY) / 8);
       } else {
-        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
+        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY) / 8);
       }
       if (map_tile == 0) {
         // Fall down
@@ -168,9 +169,9 @@ void update_player(uint8_t input) {
     // Check collisions with tiles above the player
     if (playerSpriteY % 8 == 0) {
       if (curScreenY > 3) {
-        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + playerSpriteY / 8);
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       } else {
-        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + playerSpriteY / 8);
+        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       }
       if (map_tile == 0) {
         // Fall up
@@ -190,14 +191,17 @@ void update_player(uint8_t input) {
   }
 
   // Flip player when pressing button
-  if(input & J_A) {
+  if(input & J_A && playerCanFlip && isOnGround) {
+    playerCanFlip = 0;
     if (!playerFlipped) {
       playerFlipped = 1;
-      set_sprite_prop(0, S_FLIPX);
+      set_sprite_prop(0, S_FLIPY);
     } else {
       playerFlipped = 0;
       set_sprite_prop(0, 0);
     }
+  } else if (!(input & J_A) && isOnGround) {
+    playerCanFlip = 1;
   }
 }
 
