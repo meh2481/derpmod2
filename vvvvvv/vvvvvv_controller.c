@@ -22,6 +22,7 @@
 #define PLAYER_SPRITE      0
 #define FALL_AMOUNT        4
 #define PLAYER_MOVE_SPEED  2
+#define PLAYER_ANIM_COUNT  4
 
 #define WINDOW_MAP_X       95
 #define WINDOW_MAP_Y       72
@@ -53,6 +54,8 @@ uint8_t playerFlipped;
 uint8_t playerMoveLeft;
 uint8_t playerCanFlip;
 uint8_t curFallAmount;
+uint8_t playerMoveAnimDelay;
+uint8_t playerAnimApplied;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -285,6 +288,30 @@ void update_player(uint8_t input) {
       draw_screen();
     }
     move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
+  } else {
+    // Stop player anim
+    set_sprite_tile(PLAYER_SPRITE, 0);
+    playerMoveAnimDelay = 0;
+    playerAnimApplied = 0;
+  }
+  if (isOnGround && (input & (J_LEFT | J_RIGHT))) {
+    // Anim player walking
+    playerMoveAnimDelay++;
+    if (playerMoveAnimDelay > PLAYER_ANIM_COUNT) {
+      playerMoveAnimDelay = 0;
+      if (playerAnimApplied) {
+        playerAnimApplied = 0;
+        set_sprite_tile(PLAYER_SPRITE, 2);
+      } else {
+        playerAnimApplied = 1;
+        set_sprite_tile(PLAYER_SPRITE, 0);
+      }
+    }
+  } else {
+    // Stop player anim
+    set_sprite_tile(PLAYER_SPRITE, 0);
+    playerMoveAnimDelay = 0;
+    playerAnimApplied = 0;
   }
 }
 
