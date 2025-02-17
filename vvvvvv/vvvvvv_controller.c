@@ -126,7 +126,7 @@ uint8_t is_vvvvvv_passable_tile(uint8_t tile) {
   return tile > 90;
 }
 
-void fall_down()  {
+void fall_down(void) {
   playerSpriteY += 2;
   isOnGround = 0;
 
@@ -139,7 +139,7 @@ void fall_down()  {
   move_sprite(0, playerSpriteX+8, playerSpriteY+16);
 }
 
-void fall_up() {
+void fall_up(void) {
   playerSpriteY -= 2;
   if(playerSpriteY <= -16) {
     // Player fell off top of screen, reset to bottom
@@ -156,7 +156,7 @@ void update_player(uint8_t input) {
     // Check collisions with tiles below the player
     if (playerSpriteY % 8 == 0) {
       if (curScreenY > 3) {
-        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
       } else {
         map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
       }
@@ -175,7 +175,7 @@ void update_player(uint8_t input) {
     // Check collisions with tiles above the player
     if (playerSpriteY % 8 == 0) {
       if (curScreenY > 3) {
-        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       } else {
         map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       }
@@ -215,7 +215,7 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, 0);
 
   curScreenX = 0;
-  curScreenY = 0; //6;
+  curScreenY = 6;
   cur_pressing_start = 0;
   mapMenu = 0;
 
