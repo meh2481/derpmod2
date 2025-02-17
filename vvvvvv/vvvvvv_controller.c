@@ -50,6 +50,7 @@ uint8_t mapMenu;
 int16_t playerSpriteX;
 int16_t playerSpriteY;
 uint8_t playerFlipped;
+uint8_t playerMoveLeft;
 uint8_t playerCanFlip;
 uint8_t curFallAmount;
 
@@ -245,11 +246,11 @@ void update_player(uint8_t input) {
   if(input & J_A && playerCanFlip && isOnGround) {
     playerCanFlip = 0;
     if (!playerFlipped) {
-      playerFlipped = 1;
-      set_sprite_prop(0, S_FLIPY);
+      playerFlipped = S_FLIPY;
+      set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
     } else {
       playerFlipped = 0;
-      set_sprite_prop(0, 0);
+      set_sprite_prop(PLAYER_SPRITE, playerMoveLeft);
     }
   } else if (!(input & J_A) && isOnGround) {
     playerCanFlip = 1;
@@ -257,6 +258,8 @@ void update_player(uint8_t input) {
 
   // Move left and right
   if(input & J_LEFT) {
+    playerMoveLeft = S_FLIPX;
+    set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
     playerSpriteX -= PLAYER_MOVE_SPEED;
     if (playerSpriteX < -8) {
       playerSpriteX += SCREEN_WIDTH;
@@ -269,6 +272,8 @@ void update_player(uint8_t input) {
     }
     move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   } else if(input & J_RIGHT) {
+    playerMoveLeft = 0;
+    set_sprite_prop(PLAYER_SPRITE, playerFlipped);
     playerSpriteX += PLAYER_MOVE_SPEED;
     if (playerSpriteX > SCREEN_WIDTH) {
       playerSpriteX -= SCREEN_WIDTH + 8;
@@ -337,7 +342,7 @@ void init_vvvvvv(void) NONBANKED {
   SPRITES_8x16;
   playerSpriteX = 80 - 4;
   playerSpriteY = 72 - 8;
-  playerFlipped = playerCanFlip = 0;
+  playerFlipped = playerCanFlip = playerMoveLeft = 0;
   curFallAmount = 0;
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
