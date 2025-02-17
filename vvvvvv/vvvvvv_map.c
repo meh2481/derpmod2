@@ -1041,5 +1041,11 @@ void set_vvvvvv_map_tile_row(uint8_t row, uint8_t col, uint8_t vram_row) BANKED 
 }
 
 uint8_t get_vvvvvv_map_tile(uint8_t col, uint8_t row) BANKED {
+  if(col >= vvvvvv_mapWidth) {
+    col -= 1;
+  }
+  if(col == 255) {
+    col = vvvvvv_mapWidth;
+  }
   return vvvvvv_mapBLK0PLN0[row * vvvvvv_mapWidth + col];
 }
