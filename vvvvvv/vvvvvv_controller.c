@@ -121,7 +121,6 @@ void draw_screen(void) {
 }
 
 uint8_t isOnGround = 0;
-uint8_t map_tile;
 
 uint8_t is_vvvvvv_passable_tile(uint8_t tile) {
   // impassable tiles in our tilemap
@@ -135,7 +134,11 @@ void fall_down(void) {
   if(playerSpriteY > SCREEN_HEIGHT) {
     // Player fell off the screen, reset to top
     playerSpriteY -= SCREEN_HEIGHT + 16;
-    curScreenY++;
+    if (curScreenY == NUM_SCREENS_Y - 1) {
+      curScreenY = 0;
+    } else {
+      curScreenY++;
+    }
     draw_screen();
   }
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
@@ -146,23 +149,32 @@ void fall_up(void) {
   if(playerSpriteY <= -16) {
     // Player fell off top of screen, reset to bottom
     playerSpriteY += SCREEN_HEIGHT + 16;
-    curScreenY--;
+    if (curScreenY == 0) {
+      curScreenY = NUM_SCREENS_Y - 1;
+    } else {
+      curScreenY--;
+    }
     draw_screen();
   }
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   isOnGround = 0;
 }
 
+uint8_t map_tile;
+uint8_t map_tile2;
+
 void update_player(uint8_t input) {
   if (!playerFlipped) {
     // Check collisions with tiles below the player
-    if (playerSpriteY % 8 == 0) {
+    if (playerSpriteY % 8 == 0 && playerSpriteY <= 128) {
       if (curScreenY > 3) {
         map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+        map_tile2 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
       } else {
         map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+        map_tile2 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
       }
-      if (is_vvvvvv_passable_tile(map_tile)) {
+      if (is_vvvvvv_passable_tile(map_tile) && (playerSpriteX % 8 == 0 || is_vvvvvv_passable_tile(map_tile2))) {
         // Fall down
         fall_down();
       } else {
@@ -175,13 +187,15 @@ void update_player(uint8_t input) {
     }
   } else {
     // Check collisions with tiles above the player
-    if (playerSpriteY % 8 == 0) {
+    if (playerSpriteY % 8 == 0 && playerSpriteY >= 8) {
       if (curScreenY > 3) {
         map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
+        map_tile2 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       } else {
         map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
+        map_tile2 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       }
-      if (is_vvvvvv_passable_tile(map_tile)) {
+      if (is_vvvvvv_passable_tile(map_tile) && (playerSpriteX % 8 == 0 || is_vvvvvv_passable_tile(map_tile2))) {
         // Fall up
         fall_up();
       } else {
@@ -213,7 +227,11 @@ void update_player(uint8_t input) {
     playerSpriteX -= PLAYER_MOVE_SPEED;
     if (playerSpriteX < -8) {
       playerSpriteX += SCREEN_WIDTH;
-      curScreenX--;
+      if (curScreenX == 0) {
+        curScreenX = NUM_SCREENS_X - 1;
+      } else {
+        curScreenX--;
+      }
       draw_screen();
     }
     move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
@@ -221,7 +239,11 @@ void update_player(uint8_t input) {
     playerSpriteX += PLAYER_MOVE_SPEED;
     if (playerSpriteX > SCREEN_WIDTH) {
       playerSpriteX -= SCREEN_WIDTH + 8;
-      curScreenX++;
+      if (curScreenX == NUM_SCREENS_X - 1) {
+        curScreenX = 0;
+      } else {
+        curScreenX++;
+      }
       draw_screen();
     }
     move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
