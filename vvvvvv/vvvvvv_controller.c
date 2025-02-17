@@ -19,6 +19,8 @@
 #define PALETTE_MINIMAP    3
 #define PALETTE_MAP_FOG    4
 
+#define MAX_FALL_AMOUNT    4
+
 #define WINDOW_MAP_X       95
 #define WINDOW_MAP_Y       72
 
@@ -43,10 +45,11 @@ uint16_t curScreenX;
 uint16_t curScreenY;
 uint8_t mapMenu;
 // Center of player sprite
-uint8_t playerSpriteX;
-uint8_t playerSpriteY;
+int16_t playerSpriteX;
+int16_t playerSpriteY;
 uint8_t playerFlipped;
 uint8_t playerCanFlip;
+uint8_t curFallAmount;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -113,57 +116,60 @@ void draw_screen(void) {
 
   // Set the palette for this screen
   set_vvvvvv_room_palette(curScreenX + curScreenY * NUM_SCREENS_X);
-
-  // Set the palette for objects (black bg, white obj, blue minimap)
-  set_bkg_palette_entry(PALETTE_FLIPLINES, 0, RGB(0,0,0));
-  set_bkg_palette_entry(PALETTE_FLIPLINES, 1, RGB(31,31,31));
-  set_bkg_palette_entry(PALETTE_FLIPLINES, 2, RGB(18,10,21));
-  set_bkg_palette_entry(PALETTE_FLIPLINES, 3, RGB(10,6,13));
-  set_bkg_palette_entry(PALETTE_SAVEPOINTS, 0, RGB(0,0,0));
-  set_bkg_palette_entry(PALETTE_SAVEPOINTS, 1, RGB(31,31,31));
-  set_bkg_palette_entry(PALETTE_MINIMAP, 0, RGB(0,10,10));
-  set_bkg_palette_entry(PALETTE_MINIMAP, 1, RGB(0,31,31));
-  set_bkg_palette_entry(PALETTE_MINIMAP, 2, RGB(0,25,25));
-  set_bkg_palette_entry(PALETTE_MINIMAP, 3, RGB(0,15,15));
-  set_bkg_palette_entry(PALETTE_MAP_FOG, 0, RGB(10,10,10));
-
-  // Set sprite data
-  init_vvvvvv_sprite_tiles();
-  init_vvvvvv_sprite_palettes(0);
-
-  SPRITES_8x16;
-  playerSpriteX = 80 - 4;
-  playerSpriteY = 72 - 8;
-  playerFlipped = playerCanFlip = 0;
-  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
 }
 
 uint8_t isOnGround = 0;
 uint8_t map_tile;
+
+uint8_t is_vvvvvv_passable_tile(uint8_t tile) {
+  // impassable tiles in our tilemap
+  return tile > 90;
+}
+
+void fall_down()  {
+  playerSpriteY += 2;
+  isOnGround = 0;
+
+  if(playerSpriteY > SCREEN_HEIGHT) {
+    // Player fell off the screen, reset to top
+    playerSpriteY -= SCREEN_HEIGHT + 16;
+    curScreenY++;
+    draw_screen();
+  }
+  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+}
+
+void fall_up() {
+  playerSpriteY -= 2;
+  if(playerSpriteY <= -16) {
+    // Player fell off top of screen, reset to bottom
+    playerSpriteY += SCREEN_HEIGHT - 16;
+    curScreenY--;
+    draw_screen();
+  }
+  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
+  isOnGround = 0;
+}
 
 void update_player(uint8_t input) {
   if (!playerFlipped) {
     // Check collisions with tiles below the player
     if (playerSpriteY % 8 == 0) {
       if (curScreenY > 3) {
-        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY) / 8);
+        map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
       } else {
-        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY) / 8);
+        map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
       }
-      if (map_tile == 0) {
+      if (is_vvvvvv_passable_tile(map_tile)) {
         // Fall down
-        playerSpriteY += 2;
-        move_sprite(0, playerSpriteX+8, playerSpriteY+16);
-        isOnGround = 0;
+        fall_down();
       } else {
         // Stop falling
         isOnGround = 1;
       }
     } else {
       // Fall down
-      playerSpriteY += 2;
-      move_sprite(0, playerSpriteX+8, playerSpriteY+16);
-      isOnGround = 0;
+      fall_down();
     }
   } else {
     // Check collisions with tiles above the player
@@ -173,20 +179,16 @@ void update_player(uint8_t input) {
       } else {
         map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
       }
-      if (map_tile == 0) {
+      if (is_vvvvvv_passable_tile(map_tile)) {
         // Fall up
-        playerSpriteY -= 2;
-        move_sprite(0, playerSpriteX+8, playerSpriteY+16);
-        isOnGround = 0;
+        fall_up();
       } else {
         // Stop falling
         isOnGround = 1;
       }
     } else {
       // Fall up
-      playerSpriteY -= 2;
-      move_sprite(0, playerSpriteX+8, playerSpriteY+16);
-      isOnGround = 0;
+      fall_up();
     }
   }
 
@@ -213,7 +215,7 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, 0);
 
   curScreenX = 0;
-  curScreenY = 6;
+  curScreenY = 0; //6;
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -238,6 +240,30 @@ void init_vvvvvv(void) NONBANKED {
   draw_window_box();
 
   draw_screen();
+
+  // Set the palette for objects (black bg, white obj, blue minimap)
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 0, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 1, RGB(31,31,31));
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 2, RGB(18,10,21));
+  set_bkg_palette_entry(PALETTE_FLIPLINES, 3, RGB(10,6,13));
+  set_bkg_palette_entry(PALETTE_SAVEPOINTS, 0, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_SAVEPOINTS, 1, RGB(31,31,31));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 0, RGB(0,10,10));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 1, RGB(0,31,31));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 2, RGB(0,25,25));
+  set_bkg_palette_entry(PALETTE_MINIMAP, 3, RGB(0,15,15));
+  set_bkg_palette_entry(PALETTE_MAP_FOG, 0, RGB(10,10,10));
+
+  // Set sprite data
+  init_vvvvvv_sprite_tiles();
+  init_vvvvvv_sprite_palettes(0);
+
+  SPRITES_8x16;
+  playerSpriteX = 80 - 4;
+  playerSpriteY = 72 - 8;
+  playerFlipped = playerCanFlip = 0;
+  curFallAmount = 0;
+  move_sprite(0, playerSpriteX+8, playerSpriteY+16);
 }
 
 uint8_t minimap_blink_counter = 0;
