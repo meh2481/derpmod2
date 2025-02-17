@@ -262,7 +262,7 @@ void update_player(uint8_t input) {
     set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
     playerSpriteX -= PLAYER_MOVE_SPEED;
     if (playerSpriteX < -8) {
-      playerSpriteX += SCREEN_WIDTH;
+      playerSpriteX += SCREEN_WIDTH + 8;
       if (curScreenX == 0) {
         curScreenX = NUM_SCREENS_X - 1;
       } else {
