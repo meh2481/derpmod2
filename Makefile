@@ -50,6 +50,7 @@ OBJS	= main.o \
 	vvvvvv/vvvvvv_mapattribs2.o \
 	vvvvvv/vvvvvv_tiles.o \
 	vvvvvv/vvvvvv_controller.o \
+	vvvvvv/vvvvvv_controller_banked.o \
 	vvvvvv/vvvvvv_palettes.o \
 	vvvvvv/sprite_tileset_tiles.o \
 	vvvvvv/minimap_tiles.o
