@@ -19,6 +19,7 @@
 */
 #pragma bank 255
 #include <gb/gb.h>
+#include "../utils/utils.h"
 #define vvvvvv_mapWidth 140
 #define vvvvvv_mapHeight 126
 #define vvvvvv_mapBank 0
@@ -1046,6 +1047,12 @@ uint8_t get_vvvvvv_map_tile(uint8_t col, uint8_t row) BANKED {
   }
   if(col == 255) {
     col = vvvvvv_mapWidth;
+  }
+  if(row >= SCREEN_HEIGHT_TILES*4) {
+    row = SCREEN_HEIGHT_TILES*4 - 1;
+  }
+  if(row == 255) {
+    row = vvvvvv_mapHeight;
   }
   return vvvvvv_mapBLK0PLN0[row * vvvvvv_mapWidth + col];
 }
