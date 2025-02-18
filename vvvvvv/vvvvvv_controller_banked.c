@@ -132,7 +132,7 @@ void update_player(uint8_t input) BANKED {
     if (playerSpriteY % 8 == 0 && playerSpriteY >= 8) {
       if (curScreenY > 3) {
         if(curScreenX == 0 && playerSpriteX < 0) {
-          map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
+          map_tile = get_vvvvvv_map_tile2(playerSpriteX / 8 + 1, (curScreenY-4) * SCREEN_HEIGHT_TILES + playerSpriteY / 8 - 1);
         } else {
           map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
         }
@@ -143,7 +143,7 @@ void update_player(uint8_t input) BANKED {
         }
       } else {
         if(curScreenX == 0 && playerSpriteX < 0) {
-          map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
+          map_tile = get_vvvvvv_map_tile((playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
         } else {
           map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + playerSpriteX / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY - 8) / 8);
         }
