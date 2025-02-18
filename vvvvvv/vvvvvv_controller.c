@@ -56,6 +56,7 @@ uint8_t playerCanFlip;
 uint8_t curFallAmount;
 uint8_t playerMoveAnimDelay;
 uint8_t playerAnimApplied;
+uint8_t playerHasGlasses;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -290,7 +291,7 @@ void update_player(uint8_t input) {
     move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   } else {
     // Stop player anim
-    set_sprite_tile(PLAYER_SPRITE, 0);
+    set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
     playerMoveAnimDelay = 0;
     playerAnimApplied = 0;
   }
@@ -301,15 +302,15 @@ void update_player(uint8_t input) {
       playerMoveAnimDelay = 0;
       if (playerAnimApplied) {
         playerAnimApplied = 0;
-        set_sprite_tile(PLAYER_SPRITE, 2);
+        set_sprite_tile(PLAYER_SPRITE, playerHasGlasses + 2);
       } else {
         playerAnimApplied = 1;
-        set_sprite_tile(PLAYER_SPRITE, 0);
+        set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
       }
     }
   } else {
     // Stop player anim
-    set_sprite_tile(PLAYER_SPRITE, 0);
+    set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
     playerMoveAnimDelay = 0;
     playerAnimApplied = 0;
   }
@@ -371,6 +372,7 @@ void init_vvvvvv(void) NONBANKED {
   playerSpriteY = 72 - 8;
   playerFlipped = playerCanFlip = playerMoveLeft = 0;
   curFallAmount = 0;
+  playerHasGlasses = 0;
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
 
