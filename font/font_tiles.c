@@ -97,12 +97,12 @@ const char* dialogue_strings[][7] = {
   }, {
     "\"Under no        ",
     "circumstances are ",
-    "you to use this   ",
-    "warp gate with    "
+    "you to open this  ",
+    "warp gate...      "
   }, {
-    "precisely three   ",
-    "steak as a power  ",
-    "source.\"          "
+    "using precisely   ",
+    "three steak as a  ",
+    "power source.\"    "
   }, {
     "Huh.              "
   }, {
@@ -118,9 +118,9 @@ const char* dialogue_strings[][7] = {
     "The sign says:    "
   }, {
     "\"This is the cool ",
-    "kids club. Only   ",
-    "cool kids         ",
-    "allowed.\"         "
+    "kids club. Must be ",
+    "this cool to       ",
+    "enter.\"            "
   }, {
     "I\'m not cool      ",
     "enough already?   ",
