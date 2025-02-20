@@ -31,6 +31,8 @@ extern void set_vvvvvv_map_attrib_row2(uint8_t row, uint8_t col, uint8_t vram_ro
 
 extern uint8_t get_vvvvvv_map_tile(uint8_t row, uint8_t col) BANKED;
 extern uint8_t get_vvvvvv_map_tile2(uint8_t row, uint8_t col) BANKED;
+extern uint8_t get_vvvvvv_map_attrib(uint8_t row, uint8_t col) BANKED;
+extern uint8_t get_vvvvvv_map_attrib2(uint8_t row, uint8_t col) BANKED;
 
 #define vvvvvv_map vvvvvv_mapPLN0
 extern const unsigned char vvvvvv_mapPLN0[];

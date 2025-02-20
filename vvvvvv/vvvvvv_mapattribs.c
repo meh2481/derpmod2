@@ -19,6 +19,7 @@
 */
 #pragma bank 255
 #include <gb/gb.h>
+#include "../utils/utils.h"
 
 #define vvvvvv_mapWidth 140
 #define vvvvvv_mapHeight 126
@@ -1040,6 +1041,22 @@ void set_vvvvvv_map_attrib_row(uint8_t row, uint8_t col, uint8_t vram_row) BANKE
   VBK_REG = VBK_ATTRIBUTES;
   set_bkg_tiles(0, vram_row, 20, 1, &vvvvvv_mapBLK0PLN1[row * vvvvvv_mapWidth + col]);
   VBK_REG = VBK_TILES;
+}
+
+uint8_t get_vvvvvv_map_attrib(uint8_t col, uint8_t row) BANKED {
+  if(col >= vvvvvv_mapWidth) {
+    col -= 1;
+  }
+  if(col == 255) {
+    col = vvvvvv_mapWidth;
+  }
+  if(row >= SCREEN_HEIGHT_TILES*4) {
+    row = SCREEN_HEIGHT_TILES*4 - 1;
+  }
+  if(row == 255) {
+    row = vvvvvv_mapHeight;
+  }
+  return vvvvvv_mapBLK0PLN1[row * vvvvvv_mapWidth + col];
 }
 
 /* End of VVVVVV_MAP.C */

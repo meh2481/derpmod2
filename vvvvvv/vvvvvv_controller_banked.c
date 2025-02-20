@@ -29,22 +29,73 @@
 #define WINDOW_MAP_X       95
 #define WINDOW_MAP_Y       72
 
+#define BLANK_MAP_TILE     91
+#define MAP_SPIKE_TILE1    92
+#define MAP_SPIKE_TILE2    93
+#define MAP_SAVEPOINT_TILE 94
+#define PLAYER_DEAD        12
+#define PLAYER_DEAD_TIMER  120
+
 #define START_MINIMAP_TILES_IDX 94
 
 #define MINIMAP_BLINK_AMOUNT 20
 
 extern uint16_t curScreenX;
 extern uint16_t curScreenY;
+uint16_t lastScreenX;
+uint16_t lastScreenY;
 extern int16_t playerSpriteX;
 extern int16_t playerSpriteY;
+uint16_t lastPlayerSpriteX;
+uint16_t lastPlayerSpriteY;
 extern uint8_t playerFlipped;
+uint8_t lastPlayerFlipped;
 extern uint8_t playerMoveLeft;
 extern uint8_t playerCanFlip;
-extern uint8_t curFallAmount;
 extern uint8_t playerMoveAnimDelay;
 extern uint8_t playerAnimApplied;
 extern uint8_t isOnGround;
 extern uint8_t playerHasGlasses;
+uint8_t playerDead;
+uint8_t playerDeadCountdown;
+
+void save_game(void) BANKED {
+  // hUGE_dosound(SFX_SAVEPOINT);
+  if (isOnGround) {
+    lastPlayerFlipped = playerFlipped;
+    lastPlayerSpriteX = playerSpriteX;
+    lastPlayerSpriteY = playerSpriteY;
+    lastScreenX = curScreenX;
+    lastScreenY = curScreenY;
+  }
+}
+
+void player_respawn(void) BANKED {
+  playerDead = 0;
+  playerDeadCountdown = 0;
+  playerSpriteX = lastPlayerSpriteX;
+  playerSpriteY = lastPlayerSpriteY;
+  playerFlipped = lastPlayerFlipped;
+  set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
+  move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
+  set_sprite_tile(PLAYER_SPRITE, 0);
+  curScreenX = lastScreenX;
+  curScreenY = lastScreenY;
+  draw_screen();
+}
+
+void player_die(void) BANKED {
+  // Play death sound
+  // hUGE_dosound(SFX_DEATH);
+  // Reset player position
+  // playerSpriteX = 80 - 4;
+  // playerSpriteY = 72 - 8;
+  // playerFlipped = playerCanFlip = playerMoveLeft = 0;
+  set_sprite_tile(PLAYER_SPRITE, PLAYER_DEAD);
+  playerDead = 1;
+  playerDeadCountdown = 0;
+  // move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
+}
 
 uint8_t is_vvvvvv_passable_tile(uint8_t tile) BANKED {
   // impassable tiles in our tilemap
@@ -87,8 +138,53 @@ void fall_up(void) BANKED {
 uint8_t map_tile;
 uint8_t map_tile2;
 uint8_t map_tile3;
+uint8_t map_tile4;
+
+void check_tile_collisions(void) BANKED {
+  // Check to see if we're hitting
+  map_tile = map_tile2 = map_tile3 = map_tile4 = BLANK_MAP_TILE;
+  if (curScreenY > 3) {
+    map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+    map_tile2 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+    if (playerSpriteX % 8 != 0) {
+      map_tile3 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+    }
+    if (playerSpriteY % 8 != 0) {
+      map_tile4 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+    }
+  } else {
+    map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+    map_tile2 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+    if (playerSpriteX % 8 != 0) {
+      map_tile3 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+    }
+    if (playerSpriteY % 8 != 0) {
+      map_tile4 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+    }
+  }
+
+  if (map_tile == MAP_SPIKE_TILE1 || map_tile2 == MAP_SPIKE_TILE1 || map_tile3 == MAP_SPIKE_TILE1 || map_tile4 == MAP_SPIKE_TILE1 ||
+    map_tile == MAP_SPIKE_TILE2 || map_tile2 == MAP_SPIKE_TILE2 || map_tile3 == MAP_SPIKE_TILE2 || map_tile4 == MAP_SPIKE_TILE2) {
+    // Player hit a spike
+    player_die();
+  }
+
+  if (map_tile == MAP_SAVEPOINT_TILE || map_tile2 == MAP_SAVEPOINT_TILE || map_tile3 == MAP_SAVEPOINT_TILE || map_tile4 == MAP_SAVEPOINT_TILE) {
+    // Player hit a savepoint
+    save_game();
+  }
+
+}
 
 void update_player(uint8_t input) BANKED {
+  if (playerDead) {
+    if (playerDeadCountdown++ >= PLAYER_DEAD_TIMER) {
+      player_respawn();
+    } else {
+      return;
+    }
+  }
+
   if (!playerFlipped) {
     // Check collisions with tiles below the player
     if (playerSpriteY % 8 == 0 && playerSpriteY <= 128) {
@@ -168,6 +264,7 @@ void update_player(uint8_t input) BANKED {
 
   // Flip player when pressing button
   if(input & J_A && playerCanFlip && isOnGround) {
+    isOnGround = 0;
     playerCanFlip = 0;
     if (!playerFlipped) {
       playerFlipped = S_FLIPY;
@@ -181,7 +278,7 @@ void update_player(uint8_t input) BANKED {
   }
 
   // Reset map tiles
-  map_tile = map_tile2 = map_tile3 = 91;
+  map_tile = map_tile2 = map_tile3 = BLANK_MAP_TILE;
 
   // Move left and right
   if(input & J_LEFT) {
@@ -273,4 +370,6 @@ void update_player(uint8_t input) BANKED {
     playerMoveAnimDelay = 0;
     playerAnimApplied = 0;
   }
+
+  check_tile_collisions();
 }

@@ -55,7 +55,6 @@ int16_t playerSpriteY;
 uint8_t playerFlipped;
 uint8_t playerMoveLeft;
 uint8_t playerCanFlip;
-uint8_t curFallAmount;
 uint8_t playerMoveAnimDelay;
 uint8_t playerAnimApplied;
 uint8_t playerHasGlasses;
@@ -184,7 +183,6 @@ void init_vvvvvv(void) NONBANKED {
   playerSpriteX = 80 - 4;
   playerSpriteY = 72 - 8;
   playerFlipped = playerCanFlip = playerMoveLeft = 0;
-  curFallAmount = 0;
   playerHasGlasses = 0;
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
