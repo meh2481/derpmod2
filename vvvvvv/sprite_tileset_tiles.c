@@ -69,6 +69,10 @@ const palette_color_t* const vvvvvvSpritePal[] = {
   95,
   32767,
   26425,
+  0,
+  0,
+  24319,
+  0
 };
 
 void init_vvvvvv_sprite_tiles(void) BANKED {
@@ -76,7 +80,7 @@ void init_vvvvvv_sprite_tiles(void) BANKED {
 }
 
 void init_vvvvvv_sprite_palettes(uint8_t pal) BANKED {
-  set_sprite_palette(pal, 2, vvvvvvSpritePal);
+  set_sprite_palette(pal, 3, vvvvvvSpritePal);
 }
 
 /* End of SPRITE_TILESET_TILES.C */

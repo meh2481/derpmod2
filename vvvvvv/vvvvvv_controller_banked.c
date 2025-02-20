@@ -92,6 +92,8 @@ void player_die(void) BANKED {
   // playerSpriteY = 72 - 8;
   // playerFlipped = playerCanFlip = playerMoveLeft = 0;
   set_sprite_tile(PLAYER_SPRITE, PLAYER_DEAD);
+  // Turn red
+  set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft | 0x2);
   playerDead = 1;
   playerDeadCountdown = 0;
   // move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
