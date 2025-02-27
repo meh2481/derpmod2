@@ -145,24 +145,25 @@ uint8_t map_tile;
 uint8_t map_tile2;
 uint8_t map_tile3;
 uint8_t map_tile4;
+// TODO: test all 6 tiles, not just 4
 
 void check_tile_collisions(void) BANKED {
   // Check to see if we're hitting
   map_tile = map_tile2 = map_tile3 = map_tile4 = BLANK_MAP_TILE;
   if (curScreenY > 3) {
     map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
-    map_tile2 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+    map_tile2 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
     if (playerSpriteX % 8 != 0) {
-      map_tile3 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      map_tile3 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX + 8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
     }
     if (playerSpriteY % 8 != 0) {
       map_tile4 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
     }
   } else {
     map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
-    map_tile2 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+    map_tile2 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
     if (playerSpriteX % 8 != 0) {
-      map_tile3 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      map_tile3 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY) / 8);
     }
     if (playerSpriteY % 8 != 0) {
       map_tile4 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
@@ -173,6 +174,7 @@ void check_tile_collisions(void) BANKED {
     map_tile == MAP_SPIKE_TILE2 || map_tile2 == MAP_SPIKE_TILE2 || map_tile3 == MAP_SPIKE_TILE2 || map_tile4 == MAP_SPIKE_TILE2) {
     // Player hit a spike
     player_die();
+    return; // Stop testing
   }
 
   if (map_tile == MAP_SAVEPOINT_TILE || map_tile2 == MAP_SAVEPOINT_TILE || map_tile3 == MAP_SAVEPOINT_TILE || map_tile4 == MAP_SAVEPOINT_TILE) {
