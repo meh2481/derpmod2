@@ -36,7 +36,7 @@
 #define MAP_FLIP_VERT_TILE 95
 #define MAP_FLIP_HORIZ_TILE 96
 #define PLAYER_DEAD        12
-#define PLAYER_DEAD_TIMER  120
+#define PLAYER_DEAD_TIMER  100
 
 #define START_MINIMAP_TILES_IDX 94
 
@@ -145,44 +145,53 @@ uint8_t map_tile;
 uint8_t map_tile2;
 uint8_t map_tile3;
 uint8_t map_tile4;
-// TODO: test all 6 tiles, not just 4
+uint8_t map_tile5;
+uint8_t map_tile6;
 
 void check_tile_collisions(void) BANKED {
   // Check to see if we're hitting
-  map_tile = map_tile2 = map_tile3 = map_tile4 = BLANK_MAP_TILE;
+  map_tile = map_tile2 = map_tile3 = map_tile4 = map_tile5 = map_tile6 = BLANK_MAP_TILE;
   if (curScreenY > 3) {
     map_tile = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
     map_tile2 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
     if (playerSpriteX % 8 != 0) {
       map_tile3 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX + 8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
+      map_tile4 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX + 8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
     }
     if (playerSpriteY % 8 != 0) {
-      map_tile4 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      map_tile5 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      if (playerSpriteX % 8 != 0) {
+        map_tile6 = get_vvvvvv_map_tile2(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX + 8) / 8, (curScreenY-4) * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      }
     }
   } else {
     map_tile = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY / 8));
     map_tile2 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY + 8) / 8);
     if (playerSpriteX % 8 != 0) {
       map_tile3 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY) / 8);
+      map_tile4 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+8) / 8);
     }
     if (playerSpriteY % 8 != 0) {
-      map_tile4 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      map_tile5 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX / 8), curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      if (playerSpriteX % 8 != 0) {
+        map_tile6 = get_vvvvvv_map_tile(curScreenX * SCREEN_WIDTH_TILES + (playerSpriteX+8) / 8, curScreenY * SCREEN_HEIGHT_TILES + (playerSpriteY+16) / 8);
+      }
     }
   }
 
-  if (map_tile == MAP_SPIKE_TILE1 || map_tile2 == MAP_SPIKE_TILE1 || map_tile3 == MAP_SPIKE_TILE1 || map_tile4 == MAP_SPIKE_TILE1 ||
-    map_tile == MAP_SPIKE_TILE2 || map_tile2 == MAP_SPIKE_TILE2 || map_tile3 == MAP_SPIKE_TILE2 || map_tile4 == MAP_SPIKE_TILE2) {
+  if (map_tile == MAP_SPIKE_TILE1 || map_tile2 == MAP_SPIKE_TILE1 || map_tile3 == MAP_SPIKE_TILE1 || map_tile4 == MAP_SPIKE_TILE1 || map_tile5 == MAP_SPIKE_TILE1 || map_tile6 == MAP_SPIKE_TILE1 ||
+    map_tile == MAP_SPIKE_TILE2 || map_tile2 == MAP_SPIKE_TILE2 || map_tile3 == MAP_SPIKE_TILE2 || map_tile4 == MAP_SPIKE_TILE2 || map_tile5 == MAP_SPIKE_TILE2 || map_tile6 == MAP_SPIKE_TILE2) {
     // Player hit a spike
     player_die();
     return; // Stop testing
   }
 
-  if (map_tile == MAP_SAVEPOINT_TILE || map_tile2 == MAP_SAVEPOINT_TILE || map_tile3 == MAP_SAVEPOINT_TILE || map_tile4 == MAP_SAVEPOINT_TILE) {
+  if (map_tile == MAP_SAVEPOINT_TILE || map_tile2 == MAP_SAVEPOINT_TILE || map_tile3 == MAP_SAVEPOINT_TILE || map_tile4 == MAP_SAVEPOINT_TILE || map_tile5 == MAP_SAVEPOINT_TILE || map_tile6 == MAP_SAVEPOINT_TILE) {
     // Player hit a savepoint
     save_game();
   }
 
-  if (map_tile == MAP_FLIP_VERT_TILE || map_tile2 == MAP_FLIP_VERT_TILE || map_tile3 == MAP_FLIP_VERT_TILE || map_tile4 == MAP_FLIP_VERT_TILE) {
+  if (map_tile == MAP_FLIP_VERT_TILE || map_tile2 == MAP_FLIP_VERT_TILE || map_tile3 == MAP_FLIP_VERT_TILE || map_tile4 == MAP_FLIP_VERT_TILE || map_tile5 == MAP_FLIP_VERT_TILE || map_tile6 == MAP_FLIP_VERT_TILE) {
     // Player hit a flip line
     if (!vertFlipped) {
       vertFlipped = 1;
