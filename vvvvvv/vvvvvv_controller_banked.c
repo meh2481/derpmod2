@@ -33,6 +33,8 @@
 #define MAP_SPIKE_TILE1    92
 #define MAP_SPIKE_TILE2    93
 #define MAP_SAVEPOINT_TILE 94
+#define MAP_FLIP_VERT_TILE 95
+#define MAP_FLIP_HORIZ_TILE 96
 #define PLAYER_DEAD        12
 #define PLAYER_DEAD_TIMER  120
 
@@ -58,6 +60,7 @@ extern uint8_t isOnGround;
 extern uint8_t playerHasGlasses;
 uint8_t playerDead;
 uint8_t playerDeadCountdown;
+uint8_t vertFlipped = 0;
 
 void save_game(void) BANKED {
   // hUGE_dosound(SFX_SAVEPOINT);
@@ -81,6 +84,7 @@ void player_respawn(void) BANKED {
   set_sprite_tile(PLAYER_SPRITE, 0);
   curScreenX = lastScreenX;
   curScreenY = lastScreenY;
+  vertFlipped = 0;
   draw_screen();
 }
 
@@ -174,6 +178,18 @@ void check_tile_collisions(void) BANKED {
   if (map_tile == MAP_SAVEPOINT_TILE || map_tile2 == MAP_SAVEPOINT_TILE || map_tile3 == MAP_SAVEPOINT_TILE || map_tile4 == MAP_SAVEPOINT_TILE) {
     // Player hit a savepoint
     save_game();
+  }
+
+  if (map_tile == MAP_FLIP_VERT_TILE || map_tile2 == MAP_FLIP_VERT_TILE || map_tile3 == MAP_FLIP_VERT_TILE || map_tile4 == MAP_FLIP_VERT_TILE) {
+    // Player hit a flip line
+    if (!vertFlipped) {
+      vertFlipped = 1;
+      playerFlipped = playerFlipped ? 0 : S_FLIPY;
+      set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
+      // hUGE_dosound(SFX_FLIP);
+    }
+  } else {
+    vertFlipped = 0;
   }
 
 }
