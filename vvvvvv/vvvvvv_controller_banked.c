@@ -61,6 +61,7 @@ extern uint8_t playerHasGlasses;
 uint8_t playerDead;
 uint8_t playerDeadCountdown;
 uint8_t vertFlipped = 0;
+uint8_t horizFlipped = 0;
 
 void save_game(void) BANKED {
   // hUGE_dosound(SFX_SAVEPOINT);
@@ -201,6 +202,24 @@ void check_tile_collisions(void) BANKED {
     }
   } else {
     vertFlipped = 0;
+  }
+
+  if (map_tile == MAP_FLIP_HORIZ_TILE || map_tile2 == MAP_FLIP_HORIZ_TILE || map_tile3 == MAP_FLIP_HORIZ_TILE || map_tile4 == MAP_FLIP_HORIZ_TILE || map_tile5 == MAP_FLIP_HORIZ_TILE || map_tile6 == MAP_FLIP_HORIZ_TILE) {
+    // Player hit a flip line
+    if (!horizFlipped && ((playerSpriteY % 8 >= 4 && !playerFlipped) || (playerSpriteY % 8 < 4 && playerFlipped))) {
+      horizFlipped = 1;
+      playerCanFlip = 0;
+      if (!playerFlipped) {
+        playerFlipped = S_FLIPY;
+        set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
+      } else {
+        playerFlipped = 0;
+        set_sprite_prop(PLAYER_SPRITE, playerMoveLeft);
+      }
+      // hUGE_dosound(SFX_FLIP);
+    }
+  } else {
+    horizFlipped = 0;
   }
 
 }
