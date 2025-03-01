@@ -193,7 +193,7 @@ void check_tile_collisions(void) BANKED {
 
   if (map_tile == MAP_FLIP_VERT_TILE || map_tile2 == MAP_FLIP_VERT_TILE || map_tile3 == MAP_FLIP_VERT_TILE || map_tile4 == MAP_FLIP_VERT_TILE || map_tile5 == MAP_FLIP_VERT_TILE || map_tile6 == MAP_FLIP_VERT_TILE) {
     // Player hit a flip line
-    if (!vertFlipped) {
+    if (!vertFlipped && ((playerSpriteX % 8 >= 4 && !playerMoveLeft) || (playerSpriteX % 8 < 4 && playerMoveLeft))) {
       vertFlipped = 1;
       playerFlipped = playerFlipped ? 0 : S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
