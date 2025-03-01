@@ -214,6 +214,8 @@ void check_tile_collisions(void) BANKED {
         set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
       } else {
         playerFlipped = 0;
+        playerSpriteY += 4;
+        move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
         set_sprite_prop(PLAYER_SPRITE, playerMoveLeft);
       }
       // hUGE_dosound(SFX_FLIP);
