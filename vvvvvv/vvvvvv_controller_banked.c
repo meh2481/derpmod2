@@ -72,6 +72,7 @@ extern uint8_t cur_vvvvvv_dialogue;
 extern uint8_t cur_vvvvvv_dialogue_start;
 extern uint8_t cur_vvvvvv_dialogue_length;
 extern uint8_t playerPressingA;
+uint8_t hasDoneIntro = 0;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -277,6 +278,17 @@ void update_player(uint8_t input) BANKED {
       } else {
         // Stop falling
         isOnGround = 1;
+
+        // The first time we land on the ground, start the VVVVVV intro sequence
+        if (!hasDoneIntro) {
+          hasDoneIntro = 1;
+          // Display dialog and show text box
+          display_dialog = 1;
+          cur_displaying_string_char = 0;
+          cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_WARP_SUCCESS;
+          cur_vvvvvv_dialogue_length = 8;
+          render_textbox_id(cur_vvvvvv_dialogue, 0);
+        }
       }
     } else {
       // Fall down

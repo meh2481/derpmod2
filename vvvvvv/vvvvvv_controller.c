@@ -217,6 +217,8 @@ void update_vvvvvv(uint8_t input) NONBANKED {
   if (cur_displaying_string_char != -1) {
     // If A is pressed, display all text immediately
     if (input & J_A && !playerPressingA) {
+      playerCanFlip = 0;
+      playerPressingA = 1;
       // Show all text at once
       while (cur_displaying_string_char != -1) {
         cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_dialogue, cur_displaying_string_char, 0);
@@ -232,6 +234,7 @@ void update_vvvvvv(uint8_t input) NONBANKED {
     playerPressingA = 1;
     if (++cur_vvvvvv_dialogue >= cur_vvvvvv_dialogue_start + cur_vvvvvv_dialogue_length) {
       display_dialog = 0;
+      playerCanFlip = 0;
       move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
     } else {
       // Next line of text
