@@ -42,6 +42,10 @@
 
 #define MINIMAP_BLINK_AMOUNT 20
 
+const uint8_t no_tiles[] = {
+  91, 91
+};
+
 extern uint16_t curScreenX;
 extern uint16_t curScreenY;
 uint16_t lastScreenX;
@@ -436,6 +440,12 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
       set_sprite_tile(1, 14);
       set_sprite_prop(1, 0);
       move_sprite(1, 48+8, 40+16);
+    }
+  } else if (screenX == 0 && screenY == 3) {
+    // Hide door tiles if player has glasses
+    if (playerHasGlasses) {
+      set_bkg_tiles(15, 13, 2, 1, no_tiles);
+      set_bkg_tiles(15, 14, 2, 1, no_tiles);
     }
   } else {
     // Hide all sprites
