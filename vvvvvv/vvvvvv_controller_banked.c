@@ -68,7 +68,7 @@ uint8_t vertFlipped = 0;
 uint8_t horizFlipped = 0;
 
 void save_game(void) BANKED {
-  // hUGE_dosound(SFX_SAVEPOINT);
+  //TODO hUGE_dosound(SFX_SAVEPOINT);
   if (isOnGround) {
     lastPlayerFlipped = playerFlipped;
     lastPlayerSpriteX = playerSpriteX;
@@ -94,23 +94,18 @@ void player_respawn(void) BANKED {
 }
 
 void player_die(void) BANKED {
-  // Play death sound
+  // TODO Play death sound
   // hUGE_dosound(SFX_DEATH);
-  // Reset player position
-  // playerSpriteX = 80 - 4;
-  // playerSpriteY = 72 - 8;
-  // playerFlipped = playerCanFlip = playerMoveLeft = 0;
   set_sprite_tile(PLAYER_SPRITE, PLAYER_DEAD);
   // Turn red
   set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft | 0x2);
   playerDead = 1;
   playerDeadCountdown = 0;
-  // move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
 
 uint8_t is_vvvvvv_passable_tile(uint8_t tile) BANKED {
   if (playerHasGlasses && curScreenX == 0 && curScreenY == 3 && tile < 13) {
-    // Door is open if the player is cool enough
+    // Door is open if the player is cool enough (collision, not visually)
     return 1;
   }
   // impassable tiles in our tilemap
@@ -206,7 +201,7 @@ void check_tile_collisions(void) BANKED {
       vertFlipped = 1;
       playerFlipped = playerFlipped ? 0 : S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
-      // hUGE_dosound(SFX_FLIP);
+      // TODO hUGE_dosound(SFX_FLIP);
     }
   } else {
     vertFlipped = 0;
@@ -226,7 +221,7 @@ void check_tile_collisions(void) BANKED {
         move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
         set_sprite_prop(PLAYER_SPRITE, playerMoveLeft);
       }
-      // hUGE_dosound(SFX_FLIP);
+      // TODO hUGE_dosound(SFX_FLIP);
     }
   } else {
     horizFlipped = 0;
@@ -442,7 +437,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
       move_sprite(1, 48+8, 40+16);
     }
   } else if (screenX == 0 && screenY == 3) {
-    // Hide door tiles if player has glasses
+    // Hide door tiles (visually, not collisions) if player has glasses
     if (playerHasGlasses) {
       set_bkg_tiles(15, 13, 2, 1, no_tiles);
       set_bkg_tiles(15, 14, 2, 1, no_tiles);
@@ -470,7 +465,7 @@ void check_sprite_collisions(void) BANKED {
     if (isOnGround && !playerHasGlasses && check_sprite_collided(playerSpriteX, playerSpriteY, 48, 40, 8, 8)) {
       // Player picked up the glasses
       playerHasGlasses = 4;
-      // hUGE_dosound(SFX_GETGLASSES);
+      // TODO hUGE_dosound(SFX_GETGLASSES);
       // Hide glasses sprite
       set_sprite_tile(1, 0);
       set_sprite_prop(1, 0);
