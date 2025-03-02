@@ -272,7 +272,7 @@ void stop_note(void) {
   }
 }
 
-int8_t cur_swordfish_string_char = -1;
+int8_t cur_displaying_string_char = -1;
 uint8_t display_dialog = 0;
 
 void update_note(void) {
@@ -354,7 +354,7 @@ void update_note(void) {
         hide_sprite(bulb_onscreen);
         bulb_onscreen = 0;
         CBTFX_PLAY_SFX_OPEN_PLANT;
-        cur_swordfish_string_char = 0;
+        cur_displaying_string_char = 0;
         display_dialog = 1;
         cur_swordfish_string++;
         render_textbox_id(cur_swordfish_string, 0);
@@ -463,8 +463,8 @@ void update_aquaria(uint8_t input) NONBANKED {
     SWITCH_ROM(previous_bank);
   }
 
-  if (cur_swordfish_string_char != -1) {
-    cur_swordfish_string_char = render_next_string_char_id(cur_swordfish_string, cur_swordfish_string_char, 0);
+  if (cur_displaying_string_char != -1) {
+    cur_displaying_string_char = render_next_string_char_id(cur_swordfish_string, cur_displaying_string_char, 0);
   }
 
   // Update warp gate sprite
@@ -489,7 +489,7 @@ void update_aquaria(uint8_t input) NONBANKED {
   last_direction = direction;
   direction = 0;
 
-  if (input & J_A && display_dialog == 1 && cur_swordfish_string_char == -1) {
+  if (input & J_A && display_dialog == 1 && cur_displaying_string_char == -1) {
     display_dialog = 0;
     // Hide window
     move_win(WIN_X_OFFSET, SCREEN_HEIGHT);

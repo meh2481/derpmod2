@@ -55,9 +55,13 @@ int16_t playerSpriteY;
 uint8_t playerFlipped;
 uint8_t playerMoveLeft;
 uint8_t playerCanFlip;
+uint8_t playerPressingA;
 uint8_t playerMoveAnimDelay;
 uint8_t playerAnimApplied;
 uint8_t playerHasGlasses;
+extern uint8_t display_dialog;
+uint8_t cur_vvvvvv_string;
+extern int8_t cur_displaying_string_char;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -73,6 +77,17 @@ uint8_t seenScreens[7][7] = {
 };
 
 void draw_window_box(void) {
+  VBK_REG = VBK_TILES;
+  init_win(0);
+  // Set window to bank 1, map fog palette
+  VBK_REG = VBK_ATTRIBUTES;
+  for (i = 0; i < SCREEN_WIDTH_TILES; i++) {
+    for (j = 0; j < SCREEN_HEIGHT_TILES; j++) {
+      set_win_tile_xy(i, j, 8 | PALETTE_MAP_FOG);
+    }
+  }
+  VBK_REG = VBK_TILES;
+
   // Draw top border
   VBK_REG = VBK_TILES;
   set_win_tiles(0, 0, 9, 1, top_bot_mapbox_tiles);
@@ -104,6 +119,7 @@ void draw_window_box(void) {
     tile = 0xA8;
     set_win_tiles(8, i, 1, 1, &tile);
   }
+  VBK_REG = VBK_TILES;
 }
 
 void draw_screen(void) {
@@ -139,7 +155,7 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, 0);
 
   curScreenX = 0;
-  curScreenY = 0;
+  curScreenY = 0;//6;
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -151,15 +167,6 @@ void init_vvvvvv(void) NONBANKED {
 
   // Hide window
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
-
-  // Set window to bank 1, map fog palette
-  VBK_REG = VBK_ATTRIBUTES;
-  for (i = 0; i < SCREEN_WIDTH_TILES; i++) {
-    for (j = 0; j < SCREEN_HEIGHT_TILES; j++) {
-      set_win_tile_xy(i, j, 8 | PALETTE_MAP_FOG);
-    }
-  }
-  VBK_REG = VBK_TILES;
 
   draw_window_box();
 
@@ -185,7 +192,7 @@ void init_vvvvvv(void) NONBANKED {
   SPRITES_8x16;
   playerSpriteX = 80 - 4;
   playerSpriteY = 72 - 8;
-  playerFlipped = playerCanFlip = playerMoveLeft = 0;
+  playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
   playerHasGlasses = 0;
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
@@ -200,58 +207,87 @@ void update_vvvvvv(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
-  if (input & J_START) {
-    // Blink minimap
-    minimap_blink_counter++;
-    if (minimap_blink_counter > MINIMAP_BLINK_AMOUNT) {
-      if (minimap_blink_on) {
-        minimap_blink_on = 0;
-        VBK_REG = VBK_ATTRIBUTES;
-        set_win_tile_xy(curScreenX+1, curScreenY+1, 0x8);
-        VBK_REG = VBK_TILES;
-      } else {
-        minimap_blink_on = 1;
-        VBK_REG = VBK_ATTRIBUTES;
-        set_win_tile_xy(curScreenX+1, curScreenY+1, 0x8 | PALETTE_MINIMAP);
-        VBK_REG = VBK_TILES;
+  // Handle dialog character-by-character rendering
+  if (cur_displaying_string_char != -1) {
+    // If A is pressed, display all text immediately
+    if (input & J_A && !playerPressingA) {
+      // Show all text at once
+      while (cur_displaying_string_char != -1) {
+        cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_string, cur_displaying_string_char, 0);
       }
-      minimap_blink_counter = 0;
+    } else {
+      // Display one character at a time
+      cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_string, cur_displaying_string_char, 0);
     }
+  }
 
-    // Holding start shows the map
-    if (!mapMenu) {
-      mapMenu = 1;
-      // Display the window in the lower right
-      move_win(WINDOW_MAP_X, WINDOW_MAP_Y);
-      HIDE_SPRITES;
-      // Draw the map
-      for (i = 0; i < NUM_SCREENS_X; i++) {
-        for (j = 0; j < NUM_SCREENS_Y; j++) {
-          if (seenScreens[i][j]) {
-            set_win_tile_xy(i+1, j+1, NUM_SCREENS_X * j + i + START_MINIMAP_TILES_IDX + 1);
-            VBK_REG = VBK_ATTRIBUTES;
-            if (curScreenX == i && curScreenY == j && minimap_blink_counter) {
-              // Bank 1, palette for minimap
-              set_win_tile_xy(i+1, j+1, 0x8 | PALETTE_MINIMAP);
-            } else {
-              // Bank 1
-              set_win_tile_xy(i+1, j+1, 8);
+  // If dialog is complete and player presses A, dismiss it
+  if (input & J_A && !playerPressingA && display_dialog && cur_displaying_string_char == -1) {
+    display_dialog = 0;
+    // Hide window
+    move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+  }
+
+  if (!(input & J_A)) {
+    playerPressingA = 0;
+  }
+
+  // Only process other input if no dialog is showing
+  if (!display_dialog) {
+    if (input & J_START) {
+      // Blink minimap
+      minimap_blink_counter++;
+      if (minimap_blink_counter > MINIMAP_BLINK_AMOUNT) {
+        if (minimap_blink_on) {
+          minimap_blink_on = 0;
+          VBK_REG = VBK_ATTRIBUTES;
+          set_win_tile_xy(curScreenX+1, curScreenY+1, 0x8);
+          VBK_REG = VBK_TILES;
+        } else {
+          minimap_blink_on = 1;
+          VBK_REG = VBK_ATTRIBUTES;
+          set_win_tile_xy(curScreenX+1, curScreenY+1, 0x8 | PALETTE_MINIMAP);
+          VBK_REG = VBK_TILES;
+        }
+        minimap_blink_counter = 0;
+      }
+
+      // Holding start shows the map
+      if (!mapMenu) {
+        draw_window_box();
+        mapMenu = 1;
+        // Display the window in the lower right
+        move_win(WINDOW_MAP_X, WINDOW_MAP_Y);
+        HIDE_SPRITES;
+        // Draw the map
+        for (i = 0; i < NUM_SCREENS_X; i++) {
+          for (j = 0; j < NUM_SCREENS_Y; j++) {
+            if (seenScreens[i][j]) {
+              set_win_tile_xy(i+1, j+1, NUM_SCREENS_X * j + i + START_MINIMAP_TILES_IDX + 1);
+              VBK_REG = VBK_ATTRIBUTES;
+              if (curScreenX == i && curScreenY == j && minimap_blink_counter) {
+                // Bank 1, palette for minimap
+                set_win_tile_xy(i+1, j+1, 0x8 | PALETTE_MINIMAP);
+              } else {
+                // Bank 1
+                set_win_tile_xy(i+1, j+1, 8);
+              }
+              VBK_REG = VBK_TILES;
             }
-            VBK_REG = VBK_TILES;
           }
         }
       }
-    }
-  } else {
-    minimap_blink_counter = 0;
-    minimap_blink_on = 1;
-    if (mapMenu) {
-      mapMenu = 0;
-      move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
-      SHOW_SPRITES;
-    }
+    } else {
+      minimap_blink_counter = 0;
+      minimap_blink_on = 1;
+      if (mapMenu) {
+        mapMenu = 0;
+        move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+        SHOW_SPRITES;
+      }
 
-    // Only allow moving if map is off
-    update_player(input);
+      // Only allow moving if map is off
+      update_player(input);
+    }
   }
 }

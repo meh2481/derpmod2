@@ -66,6 +66,10 @@ uint8_t playerDead;
 uint8_t playerDeadCountdown;
 uint8_t vertFlipped = 0;
 uint8_t horizFlipped = 0;
+extern uint8_t display_dialog;
+extern int8_t cur_displaying_string_char;
+extern uint8_t cur_vvvvvv_string;
+extern uint8_t playerPressingA;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -319,6 +323,7 @@ void update_player(uint8_t input) BANKED {
   if(input & J_A && playerCanFlip && isOnGround) {
     isOnGround = 0;
     playerCanFlip = 0;
+    playerPressingA = 1;
     if (!playerFlipped) {
       playerFlipped = S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
@@ -471,7 +476,13 @@ void check_sprite_collisions(void) BANKED {
       set_sprite_prop(1, 0);
       move_sprite(1, 0, 0);
 
-      render_textbox_id(TEXT_STRING_SUNGLASSES_GET, 0);
+      // Display dialog and show text box
+      VBK_REG = VBK_BANK_1;
+      display_dialog = 1;
+      cur_displaying_string_char = 0;
+      cur_vvvvvv_string = TEXT_STRING_SUNGLASSES_GET;
+      render_textbox_id(cur_vvvvvv_string, 0);
+      VBK_REG = VBK_BANK_0;
 
       set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
     }
