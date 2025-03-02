@@ -118,17 +118,32 @@ const char* dialogue_strings[][7] = {
     "The sign says:    "
   }, {
     "\"This is the cool ",
-    "kids club. Must be ",
-    "this cool to       ",
-    "enter.\"            "
+    "kids club. Must be",
+    "this cool to      ",
+    "enter.\"           "
   }, {
-    "And there\'s a      ",
-    "photo of a really  ",
-    "rad-looking dude.  "
+    "And there\'s a     ",
+    "photo of a really ",
+    "rad-looking dude. "
   }, {
-    "I don\'t think I\'m  ",
-    "cool enough to     ",
-    "enter.             "
+    "I don\'t think I\'m ",
+    "cool enough to    ",
+    "enter.            "
+  }, {
+    // TEXT_STRING_CLUB_SIGN_2
+    "The sign says:    "
+  }, {
+    "\"This is the cool ",
+    "kids club. Must be",
+    "this cool to      ",
+    "enter.\"           "
+  }, {
+    "And there\'s a     ",
+    "photo of a really ",
+    "rad-looking dude. "
+  }, {
+    "Well I\'m as rad as",
+    "they come.        "
   }, {
     // TEXT_STRING_SUNGLASSES_GET
     "Oh sweet! A       ",
@@ -137,12 +152,12 @@ const char* dialogue_strings[][7] = {
   }, {
     "Only a total      ",
     "canvas would think",
-    "this isn\'t cool.  "
+    "these aren\'t cool."
   }
 };
 
 const uint8_t dialogue_heights[] = {
-  4, 5, 4, 4, 6, 4, 3, 2, 2, 2
+  4, 5, 4, 4, 6, 4, 3, 2, 2, 2, 3, 3, 3, 1, 4, 3, 1, 3, 2, 1, 4, 3, 3, 1, 4, 3, 2, 3, 3
 };
 
 /* Start of tile array. */

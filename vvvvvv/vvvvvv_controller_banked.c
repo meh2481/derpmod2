@@ -471,6 +471,8 @@ void check_sprite_collisions(void) BANKED {
       set_sprite_prop(1, 0);
       move_sprite(1, 0, 0);
 
+      render_textbox_id(TEXT_STRING_SUNGLASSES_GET, 0);
+
       set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
     }
   }
