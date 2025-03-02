@@ -68,7 +68,9 @@ uint8_t vertFlipped = 0;
 uint8_t horizFlipped = 0;
 extern uint8_t display_dialog;
 extern int8_t cur_displaying_string_char;
-extern uint8_t cur_vvvvvv_string;
+extern uint8_t cur_vvvvvv_dialogue;
+extern uint8_t cur_vvvvvv_dialogue_start;
+extern uint8_t cur_vvvvvv_dialogue_length;
 extern uint8_t playerPressingA;
 
 void save_game(void) BANKED {
@@ -479,8 +481,9 @@ void check_sprite_collisions(void) BANKED {
       // Display dialog and show text box
       display_dialog = 1;
       cur_displaying_string_char = 0;
-      cur_vvvvvv_string = TEXT_STRING_SUNGLASSES_GET;
-      render_textbox_id(cur_vvvvvv_string, 0);
+      cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_SUNGLASSES_GET;
+      cur_vvvvvv_dialogue_length = 2;
+      render_textbox_id(cur_vvvvvv_dialogue, 0);
 
       set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
     }

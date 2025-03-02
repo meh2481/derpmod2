@@ -62,7 +62,9 @@ uint8_t playerMoveAnimDelay;
 uint8_t playerAnimApplied;
 uint8_t playerHasGlasses;
 extern uint8_t display_dialog;
-uint8_t cur_vvvvvv_string;
+uint8_t cur_vvvvvv_dialogue;
+uint8_t cur_vvvvvv_dialogue_start;
+uint8_t cur_vvvvvv_dialogue_length;
 extern int8_t cur_displaying_string_char;
 
 uint8_t cur_pressing_arrow;
@@ -217,19 +219,25 @@ void update_vvvvvv(uint8_t input) NONBANKED {
     if (input & J_A && !playerPressingA) {
       // Show all text at once
       while (cur_displaying_string_char != -1) {
-        cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_string, cur_displaying_string_char, 0);
+        cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_dialogue, cur_displaying_string_char, 0);
       }
     } else {
       // Display one character at a time
-      cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_string, cur_displaying_string_char, 0);
+      cur_displaying_string_char = render_next_string_char_id(cur_vvvvvv_dialogue, cur_displaying_string_char, 0);
     }
   }
 
   // If dialog is complete and player presses A, dismiss it
   if (input & J_A && !playerPressingA && display_dialog && cur_displaying_string_char == -1) {
-    display_dialog = 0;
-    // Hide window
-    move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+    playerPressingA = 1;
+    if (++cur_vvvvvv_dialogue >= cur_vvvvvv_dialogue_start + cur_vvvvvv_dialogue_length) {
+      display_dialog = 0;
+      move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+    } else {
+      // Next line of text
+      cur_displaying_string_char = 0;
+      render_textbox_id(cur_vvvvvv_dialogue, 0);
+    }
   }
 
   if (!(input & J_A)) {
