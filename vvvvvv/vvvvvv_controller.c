@@ -10,6 +10,7 @@
 #include "../font/font_tiles.h"
 #include "minimap_tiles.h"
 #include "vvvvvv_controller.h"
+#include "../title/press_start.h"
 
 #define NUM_SCREENS_X      7
 #define NUM_SCREENS_Y      7
@@ -19,6 +20,7 @@
 #define PALETTE_SAVEPOINTS 2
 #define PALETTE_MINIMAP    3
 #define PALETTE_MAP_FOG    4
+#define PALETTE_TEXTBOX    6
 
 #define PLAYER_SPRITE      0
 #define FALL_AMOUNT        4
@@ -184,6 +186,8 @@ void init_vvvvvv(void) NONBANKED {
   set_bkg_palette_entry(PALETTE_MINIMAP, 2, RGB(0,25,25));
   set_bkg_palette_entry(PALETTE_MINIMAP, 3, RGB(0,15,15));
   set_bkg_palette_entry(PALETTE_MAP_FOG, 0, RGB(10,10,10));
+
+  set_press_start_text_palette(PALETTE_TEXTBOX);
 
   // Set sprite data
   init_vvvvvv_sprite_tiles();

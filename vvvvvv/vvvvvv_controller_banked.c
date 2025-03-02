@@ -477,12 +477,10 @@ void check_sprite_collisions(void) BANKED {
       move_sprite(1, 0, 0);
 
       // Display dialog and show text box
-      VBK_REG = VBK_BANK_1;
       display_dialog = 1;
       cur_displaying_string_char = 0;
       cur_vvvvvv_string = TEXT_STRING_SUNGLASSES_GET;
       render_textbox_id(cur_vvvvvv_string, 0);
-      VBK_REG = VBK_BANK_0;
 
       set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
     }
