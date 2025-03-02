@@ -37,7 +37,7 @@ extern void render_textbox_id(uint8_t str_id, uint8_t vram_start_idx) BANKED;
 #define TEXT_STRING_WARP_SUCCESS    10
 #define TEXT_STRING_SEEN_LI         18
 #define TEXT_STRING_CLUB_SIGN       19
-#define TEXT_STRING_SUNGLASSES_GET  22
+#define TEXT_STRING_SUNGLASSES_GET  23
 
 #endif
 

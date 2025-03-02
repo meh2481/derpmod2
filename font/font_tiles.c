@@ -122,9 +122,13 @@ const char* dialogue_strings[][7] = {
     "this cool to       ",
     "enter.\"            "
   }, {
-    "I\'m not cool      ",
-    "enough already?   ",
-    "How dare they.    "
+    "And there\'s a      ",
+    "photo of a really  ",
+    "rad-looking dude.  "
+  }, {
+    "I don\'t think I\'m  ",
+    "cool enough to     ",
+    "enter.             "
   }, {
     // TEXT_STRING_SUNGLASSES_GET
     "Oh sweet! A       ",
