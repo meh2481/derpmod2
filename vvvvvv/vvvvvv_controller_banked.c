@@ -458,8 +458,8 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
   } else if (screenX == 0 && screenY == 3) {
     // Hide door tiles (visually, not collisions) if player has glasses
     if (playerHasGlasses) {
-      set_bkg_tiles(15, 13, 2, 1, no_tiles);
-      set_bkg_tiles(15, 14, 2, 1, no_tiles);
+      set_bkg_tiles(15, 9, 2, 1, no_tiles);
+      set_bkg_tiles(15, 10, 2, 1, no_tiles);
     }
   } else {
     // Hide all sprites

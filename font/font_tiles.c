@@ -126,9 +126,9 @@ const char* dialogue_strings[][7] = {
     "photo of a really ",
     "rad-looking dude. "
   }, {
-    "I don\'t think I\'m ",
-    "cool enough to    ",
-    "enter.            "
+    "I don\'t think I   ",
+    "can compete with  ",
+    "that.             "
   }, {
     // TEXT_STRING_CLUB_SIGN_2
     "The sign says:    "

@@ -159,7 +159,7 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, 0);
 
   curScreenX = 0;
-  curScreenY = 0;//6;
+  curScreenY = 6;
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -196,8 +196,8 @@ void init_vvvvvv(void) NONBANKED {
   init_vvvvvv_sprite_palettes(0);
 
   SPRITES_8x16;
-  playerSpriteX = 80 - 4;
-  playerSpriteY = 72 - 8;
+  playerSpriteX = 76;
+  playerSpriteY = 24;
   playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
   playerHasGlasses = 0;
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
