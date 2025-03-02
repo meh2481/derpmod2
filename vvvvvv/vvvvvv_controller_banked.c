@@ -461,6 +461,15 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
       set_bkg_tiles(15, 9, 2, 1, no_tiles);
       set_bkg_tiles(15, 10, 2, 1, no_tiles);
     }
+  } else if (screenX == 1 && screenY == 5) {
+    if (playerHasGlasses) {
+      // Let the player know about the map feature if they're backtracking
+      display_dialog = 1;
+      cur_displaying_string_char = 0;
+      cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_CHECK_MAP;
+      cur_vvvvvv_dialogue_length = 1;
+      render_textbox_id(cur_vvvvvv_dialogue, 0);
+    }
   } else {
     // Hide all sprites
     for (i = 1; i < 40; i++) {

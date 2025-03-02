@@ -153,11 +153,17 @@ const char* dialogue_strings[][7] = {
     "Only a total      ",
     "canvas would think",
     "these aren\'t cool."
+  }, {
+    // TEXT_STRING_CHECK_MAP
+    "Rad dudes like me ",
+    "know that we can  ",
+    "check the map by  ",
+    "holding START.    "
   }
 };
 
 const uint8_t dialogue_heights[] = {
-  4, 5, 4, 4, 6, 4, 3, 2, 2, 2, 3, 3, 3, 1, 4, 3, 1, 3, 2, 1, 4, 3, 3, 1, 4, 3, 2, 3, 3
+  4, 5, 4, 4, 6, 4, 3, 2, 2, 2, 3, 3, 3, 1, 4, 3, 1, 3, 2, 1, 4, 3, 3, 1, 4, 3, 2, 3, 3, 4
 };
 
 /* Start of tile array. */
