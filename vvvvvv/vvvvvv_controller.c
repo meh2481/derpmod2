@@ -124,6 +124,9 @@ void draw_screen(void) {
 
   // Set the palette for this screen
   set_vvvvvv_room_palette(curScreenX + curScreenY * NUM_SCREENS_X);
+
+  // Add sprites for this screen
+  add_vvvvvv_sprites(curScreenX, curScreenY);
 }
 
 uint8_t isOnGround = 0;
@@ -136,7 +139,7 @@ void init_vvvvvv(void) NONBANKED {
   move_win(WIN_X_OFFSET, 0);
 
   curScreenX = 0;
-  curScreenY = 6;
+  curScreenY = 0;
   cur_pressing_start = 0;
   mapMenu = 0;
 

@@ -105,6 +105,10 @@ void player_die(void) BANKED {
 }
 
 uint8_t is_vvvvvv_passable_tile(uint8_t tile) BANKED {
+  if (playerHasGlasses && curScreenX == 0 && curScreenY == 3 && tile < 13) {
+    // Door is open if the player is cool enough
+    return 1;
+  }
   // impassable tiles in our tilemap
   return tile > 90;
 }
@@ -422,4 +426,27 @@ void update_player(uint8_t input) BANKED {
   }
 
   check_tile_collisions();
+  check_sprite_collisions();
+}
+
+void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
+  if(screenX == 0 && screenY == 0) {
+    // Add glasses sprite
+    if (!playerHasGlasses) {
+      set_sprite_tile(1, 14);
+      set_sprite_prop(1, 0);
+      move_sprite(1, 48+8, 24+32);
+    }
+  } else {
+    // Hide all sprites
+    for (i = 1; i < 40; i++) {
+      set_sprite_tile(i, 0);
+      set_sprite_prop(i, 0);
+      move_sprite(i, 0, 0);
+    }
+  }
+}
+
+void check_sprite_collisions(void) BANKED {
+
 }
