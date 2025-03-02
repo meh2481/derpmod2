@@ -435,7 +435,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     if (!playerHasGlasses) {
       set_sprite_tile(1, 14);
       set_sprite_prop(1, 0);
-      move_sprite(1, 48+8, 24+32);
+      move_sprite(1, 48+8, 40+16);
     }
   } else {
     // Hide all sprites
@@ -447,6 +447,26 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
   }
 }
 
-void check_sprite_collisions(void) BANKED {
+uint8_t check_sprite_collided(uint8_t playerX, uint8_t playerY, uint8_t spriteX, uint8_t spriteY, uint8_t spriteWidth, uint8_t spriteHeight) BANKED {
+  return playerX < spriteX + spriteWidth &&
+    playerX + 8 > spriteX &&
+    playerY < spriteY + spriteHeight &&
+    playerY + 16 > spriteY;
+}
 
+void check_sprite_collisions(void) BANKED {
+  if(curScreenX == 0 && curScreenY == 0) {
+    // Sprite on this screen is the glasses, at position 48, 40
+    if (isOnGround && !playerHasGlasses && check_sprite_collided(playerSpriteX, playerSpriteY, 48, 40, 8, 8)) {
+      // Player picked up the glasses
+      playerHasGlasses = 4;
+      // hUGE_dosound(SFX_GETGLASSES);
+      // Hide glasses sprite
+      set_sprite_tile(1, 0);
+      set_sprite_prop(1, 0);
+      move_sprite(1, 0, 0);
+
+      set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+    }
+  }
 }
