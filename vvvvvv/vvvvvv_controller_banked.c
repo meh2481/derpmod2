@@ -273,6 +273,7 @@ void check_tile_collisions(uint8_t input) BANKED {
     } else {
       // Hide button prompt
       hide_sprite(PLAYER_SPRITE+1);
+      b_button_blink = 0;
     }
   }
 
