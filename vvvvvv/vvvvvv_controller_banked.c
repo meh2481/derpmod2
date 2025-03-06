@@ -532,7 +532,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     moveSprite1PosX = 32;
     moveSprite1PosY = 40;
     moveSprite1VelX = 0;
-    moveSprite1VelY = 2;
+    moveSprite1VelY = 3;
     move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
     move_sprite(2, moveSprite1PosX+16, moveSprite1PosY+16);
 
@@ -544,7 +544,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     moveSprite2PosX = 112;
     moveSprite2PosY = 88;
     moveSprite2VelX = 0;
-    moveSprite2VelY = -2;
+    moveSprite2VelY = -3;
     move_sprite(3, moveSprite2PosX+8, moveSprite2PosY+16);
     move_sprite(4, moveSprite2PosX+16, moveSprite2PosY+16);
   }
@@ -597,10 +597,10 @@ void check_sprite_collisions(void) BANKED {
     move_sprite(3, moveSprite2PosX+8, moveSprite2PosY+16);
     move_sprite(4, moveSprite2PosX+16, moveSprite2PosY+16);
 
-    // Sprite on this screen is the "LI" sprite
-    if (check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite1PosX, moveSprite1PosY, 16, 16) ||
-      check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 16, 16)) {
-      // Player hit the "LI" sprite
+    // Sprite on this screen are the "LI" sprites (slightly smaller than 16x16)
+    if (check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite1PosX+3, moveSprite1PosY+3, 10, 10) ||
+      check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX+3, moveSprite2PosY+3, 10, 10)) {
+      // Player hit one of the "LI" sprites
       player_die();
     }
 
