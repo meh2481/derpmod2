@@ -35,12 +35,15 @@
 #define MAP_SAVEPOINT_TILE 94
 #define MAP_FLIP_VERT_TILE 95
 #define MAP_FLIP_HORIZ_TILE 96
+#define MAP_SIGN_TILE      97
 #define PLAYER_DEAD        12
 #define PLAYER_DEAD_TIMER  100
 
 #define START_MINIMAP_TILES_IDX 94
 
 #define MINIMAP_BLINK_AMOUNT 20
+
+#define B_BLINK_DELAY      40
 
 const uint8_t no_tiles[] = {
   91, 91
@@ -73,6 +76,8 @@ extern uint8_t cur_vvvvvv_dialogue_start;
 extern uint8_t cur_vvvvvv_dialogue_length;
 extern uint8_t playerPressingA;
 uint8_t hasDoneIntro = 0;
+uint8_t b_button_blink = 0;
+uint8_t b_button_frame = 26;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -159,7 +164,7 @@ uint8_t map_tile4;
 uint8_t map_tile5;
 uint8_t map_tile6;
 
-void check_tile_collisions(void) BANKED {
+void check_tile_collisions(uint8_t input) BANKED {
   // Check to see if we're hitting
   map_tile = map_tile2 = map_tile3 = map_tile4 = map_tile5 = map_tile6 = BLANK_MAP_TILE;
   if (curScreenY > 3) {
@@ -234,6 +239,34 @@ void check_tile_collisions(void) BANKED {
     horizFlipped = 0;
   }
 
+  if (curScreenX == 0 && curScreenY == 3) {
+    if (map_tile == MAP_SIGN_TILE || map_tile2 == MAP_SIGN_TILE || map_tile3 == MAP_SIGN_TILE || map_tile4 == MAP_SIGN_TILE || map_tile5 == MAP_SIGN_TILE || map_tile6 == MAP_SIGN_TILE) {
+      if (input & J_B) {
+        // Player hit a sign
+        display_dialog = 1;
+        cur_displaying_string_char = 0;
+        if (playerHasGlasses) {
+          cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_CLUB_SIGN_2;
+        } else {
+          cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_CLUB_SIGN;
+        }
+        cur_vvvvvv_dialogue_length = 4;
+        render_textbox_id(cur_vvvvvv_dialogue, 0);
+      }
+      // Show button prompt above player
+      set_sprite_prop(PLAYER_SPRITE+1, 1);
+      move_sprite(PLAYER_SPRITE+1, playerSpriteX+8, playerSpriteY+5);
+      if (++b_button_blink >= B_BLINK_DELAY) {
+        b_button_blink = 0;
+        b_button_frame = b_button_frame == 26 ? 28 : 26;
+        set_sprite_tile(PLAYER_SPRITE+1, b_button_frame);
+      }
+    } else {
+      // Hide button prompt
+      hide_sprite(PLAYER_SPRITE+1);
+    }
+  }
+
 }
 
 void update_player(uint8_t input) BANKED {
@@ -280,6 +313,7 @@ void update_player(uint8_t input) BANKED {
         isOnGround = 1;
 
         // The first time we land on the ground, start the VVVVVV intro sequence
+        #ifndef DEBUG
         if (!hasDoneIntro) {
           hasDoneIntro = 1;
           // Display dialog and show text box
@@ -289,6 +323,7 @@ void update_player(uint8_t input) BANKED {
           cur_vvvvvv_dialogue_length = 8;
           render_textbox_id(cur_vvvvvv_dialogue, 0);
         }
+        #endif
       }
     } else {
       // Fall down
@@ -443,7 +478,7 @@ void update_player(uint8_t input) BANKED {
     playerAnimApplied = 0;
   }
 
-  check_tile_collisions();
+  check_tile_collisions(input);
   check_sprite_collisions();
 }
 
@@ -461,6 +496,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
       set_bkg_tiles(15, 9, 2, 1, no_tiles);
       set_bkg_tiles(15, 10, 2, 1, no_tiles);
     }
+    set_sprite_tile(PLAYER_SPRITE+1, 26);
   } else if (screenX == 1 && screenY == 5) {
     if (playerHasGlasses) {
       // Let the player know about the map feature if they're backtracking

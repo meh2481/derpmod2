@@ -9,7 +9,9 @@
 #include "../font/font_tiles.h"
 #include "../title/press_start.h"
 
-#define NOCLIP 1
+#ifdef DEBUG
+  #define NOCLIP 1
+#endif
 
 #define STEAK_X_1 808
 #define STEAK_Y_1 104
