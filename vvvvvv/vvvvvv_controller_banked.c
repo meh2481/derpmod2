@@ -86,6 +86,7 @@ int8_t moveSprite1VelX = 0;
 int8_t moveSprite1VelY = 0;
 int8_t moveSprite2VelX = 0;
 int8_t moveSprite2VelY = 0;
+uint8_t seenLiString = 0;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -601,6 +602,22 @@ void check_sprite_collisions(void) BANKED {
       check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 16, 16)) {
       // Player hit the "LI" sprite
       player_die();
+    }
+
+    if (!seenLiString && playerSpriteY < 16 && playerSpriteX < 40) {
+      // Pause to make joke about li
+      seenLiString = 1;
+
+      // Flip player to face right
+      playerMoveLeft = 0;
+      set_sprite_prop(PLAYER_SPRITE, playerFlipped);
+
+      // Display dialog and show text box
+      display_dialog = 1;
+      cur_displaying_string_char = 0;
+      cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_SEEN_LI;
+      cur_vvvvvv_dialogue_length = 1;
+      render_textbox_id(cur_vvvvvv_dialogue, 0);
     }
   }
 }
