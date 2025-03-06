@@ -78,6 +78,14 @@ extern uint8_t playerPressingA;
 uint8_t hasDoneIntro = 0;
 uint8_t b_button_blink = 0;
 uint8_t b_button_frame = 26;
+int8_t moveSprite1PosX = 0;
+int8_t moveSprite1PosY = 0;
+int8_t moveSprite2PosX = 0;
+int8_t moveSprite2PosY = 0;
+int8_t moveSprite1VelX = 0;
+int8_t moveSprite1VelY = 0;
+int8_t moveSprite2VelX = 0;
+int8_t moveSprite2VelY = 0;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -483,6 +491,14 @@ void update_player(uint8_t input) BANKED {
 }
 
 void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
+
+  // Hide all sprites by default
+  for (i = 1; i < 10; i++) {
+    set_sprite_tile(i, 0);
+    set_sprite_prop(i, 0);
+    move_sprite(i, 0, 0);
+  }
+
   if(screenX == 0 && screenY == 0) {
     // Add glasses sprite
     if (!playerHasGlasses) {
@@ -506,13 +522,30 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
       cur_vvvvvv_dialogue_length = 1;
       render_textbox_id(cur_vvvvvv_dialogue, 0);
     }
-  } else {
-    // Hide all sprites
-    for (i = 1; i < 40; i++) {
-      set_sprite_tile(i, 0);
-      set_sprite_prop(i, 0);
-      move_sprite(i, 0, 0);
-    }
+  } else if (screenX == 2 && screenY == 5) {
+    // Show "LI" 1 sprite
+    set_sprite_tile(1, 16);
+    set_sprite_tile(2, 18);
+    set_sprite_prop(1, 1);
+    set_sprite_prop(2, 1);
+    moveSprite1PosX = 32;
+    moveSprite1PosY = 40;
+    moveSprite1VelX = 0;
+    moveSprite1VelY = 2;
+    move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
+    move_sprite(2, moveSprite1PosX+16, moveSprite1PosY+16);
+
+    // Show "LI" 2 sprite
+    set_sprite_tile(3, 16);
+    set_sprite_tile(4, 18);
+    set_sprite_prop(3, 1);
+    set_sprite_prop(4, 1);
+    moveSprite2PosX = 112;
+    moveSprite2PosY = 88;
+    moveSprite2VelX = 0;
+    moveSprite2VelY = -2;
+    move_sprite(3, moveSprite2PosX+8, moveSprite2PosY+16);
+    move_sprite(4, moveSprite2PosX+16, moveSprite2PosY+16);
   }
 }
 
@@ -543,6 +576,31 @@ void check_sprite_collisions(void) BANKED {
       render_textbox_id(cur_vvvvvv_dialogue, 0);
 
       set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+    }
+  } else if (curScreenX == 2 && curScreenY == 5) {
+    // Update move sprite 1
+    moveSprite1PosX += moveSprite1VelX;
+    moveSprite1PosY += moveSprite1VelY;
+    if (moveSprite1PosY < 42 || moveSprite1PosY > 86) {
+      moveSprite1VelY = -moveSprite1VelY;
+    }
+    move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
+    move_sprite(2, moveSprite1PosX+16, moveSprite1PosY+16);
+
+    // Update move sprite 2
+    moveSprite2PosX += moveSprite2VelX;
+    moveSprite2PosY += moveSprite2VelY;
+    if (moveSprite2PosY < 42 || moveSprite2PosY > 86) {
+      moveSprite2VelY = -moveSprite2VelY;
+    }
+    move_sprite(3, moveSprite2PosX+8, moveSprite2PosY+16);
+    move_sprite(4, moveSprite2PosX+16, moveSprite2PosY+16);
+
+    // Sprite on this screen is the "LI" sprite
+    if (check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite1PosX, moveSprite1PosY, 16, 16) ||
+      check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 16, 16)) {
+      // Player hit the "LI" sprite
+      player_die();
     }
   }
 }
