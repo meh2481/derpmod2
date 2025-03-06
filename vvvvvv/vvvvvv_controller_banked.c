@@ -565,17 +565,17 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     moveSprite1PosX = 64;
     moveSprite1PosY = 45;
     moveSprite1VelX = 0;
-    moveSprite1VelY = 1;
+    moveSprite1VelY = 2;
 
     moveSprite2PosX = 96;
     moveSprite2PosY = 91;
     moveSprite2VelX = 0;
-    moveSprite2VelY = -1;
+    moveSprite2VelY = -2;
 
     moveSprite3PosX = 128;
     moveSprite3PosY = 45;
     moveSprite3VelX = 0;
-    moveSprite3VelY = 1;
+    moveSprite3VelY = 2;
 
     move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
     move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
