@@ -86,6 +86,10 @@ int8_t moveSprite1VelX = 0;
 int8_t moveSprite1VelY = 0;
 int8_t moveSprite2VelX = 0;
 int8_t moveSprite2VelY = 0;
+int8_t moveSprite3PosX = 0;
+int8_t moveSprite3PosY = 0;
+int8_t moveSprite3VelX = 0;
+int8_t moveSprite3VelY = 0;
 uint8_t seenLiString = 0;
 
 void save_game(void) BANKED {
@@ -548,6 +552,34 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     moveSprite2VelY = -3;
     move_sprite(3, moveSprite2PosX+8, moveSprite2PosY+16);
     move_sprite(4, moveSprite2PosX+16, moveSprite2PosY+16);
+  } else if (screenX == 1 && screenY == 4) {
+    // Show mini "LI" sprites
+    set_sprite_tile(1, 20);
+    set_sprite_tile(2, 20);
+    set_sprite_tile(3, 20);
+
+    set_sprite_prop(1, 1);
+    set_sprite_prop(2, 1);
+    set_sprite_prop(3, 1);
+
+    moveSprite1PosX = 64;
+    moveSprite1PosY = 45;
+    moveSprite1VelX = 0;
+    moveSprite1VelY = 1;
+
+    moveSprite2PosX = 96;
+    moveSprite2PosY = 91;
+    moveSprite2VelX = 0;
+    moveSprite2VelY = -1;
+
+    moveSprite3PosX = 128;
+    moveSprite3PosY = 45;
+    moveSprite3VelX = 0;
+    moveSprite3VelY = 1;
+
+    move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
+    move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
+    move_sprite(3, moveSprite3PosX+8, moveSprite3PosY+16);
   }
 }
 
@@ -619,6 +651,38 @@ void check_sprite_collisions(void) BANKED {
       cur_vvvvvv_dialogue_start = cur_vvvvvv_dialogue = TEXT_STRING_SEEN_LI;
       cur_vvvvvv_dialogue_length = 1;
       render_textbox_id(cur_vvvvvv_dialogue, 0);
+    }
+  } else if (curScreenX == 1 && curScreenY == 4) {
+    // Update move sprite 1
+    moveSprite1PosX += moveSprite1VelX;
+    moveSprite1PosY += moveSprite1VelY;
+    if (moveSprite1PosY < 30 || moveSprite1PosY > 105) {
+      moveSprite1VelY = -moveSprite1VelY;
+    }
+    move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
+
+    // Update move sprite 2
+    moveSprite2PosX += moveSprite2VelX;
+    moveSprite2PosY += moveSprite2VelY;
+    if (moveSprite2PosY < 30 || moveSprite2PosY > 105) {
+      moveSprite2VelY = -moveSprite2VelY;
+    }
+    move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
+
+    // Update move sprite 3
+    moveSprite3PosX += moveSprite3VelX;
+    moveSprite3PosY += moveSprite3VelY;
+    if (moveSprite3PosY < 30 || moveSprite3PosY > 105) {
+      moveSprite3VelY = -moveSprite3VelY;
+    }
+    move_sprite(3, moveSprite3PosX+8, moveSprite3PosY+16);
+
+    // Sprite on this screen are the mini "LI" sprites
+    if (check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite1PosX, moveSprite1PosY, 8, 8) ||
+      check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 8, 8) ||
+      check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite3PosX, moveSprite3PosY, 8, 8)) {
+      // Player hit one of the mini "LI" sprites
+      player_die();
     }
   }
 }
