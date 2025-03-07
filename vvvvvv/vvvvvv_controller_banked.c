@@ -51,14 +51,14 @@ const uint8_t no_tiles[] = {
 
 extern uint16_t curScreenX;
 extern uint16_t curScreenY;
-uint16_t lastScreenX;
-uint16_t lastScreenY;
+extern uint16_t lastScreenX;
+extern uint16_t lastScreenY;
 extern int16_t playerSpriteX;
 extern int16_t playerSpriteY;
-uint16_t lastPlayerSpriteX;
-uint16_t lastPlayerSpriteY;
+extern uint16_t lastPlayerSpriteX;
+extern uint16_t lastPlayerSpriteY;
 extern uint8_t playerFlipped;
-uint8_t lastPlayerFlipped;
+extern uint8_t lastPlayerFlipped;
 extern uint8_t playerMoveLeft;
 extern uint8_t playerCanFlip;
 extern uint8_t playerMoveAnimDelay;

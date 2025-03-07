@@ -50,6 +50,13 @@ const uint8_t bottom_mapbox_attribs[] = {
 extern uint8_t i, j, tmp, tile;
 uint16_t curScreenX;
 uint16_t curScreenY;
+
+uint16_t lastScreenX;
+uint16_t lastScreenY;
+uint16_t lastPlayerSpriteX;
+uint16_t lastPlayerSpriteY;
+uint8_t lastPlayerFlipped;
+
 uint8_t mapMenu;
 // Center of player sprite
 int16_t playerSpriteX;
@@ -158,8 +165,8 @@ void init_vvvvvv(void) NONBANKED {
   init_win(0);
   move_win(WIN_X_OFFSET, 0);
 
-  curScreenX = 0;
-  curScreenY = 6;
+  lastScreenX = curScreenX = 0;
+  lastScreenY = curScreenY = 6;
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -196,9 +203,9 @@ void init_vvvvvv(void) NONBANKED {
   init_vvvvvv_sprite_palettes(0);
 
   SPRITES_8x16;
-  playerSpriteX = 76;
-  playerSpriteY = 24;
-  playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
+  lastPlayerSpriteX = playerSpriteX = 76;
+  lastPlayerSpriteY = playerSpriteY = 24;
+  lastPlayerFlipped = playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
   playerHasGlasses = 0;
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
