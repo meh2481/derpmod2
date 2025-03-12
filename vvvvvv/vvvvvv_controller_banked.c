@@ -45,6 +45,8 @@
 
 #define B_BLINK_DELAY      40
 
+#define SPRITE_ANIM_DELAY  12
+
 const uint8_t no_tiles[] = {
   91, 91
 };
@@ -91,6 +93,8 @@ int16_t moveSprite3PosY = 0;
 int16_t moveSprite3VelX = 0;
 int16_t moveSprite3VelY = 0;
 uint8_t seenLiString = 0;
+uint8_t spriteAnimDelay = 0;
+uint8_t spriteAnimFrame = 0;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -737,6 +741,20 @@ void check_sprite_collisions(void) BANKED {
       check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 8, 8)) {
       // Player hit one of the fish sprites
       player_die();
+    }
+
+    // Animate fish sprites
+    if (++spriteAnimDelay >= SPRITE_ANIM_DELAY) {
+      spriteAnimDelay = 0;
+      if (spriteAnimFrame == 0) {
+        spriteAnimFrame = 1;
+        set_sprite_tile(1, 24);
+        set_sprite_tile(2, 24);
+      } else {
+        spriteAnimFrame = 0;
+        set_sprite_tile(1, 22);
+        set_sprite_tile(2, 22);
+      }
     }
   }
 }
