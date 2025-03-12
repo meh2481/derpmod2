@@ -78,18 +78,18 @@ extern uint8_t playerPressingA;
 uint8_t hasDoneIntro = 0;
 uint8_t b_button_blink = 0;
 uint8_t b_button_frame = 26;
-int8_t moveSprite1PosX = 0;
-int8_t moveSprite1PosY = 0;
-int8_t moveSprite2PosX = 0;
-int8_t moveSprite2PosY = 0;
-int8_t moveSprite1VelX = 0;
-int8_t moveSprite1VelY = 0;
-int8_t moveSprite2VelX = 0;
-int8_t moveSprite2VelY = 0;
-int8_t moveSprite3PosX = 0;
-int8_t moveSprite3PosY = 0;
-int8_t moveSprite3VelX = 0;
-int8_t moveSprite3VelY = 0;
+int16_t moveSprite1PosX = 0;
+int16_t moveSprite1PosY = 0;
+int16_t moveSprite2PosX = 0;
+int16_t moveSprite2PosY = 0;
+int16_t moveSprite1VelX = 0;
+int16_t moveSprite1VelY = 0;
+int16_t moveSprite2VelX = 0;
+int16_t moveSprite2VelY = 0;
+int16_t moveSprite3PosX = 0;
+int16_t moveSprite3PosY = 0;
+int16_t moveSprite3VelX = 0;
+int16_t moveSprite3VelY = 0;
 uint8_t seenLiString = 0;
 
 void save_game(void) BANKED {
@@ -580,6 +580,25 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
     move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
     move_sprite(3, moveSprite3PosX+8, moveSprite3PosY+16);
+  } else if (screenX == 2 && screenY == 1) {
+    set_sprite_tile(1, 22);
+    set_sprite_tile(2, 22);
+
+    set_sprite_prop(1, 1 | S_FLIPX);
+    set_sprite_prop(2, 1);
+
+    moveSprite1PosX = 24;
+    moveSprite1PosY = 68;
+    moveSprite1VelX = 3;
+    moveSprite1VelY = 0;
+
+    moveSprite2PosX = 144;
+    moveSprite2PosY = 84;
+    moveSprite2VelX = -3;
+    moveSprite2VelY = 0;
+
+    move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
+    move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
   }
 }
 
@@ -682,6 +701,41 @@ void check_sprite_collisions(void) BANKED {
       check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 8, 8) ||
       check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite3PosX, moveSprite3PosY, 8, 8)) {
       // Player hit one of the mini "LI" sprites
+      player_die();
+    }
+  } else if (curScreenX == 2 && curScreenY == 1) {
+    // Update move sprite 1
+    moveSprite1PosX += moveSprite1VelX;
+    if (moveSprite1PosX < 24) {
+      moveSprite1PosX = 24;
+      moveSprite1VelX = 3;
+      set_sprite_prop(1, 1 | S_FLIPX);
+    }
+    if (moveSprite1PosX > 144) {
+      moveSprite1PosX = 144;
+      moveSprite1VelX = -3;
+      set_sprite_prop(1, 1);
+    }
+    move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
+
+    // Update move sprite 2
+    moveSprite2PosX += moveSprite2VelX;
+    if (moveSprite2PosX < 24) {
+      moveSprite2PosX = 24;
+      moveSprite2VelX = 3;
+      set_sprite_prop(2, 1 | S_FLIPX);
+    }
+    if (moveSprite2PosX > 144) {
+      moveSprite2PosX = 144;
+      moveSprite2VelX = -3;
+      set_sprite_prop(2, 1);
+    }
+    move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
+
+    // Sprite on this screen are the fish sprites
+    if (check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite1PosX, moveSprite1PosY, 8, 8) ||
+      check_sprite_collided(playerSpriteX, playerSpriteY, moveSprite2PosX, moveSprite2PosY, 8, 8)) {
+      // Player hit one of the fish sprites
       player_die();
     }
   }
