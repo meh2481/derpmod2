@@ -643,6 +643,8 @@ void check_sprite_collisions(void) BANKED {
       render_textbox_id(cur_vvvvvv_dialogue, 0);
 
       set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+      // Switch palette so there's no background stuff behind glasses and player mouth
+      set_sprite_palette_entry(0, 3, RGB(0, 0, 0));
     }
   } else if (curScreenX == 2 && curScreenY == 5) {
     // Update move sprite 1

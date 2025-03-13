@@ -220,6 +220,7 @@ void init_vvvvvv(void) NONBANKED {
   lastPlayerFlipped = playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
   #ifdef DEBUG
   playerHasGlasses = 4;
+  set_sprite_palette_entry(0, 3, RGB(0, 0, 0));
   #else
   playerHasGlasses = 0;
   #endif
