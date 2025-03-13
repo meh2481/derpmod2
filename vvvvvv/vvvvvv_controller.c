@@ -218,7 +218,11 @@ void init_vvvvvv(void) NONBANKED {
   lastPlayerSpriteX = playerSpriteX = 76;
   lastPlayerSpriteY = playerSpriteY = 24;
   lastPlayerFlipped = playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
+  #ifdef DEBUG
+  playerHasGlasses = 4;
+  #else
   playerHasGlasses = 0;
+  #endif
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
 

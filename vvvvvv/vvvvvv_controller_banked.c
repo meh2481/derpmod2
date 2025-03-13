@@ -790,12 +790,12 @@ void check_sprite_collisions(void) BANKED {
 
     // Every frame, update the hue of the cool text to create a rainbow effect
     coolTextHue += 1;
-    if (coolTextHue > 96) {
+    if (coolTextHue >= 128) {
       coolTextHue = 0;
     }
-    rval = coolTextHue < 32 ? 31 : coolTextHue < 64 ? 31 - (coolTextHue - 32) : 0;
-    gval = coolTextHue < 32 ? coolTextHue : coolTextHue < 64 ? 31 : 31 - (coolTextHue - 64);
-    bval = coolTextHue < 32 ? 0 : coolTextHue < 64 ? 31 : coolTextHue - 64;
+    rval = coolTextHue < 32 ? 31 : coolTextHue < 64 ? 31 - (coolTextHue - 32) : coolTextHue < 96 ? 0 : coolTextHue - 96;
+    gval = coolTextHue < 32 ? coolTextHue : coolTextHue < 64 ? 31 : coolTextHue < 96 ? 31 - (coolTextHue - 64) : 0;
+    bval = coolTextHue < 32 ? 0 : coolTextHue < 64 ? coolTextHue - 32 : coolTextHue < 96 ? 31 : 31 - (coolTextHue - 96);
     set_bkg_palette_entry(7, 0, RGB(rval, gval, bval));
   }
 }
