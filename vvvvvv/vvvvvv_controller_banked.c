@@ -611,6 +611,38 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
 
     move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
     move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
+  } else if (curScreenX == 1 && curScreenY == 3) {
+    // Add other cool kids to the cool kids club
+    set_sprite_tile(1, 4);
+    set_sprite_tile(2, 4);
+    set_sprite_tile(3, 4);
+    set_sprite_tile(4, 4);
+    set_sprite_tile(5, 4);
+
+    set_sprite_prop(1, 3);
+    set_sprite_prop(2, 4 | S_FLIPX);
+    set_sprite_prop(3, 5 | S_FLIPX);
+    set_sprite_prop(4, 6);
+    set_sprite_prop(5, 7 | S_FLIPX);
+
+    move_sprite(1, 88, 120);  // Red guy
+    move_sprite(2, 98, 120);  // Green guy
+    move_sprite(3, 116, 120);  // Blue guy
+    move_sprite(4, 134, 120); // Yellow guy
+    move_sprite(5, 146, 120); // Cyan guy
+
+    // Set palettes for cool kids
+    set_sprite_palette_entry(3, 2, RGB(31, 0, 0));
+    set_sprite_palette_entry(3, 3, RGB(0, 0, 0));
+    set_sprite_palette_entry(4, 2, RGB(0, 31, 0));
+    set_sprite_palette_entry(4, 3, RGB(0, 0, 0));
+    set_sprite_palette_entry(5, 2, RGB(0, 0, 31));
+    set_sprite_palette_entry(5, 3, RGB(0, 0, 0));
+    set_sprite_palette_entry(6, 2, RGB(31, 31, 0));
+    set_sprite_palette_entry(6, 3, RGB(0, 0, 0));
+    set_sprite_palette_entry(7, 2, RGB(0, 31, 31));
+    set_sprite_palette_entry(7, 3, RGB(0, 0, 0));
+
   }
 }
 
