@@ -104,6 +104,19 @@ uint8_t discoBallAnimFrame = 0;
 uint8_t discoSparkleAnimFrame = 0;
 uint8_t coolTextHue = 0;
 
+uint8_t cyanDudeAnimDelay = 0;
+uint8_t cyanDudeAnimFrame = 0;
+uint8_t yellowDudeAnimDelay = 0;
+uint8_t yellowDudeAnimFrame = 0;
+uint8_t greenAndRedDudeAnimDelay = 0;
+uint8_t greenAndRedDudeAnimFrame = 0;
+uint8_t blueDudeAnimDelay = 0;
+uint8_t blueDudeAnimFrame = 0;
+
+#define CYAN_DUDE_ANIM_DELAY    40
+#define YELLOW_DUDE_ANIM_DELAY  58
+#define RED_AND_GREEN_DUDE_ANIM_DELAY  76
+
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
   if (isOnGround) {
@@ -617,7 +630,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     set_sprite_tile(2, 4);
     set_sprite_tile(3, 4);
     set_sprite_tile(4, 4);
-    set_sprite_tile(5, 4);
+    set_sprite_tile(5, 8);
 
     set_sprite_prop(1, 3);
     set_sprite_prop(2, 4 | S_FLIPX);
@@ -831,5 +844,47 @@ void check_sprite_collisions(void) BANKED {
     gval = coolTextHue < 32 ? coolTextHue : coolTextHue < 64 ? 31 : coolTextHue < 96 ? 31 - (coolTextHue - 64) : 0;
     bval = coolTextHue < 32 ? 0 : coolTextHue < 64 ? coolTextHue - 32 : coolTextHue < 96 ? 31 : 31 - (coolTextHue - 96);
     set_bkg_palette_entry(7, 0, RGB(rval, gval, bval));
+
+    // Update cool kids club sprites
+    if (++cyanDudeAnimDelay >= CYAN_DUDE_ANIM_DELAY) {
+      cyanDudeAnimDelay = 0;
+      if (cyanDudeAnimFrame == 0) {
+        cyanDudeAnimFrame = 1;
+        set_sprite_prop(5, 7);
+      } else {
+        cyanDudeAnimFrame = 0;
+        set_sprite_prop(5, 7 | S_FLIPX);
+      }
+    }
+    if (++yellowDudeAnimDelay >= YELLOW_DUDE_ANIM_DELAY) {
+      yellowDudeAnimDelay = 0;
+      if (yellowDudeAnimFrame == 0) {
+        yellowDudeAnimFrame = 1;
+        set_sprite_tile(4, 10);
+      } else {
+        yellowDudeAnimFrame = 0;
+        set_sprite_tile(4, 4);
+      }
+    }
+    if (++greenAndRedDudeAnimDelay >= RED_AND_GREEN_DUDE_ANIM_DELAY) {
+      greenAndRedDudeAnimDelay = 0;
+      if (greenAndRedDudeAnimFrame == 0) {
+        greenAndRedDudeAnimFrame = 1;
+        move_sprite(1, 88+1, 120);  // Red guy
+        move_sprite(2, 98-1, 120);  // Green guy
+      } else if (greenAndRedDudeAnimFrame == 1) {
+        greenAndRedDudeAnimFrame = 2;
+        set_sprite_tile(1, 8);
+        set_sprite_tile(2, 8);
+      } else if (greenAndRedDudeAnimFrame == 2) {
+        greenAndRedDudeAnimFrame = 3;
+        set_sprite_tile(1, 4);
+        set_sprite_tile(2, 4);
+      } else {
+        greenAndRedDudeAnimFrame = 0;
+        move_sprite(1, 88, 120);
+        move_sprite(2, 98, 120);
+      }
+    }
   }
 }
