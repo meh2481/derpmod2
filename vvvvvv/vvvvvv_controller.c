@@ -20,7 +20,9 @@
 #define PALETTE_SAVEPOINTS 2
 #define PALETTE_MINIMAP    3
 #define PALETTE_MAP_FOG    4
+#define PALETTE_DISCO_BALL 5
 #define PALETTE_TEXTBOX    6
+#define PALETTE_COOL_TEXT  7
 
 #define PLAYER_SPRITE      0
 #define FALL_AMOUNT        4
@@ -165,8 +167,13 @@ void init_vvvvvv(void) NONBANKED {
   init_win(0);
   move_win(WIN_X_OFFSET, 0);
 
+  #ifndef DEBUG
   lastScreenX = curScreenX = 0;
   lastScreenY = curScreenY = 6;
+  #else
+  lastScreenX = curScreenX = 1;
+  lastScreenY = curScreenY = 3;
+  #endif
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -195,6 +202,11 @@ void init_vvvvvv(void) NONBANKED {
   set_bkg_palette_entry(PALETTE_MINIMAP, 2, RGB(0,25,25));
   set_bkg_palette_entry(PALETTE_MINIMAP, 3, RGB(0,15,15));
   set_bkg_palette_entry(PALETTE_MAP_FOG, 0, RGB(10,10,10));
+  set_bkg_palette_entry(PALETTE_DISCO_BALL, 0, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_DISCO_BALL, 1, RGB(31,31,31));
+  set_bkg_palette_entry(PALETTE_DISCO_BALL, 2, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_DISCO_BALL, 3, RGB(0,0,0));
+  set_bkg_palette_entry(PALETTE_COOL_TEXT, 0, RGB(31,0,0));
 
   set_press_start_text_palette(PALETTE_TEXTBOX);
 

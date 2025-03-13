@@ -46,6 +46,10 @@
 #define B_BLINK_DELAY      40
 
 #define SPRITE_ANIM_DELAY  12
+#define DISCO_BALL_ANIM_DELAY 25
+#define DISCO_BALL_FLIP    32
+#define DISCO_BALL         0
+
 
 const uint8_t no_tiles[] = {
   91, 91
@@ -95,6 +99,10 @@ int16_t moveSprite3VelY = 0;
 uint8_t seenLiString = 0;
 uint8_t spriteAnimDelay = 0;
 uint8_t spriteAnimFrame = 0;
+uint8_t discoBallAnimDelay = 0;
+uint8_t discoBallAnimFrame = 0;
+uint8_t discoSparkleAnimFrame = 0;
+uint8_t coolTextHue = 0;
 
 void save_game(void) BANKED {
   //TODO hUGE_dosound(SFX_SAVEPOINT);
@@ -613,6 +621,8 @@ uint8_t check_sprite_collided(uint8_t playerX, uint8_t playerY, uint8_t spriteX,
     playerY + 16 > spriteY;
 }
 
+uint8_t rval, bval, gval;
+
 void check_sprite_collisions(void) BANKED {
   if(curScreenX == 0 && curScreenY == 0) {
     // Sprite on this screen is the glasses, at position 48, 40
@@ -756,5 +766,36 @@ void check_sprite_collisions(void) BANKED {
         set_sprite_tile(2, 22);
       }
     }
+  } else if (curScreenX == 1 && curScreenY == 3) {
+    if (++discoBallAnimDelay >= DISCO_BALL_ANIM_DELAY) {
+      // Animate disco ball bg tile
+      discoBallAnimDelay = 0;
+      if (discoBallAnimFrame == 0) {
+        discoBallAnimFrame = 1;
+        set_bkg_attribute_xy(10, 2, DISCO_BALL_FLIP);
+      } else {
+        discoBallAnimFrame = 0;
+        set_bkg_attribute_xy(10, 2, DISCO_BALL);
+      }
+
+      // Animate disco ball sparkle
+      if (++discoSparkleAnimFrame > 2) {
+        discoSparkleAnimFrame = 0;
+        set_bkg_palette_entry(5, 3, RGB(0, 0, 0));
+      } else {
+        set_bkg_palette_entry(5, discoSparkleAnimFrame, RGB(0, 0, 0));
+      }
+      set_bkg_palette_entry(5, discoSparkleAnimFrame+1, RGB(31, 31, 31));
+    }
+
+    // Every frame, update the hue of the cool text to create a rainbow effect
+    coolTextHue += 1;
+    if (coolTextHue > 96) {
+      coolTextHue = 0;
+    }
+    rval = coolTextHue < 32 ? 31 : coolTextHue < 64 ? 31 - (coolTextHue - 32) : 0;
+    gval = coolTextHue < 32 ? coolTextHue : coolTextHue < 64 ? 31 : 31 - (coolTextHue - 64);
+    bval = coolTextHue < 32 ? 0 : coolTextHue < 64 ? 31 : coolTextHue - 64;
+    set_bkg_palette_entry(7, 0, RGB(rval, gval, bval));
   }
 }
