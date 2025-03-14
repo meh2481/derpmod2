@@ -317,6 +317,12 @@ void update_player(uint8_t input) BANKED {
     }
   }
 
+  if (curScreenX == 1 && curScreenY == 3) {
+    // Skip player input on the cool kids screen
+    check_sprite_collisions();
+    return;
+  }
+
   if (!playerFlipped) {
     // Check collisions with tiles below the player
     if (playerSpriteY % 8 == 0 && playerSpriteY <= 128) {
@@ -655,6 +661,13 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     set_sprite_palette_entry(6, 3, RGB(0, 0, 0));
     set_sprite_palette_entry(7, 2, RGB(0, 31, 31));
     set_sprite_palette_entry(7, 3, RGB(0, 0, 0));
+
+    // Fill offscreen bg rect black so we can scroll the screen
+    fill_bkg_rect(0, 18, 20, 14, 91);
+
+    // Make player right-side up no matter what
+    playerFlipped = 0;
+    set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
 
   }
 }
