@@ -899,5 +899,29 @@ void check_sprite_collisions(void) BANKED {
         move_sprite(2, 98, 120);
       }
     }
+
+    // Walk into frame
+    if (playerSpriteX < 30) {
+      // Anim player walking
+      playerSpriteX += PLAYER_MOVE_SPEED;
+      playerMoveAnimDelay++;
+      if (playerMoveAnimDelay > PLAYER_ANIM_COUNT) {
+        playerMoveAnimDelay = 0;
+        if (playerAnimApplied) {
+          playerAnimApplied = 0;
+          set_sprite_tile(PLAYER_SPRITE, playerHasGlasses + 2);
+        } else {
+          playerAnimApplied = 1;
+          set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+        }
+      }
+    } else {
+      // Stop player anim
+      set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+      playerMoveAnimDelay = 0;
+      playerAnimApplied = 0;
+      playerSpriteX = 30;
+    }
+    move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   }
 }

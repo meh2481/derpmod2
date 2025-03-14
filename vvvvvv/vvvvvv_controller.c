@@ -239,6 +239,12 @@ void update_vvvvvv(uint8_t input) NONBANKED {
   hUGE_dosound();
   SWITCH_ROM(previous_bank);
 
+  if (curScreenX == 1 && curScreenY == 3) {
+    // Skip player input on the cool kids screen
+    update_player(input);
+    return;
+  }
+
   // Handle dialog character-by-character rendering
   if (cur_displaying_string_char != -1) {
     // If A is pressed, display all text immediately
