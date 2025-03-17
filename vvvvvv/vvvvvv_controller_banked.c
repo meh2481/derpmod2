@@ -53,7 +53,8 @@
 #define RED_GUY 3
 #define BLUE_GUY 1
 
-#define BLUE_GUY_SPOT_PLAYER_DELAY  70
+#define BLUE_GUY_TURN_DELAY         45
+#define BLUE_GUY_SPOT_PLAYER_DELAY  80
 
 
 const uint8_t no_tiles[] = {
@@ -649,7 +650,7 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
 
     set_sprite_prop(RED_GUY, 3);
     set_sprite_prop(2, 4 | S_FLIPX);
-    set_sprite_prop(BLUE_GUY, 5 | S_FLIPX);
+    set_sprite_prop(BLUE_GUY, 5);
     set_sprite_prop(4, 6);
     set_sprite_prop(5, 7 | S_FLIPX);
 
@@ -960,6 +961,9 @@ void check_sprite_collisions(void) BANKED {
           blueMoveAnimFrame = 0;
           move_sprite(BLUE_GUY, 41+8, moveSprite1PosY+16);
         }
+      } else if (finalAnimFrame == BLUE_GUY_TURN_DELAY) {
+        // Turn blue guy around
+        set_sprite_prop(BLUE_GUY, 5 | S_FLIPX);
       }
     }
   }
