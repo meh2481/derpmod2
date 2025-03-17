@@ -50,6 +50,11 @@
 #define DISCO_BALL_FLIP    32
 #define DISCO_BALL         0
 
+#define RED_GUY 3
+#define BLUE_GUY 1
+
+#define BLUE_GUY_SPOT_PLAYER_DELAY  70
+
 
 const uint8_t no_tiles[] = {
   91, 91
@@ -112,6 +117,10 @@ uint8_t greenAndRedDudeAnimDelay = 0;
 uint8_t greenAndRedDudeAnimFrame = 0;
 uint8_t blueDudeAnimDelay = 0;
 uint8_t blueDudeAnimFrame = 0;
+
+uint16_t finalAnimFrame = 0;
+uint8_t blueMoveAnimDelay = 0;
+uint8_t blueMoveAnimFrame = 0;
 
 #define CYAN_DUDE_ANIM_DELAY    40
 #define YELLOW_DUDE_ANIM_DELAY  58
@@ -632,21 +641,23 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
   } else if (curScreenX == 1 && curScreenY == 3) {
     // Add other cool kids to the cool kids club
-    set_sprite_tile(1, 4);
+    set_sprite_tile(RED_GUY, 4);
     set_sprite_tile(2, 4);
-    set_sprite_tile(3, 4);
+    set_sprite_tile(BLUE_GUY, 4);
     set_sprite_tile(4, 4);
     set_sprite_tile(5, 8);
 
-    set_sprite_prop(1, 3);
+    set_sprite_prop(RED_GUY, 3);
     set_sprite_prop(2, 4 | S_FLIPX);
-    set_sprite_prop(3, 5 | S_FLIPX);
+    set_sprite_prop(BLUE_GUY, 5 | S_FLIPX);
     set_sprite_prop(4, 6);
     set_sprite_prop(5, 7 | S_FLIPX);
 
-    move_sprite(1, 88, 120);  // Red guy
+    move_sprite(RED_GUY, 88, 120);  // Red guy
     move_sprite(2, 98, 120);  // Green guy
-    move_sprite(3, 116, 120);  // Blue guy
+    move_sprite(BLUE_GUY, 116, 120);  // Blue guy
+    moveSprite1PosX = 108;
+    moveSprite1PosY = 104;
     move_sprite(4, 134, 120); // Yellow guy
     move_sprite(5, 146, 120); // Cyan guy
 
@@ -883,45 +894,73 @@ void check_sprite_collisions(void) BANKED {
       greenAndRedDudeAnimDelay = 0;
       if (greenAndRedDudeAnimFrame == 0) {
         greenAndRedDudeAnimFrame = 1;
-        move_sprite(1, 88+1, 120);  // Red guy
+        move_sprite(RED_GUY, 88+1, 120);  // Red guy
         move_sprite(2, 98-1, 120);  // Green guy
       } else if (greenAndRedDudeAnimFrame == 1) {
         greenAndRedDudeAnimFrame = 2;
-        set_sprite_tile(1, 8);
+        set_sprite_tile(RED_GUY, 8);
         set_sprite_tile(2, 8);
       } else if (greenAndRedDudeAnimFrame == 2) {
         greenAndRedDudeAnimFrame = 3;
-        set_sprite_tile(1, 4);
+        set_sprite_tile(RED_GUY, 4);
         set_sprite_tile(2, 4);
       } else {
         greenAndRedDudeAnimFrame = 0;
-        move_sprite(1, 88, 120);
+        move_sprite(RED_GUY, 88, 120);
         move_sprite(2, 98, 120);
       }
     }
 
     // Walk into frame
-    if (playerSpriteX < 30) {
-      // Anim player walking
-      playerSpriteX += PLAYER_MOVE_SPEED;
-      playerMoveAnimDelay++;
-      if (playerMoveAnimDelay > PLAYER_ANIM_COUNT) {
+    if (!finalAnimFrame) {
+      if (playerSpriteX < 30) {
+        // Anim player walking
+        playerSpriteX += PLAYER_MOVE_SPEED;
+        playerMoveAnimDelay++;
+        if (playerMoveAnimDelay > PLAYER_ANIM_COUNT) {
+          playerMoveAnimDelay = 0;
+          if (playerAnimApplied) {
+            playerAnimApplied = 0;
+            set_sprite_tile(PLAYER_SPRITE, playerHasGlasses + 2);
+          } else {
+            playerAnimApplied = 1;
+            set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+          }
+        }
+      } else {
+        // Stop player anim
+        set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
         playerMoveAnimDelay = 0;
-        if (playerAnimApplied) {
-          playerAnimApplied = 0;
-          set_sprite_tile(PLAYER_SPRITE, playerHasGlasses + 2);
+        playerAnimApplied = 0;
+        playerSpriteX = 30;
+        finalAnimFrame = 1;
+      }
+      move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
+    } else {
+      finalAnimFrame++;
+      if (finalAnimFrame > BLUE_GUY_SPOT_PLAYER_DELAY) {
+        // Walk blue guy towards player
+        if (moveSprite1PosX > 41) {
+          moveSprite1PosX -= PLAYER_MOVE_SPEED;
+          move_sprite(BLUE_GUY, moveSprite1PosX+8, moveSprite1PosY+16);
+          if (++blueMoveAnimDelay > PLAYER_ANIM_COUNT) {
+            blueMoveAnimDelay = 0;
+            if (blueMoveAnimFrame == 0) {
+              blueMoveAnimFrame = 1;
+              set_sprite_tile(BLUE_GUY, 6);
+            } else {
+              blueMoveAnimFrame = 0;
+              set_sprite_tile(BLUE_GUY, 4);
+            }
+          }
         } else {
-          playerAnimApplied = 1;
-          set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
+          // Stop blue guy anim
+          set_sprite_tile(BLUE_GUY, 4);
+          blueMoveAnimDelay = 0;
+          blueMoveAnimFrame = 0;
+          move_sprite(BLUE_GUY, 41+8, moveSprite1PosY+16);
         }
       }
-    } else {
-      // Stop player anim
-      set_sprite_tile(PLAYER_SPRITE, playerHasGlasses);
-      playerMoveAnimDelay = 0;
-      playerAnimApplied = 0;
-      playerSpriteX = 30;
     }
-    move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
   }
 }
