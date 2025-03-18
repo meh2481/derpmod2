@@ -55,6 +55,8 @@
 
 #define BLUE_GUY_TURN_DELAY         45
 #define BLUE_GUY_SPOT_PLAYER_DELAY  80
+#define BLUE_GUY_DANCE_DELAY        120
+#define BLUE_DUDE_ANIM_DELAY        25
 
 
 const uint8_t no_tiles[] = {
@@ -122,6 +124,7 @@ uint8_t blueDudeAnimFrame = 0;
 uint16_t finalAnimFrame = 0;
 uint8_t blueMoveAnimDelay = 0;
 uint8_t blueMoveAnimFrame = 0;
+uint8_t playerDanceAnimDelay = 42;
 
 #define CYAN_DUDE_ANIM_DELAY    40
 #define YELLOW_DUDE_ANIM_DELAY  58
@@ -939,7 +942,44 @@ void check_sprite_collisions(void) BANKED {
       move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
     } else {
       finalAnimFrame++;
-      if (finalAnimFrame > BLUE_GUY_SPOT_PLAYER_DELAY) {
+      if (finalAnimFrame > BLUE_GUY_DANCE_DELAY) {
+        // Dance blue guy
+        if (++blueMoveAnimDelay >= BLUE_DUDE_ANIM_DELAY) {
+          blueMoveAnimDelay = 0;
+          if (blueMoveAnimFrame == 0) {
+            blueMoveAnimFrame = 1;
+            set_sprite_tile(BLUE_GUY, 10);
+          } else if (blueMoveAnimFrame == 1) {
+            blueMoveAnimFrame = 2;
+            set_sprite_tile(BLUE_GUY, 4);
+          } else if (blueMoveAnimFrame == 2) {
+            blueMoveAnimFrame = 3;
+            set_sprite_tile(BLUE_GUY, 8);
+          } else {
+            blueMoveAnimFrame = 0;
+            set_sprite_tile(BLUE_GUY, 4);
+          }
+          // Dance player
+          if (playerAnimApplied) {
+            playerAnimApplied = 0;
+            set_sprite_tile(PLAYER_SPRITE, 4);
+          } else {
+            playerAnimApplied = 1;
+            set_sprite_tile(PLAYER_SPRITE, 4 + ((rand() % 3) + 1) * 2);
+            // Flip player randomly
+            if (rand() & 0b1) {
+              playerFlipped = S_FLIPX;
+            } else {
+              playerFlipped = 0;
+            }
+            // Randomly flip the player vertically (rarely)
+            if (rand() < 10) {
+              playerFlipped |= S_FLIPY;
+            }
+            set_sprite_prop(PLAYER_SPRITE, playerFlipped);
+          }
+        }
+      } else if (finalAnimFrame > BLUE_GUY_SPOT_PLAYER_DELAY) {
         // Walk blue guy towards player
         if (moveSprite1PosX > 41) {
           moveSprite1PosX -= PLAYER_MOVE_SPEED;
