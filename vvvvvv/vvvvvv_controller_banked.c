@@ -967,7 +967,7 @@ void check_sprite_collisions(void) BANKED {
             playerAnimApplied = 1;
             set_sprite_tile(PLAYER_SPRITE, 4 + ((rand() % 3) + 1) * 2);
             // Flip player randomly
-            if (rand() & 0b1) {
+            if ((rand() & 0b11) == 1) {
               playerFlipped = S_FLIPX;
             } else {
               playerFlipped = 0;
