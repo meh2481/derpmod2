@@ -127,6 +127,8 @@ uint8_t blueMoveAnimDelay = 0;
 uint8_t blueMoveAnimFrame = 0;
 uint8_t playerDanceAnimDelay = 42;
 
+uint8_t curBgPos = 0;
+
 #define CYAN_DUDE_ANIM_DELAY    40
 #define YELLOW_DUDE_ANIM_DELAY  58
 #define RED_AND_GREEN_DUDE_ANIM_DELAY  76
@@ -895,7 +897,7 @@ void check_sprite_collisions(void) BANKED {
         set_sprite_tile(4, 4);
       }
     }
-    if (++greenAndRedDudeAnimDelay >= RED_AND_GREEN_DUDE_ANIM_DELAY) {
+    if (++greenAndRedDudeAnimDelay >= RED_AND_GREEN_DUDE_ANIM_DELAY && curBgPos < SCREEN_HEIGHT) {
       greenAndRedDudeAnimDelay = 0;
       if (greenAndRedDudeAnimFrame == 0) {
         greenAndRedDudeAnimFrame = 1;
@@ -948,19 +950,40 @@ void check_sprite_collisions(void) BANKED {
     } else {
       finalAnimFrame++;
       if (finalAnimFrame > CREDITS_SCROLL_DELAY) {
-        // Scroll background
-        if (finalAnimFrame % 4 == 0) {
-          scroll_bkg(0, 1);
+        if (finalAnimFrame % 4 == 0) { // Delay and only once per 4 frames
+          if (curBgPos < SCREEN_HEIGHT) {
+            // Scroll background
+            move_bkg(0, ++curBgPos);
 
-          // Scroll sprites up
-          move_sprite(PLAYER_SPRITE, playerSpriteX+8, --playerSpriteY+16);
+            // Scroll sprites up
+            move_sprite(PLAYER_SPRITE, playerSpriteX+8, --playerSpriteY+16);
 
-          move_sprite(RED_GUY, moveSprite3PosX+8, playerSpriteY+16);  // Red guy
-          move_sprite(2, moveSprite2PosX+8, playerSpriteY+16);  // Green guy
+            move_sprite(RED_GUY, moveSprite3PosX+8, playerSpriteY+16);  // Red guy
+            move_sprite(2, moveSprite2PosX+8, playerSpriteY+16);  // Green guy
 
-          move_sprite(BLUE_GUY, moveSprite1PosX+9, --moveSprite1PosY+16);
-          move_sprite(4, 134, playerSpriteY+16); // Yellow guy
-          move_sprite(5, 146, playerSpriteY+16); // Cyan guy
+            move_sprite(BLUE_GUY, moveSprite1PosX+9, --moveSprite1PosY+16);
+            move_sprite(4, 134, playerSpriteY+16); // Yellow guy
+            move_sprite(5, 146, playerSpriteY+16); // Cyan guy
+
+            if (curBgPos == 8) {
+              // Set the first row of the background to black
+              fill_bkg_rect(0, 0, SCREEN_WIDTH_TILES, 1, 91);
+            } else if (curBgPos == 16) {
+              // Set the second row of the background to black
+              fill_bkg_rect(0, 1, SCREEN_WIDTH_TILES, 1, 91);
+            } else if (curBgPos == 24) {
+              // Set the third row of the background to black
+              fill_bkg_rect(0, 2, SCREEN_WIDTH_TILES, 1, 91);
+            } else if (curBgPos == 32) {
+              // Set the fourth row of the background to black
+              fill_bkg_rect(0, 3, SCREEN_WIDTH_TILES, 1, 91);
+            }
+          } else {
+            // Keep scrolling player sprite until it wraps back
+            if (playerSpriteY != -150) {
+              move_sprite(PLAYER_SPRITE, playerSpriteX+8, --playerSpriteY+16);
+            }
+          }
         }
       }
       if (finalAnimFrame > BLUE_GUY_DANCE_DELAY) {
