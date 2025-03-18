@@ -899,8 +899,8 @@ void check_sprite_collisions(void) BANKED {
       greenAndRedDudeAnimDelay = 0;
       if (greenAndRedDudeAnimFrame == 0) {
         greenAndRedDudeAnimFrame = 1;
-        moveSprite3PosX = 88-1;
-        moveSprite2PosX = 98-1;
+        moveSprite3PosX = 80+1;
+        moveSprite2PosX = 90-1;
         move_sprite(RED_GUY, 88+1, playerSpriteY+16);  // Red guy
         move_sprite(2, 98-1, playerSpriteY+16);  // Green guy
       } else if (greenAndRedDudeAnimFrame == 1) {
@@ -915,8 +915,8 @@ void check_sprite_collisions(void) BANKED {
         greenAndRedDudeAnimFrame = 0;
         move_sprite(RED_GUY, 88, playerSpriteY+16);
         move_sprite(2, 98, playerSpriteY+16);
-        moveSprite3PosX = 88;
-        moveSprite2PosX = 98;
+        moveSprite3PosX = 80;
+        moveSprite2PosX = 90;
       }
     }
 
@@ -955,8 +955,8 @@ void check_sprite_collisions(void) BANKED {
           // Scroll sprites up
           move_sprite(PLAYER_SPRITE, playerSpriteX+8, --playerSpriteY+16);
 
-          move_sprite(RED_GUY, moveSprite3PosX, playerSpriteY+16);  // Red guy
-          move_sprite(2, moveSprite2PosX, playerSpriteY+16);  // Green guy
+          move_sprite(RED_GUY, moveSprite3PosX+8, playerSpriteY+16);  // Red guy
+          move_sprite(2, moveSprite2PosX+8, playerSpriteY+16);  // Green guy
 
           move_sprite(BLUE_GUY, moveSprite1PosX+9, --moveSprite1PosY+16);
           move_sprite(4, 134, playerSpriteY+16); // Yellow guy
