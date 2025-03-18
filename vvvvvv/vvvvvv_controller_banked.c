@@ -56,6 +56,7 @@
 #define BLUE_GUY_TURN_DELAY         45
 #define BLUE_GUY_SPOT_PLAYER_DELAY  80
 #define BLUE_GUY_DANCE_DELAY        120
+#define CREDITS_SCROLL_DELAY        450
 #define BLUE_DUDE_ANIM_DELAY        25
 
 
@@ -898,8 +899,10 @@ void check_sprite_collisions(void) BANKED {
       greenAndRedDudeAnimDelay = 0;
       if (greenAndRedDudeAnimFrame == 0) {
         greenAndRedDudeAnimFrame = 1;
-        move_sprite(RED_GUY, 88+1, 120);  // Red guy
-        move_sprite(2, 98-1, 120);  // Green guy
+        moveSprite3PosX = 88-1;
+        moveSprite2PosX = 98-1;
+        move_sprite(RED_GUY, 88+1, playerSpriteY+16);  // Red guy
+        move_sprite(2, 98-1, playerSpriteY+16);  // Green guy
       } else if (greenAndRedDudeAnimFrame == 1) {
         greenAndRedDudeAnimFrame = 2;
         set_sprite_tile(RED_GUY, 8);
@@ -910,8 +913,10 @@ void check_sprite_collisions(void) BANKED {
         set_sprite_tile(2, 4);
       } else {
         greenAndRedDudeAnimFrame = 0;
-        move_sprite(RED_GUY, 88, 120);
-        move_sprite(2, 98, 120);
+        move_sprite(RED_GUY, 88, playerSpriteY+16);
+        move_sprite(2, 98, playerSpriteY+16);
+        moveSprite3PosX = 88;
+        moveSprite2PosX = 98;
       }
     }
 
@@ -942,6 +947,22 @@ void check_sprite_collisions(void) BANKED {
       move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
     } else {
       finalAnimFrame++;
+      if (finalAnimFrame > CREDITS_SCROLL_DELAY) {
+        // Scroll background
+        if (finalAnimFrame % 4 == 0) {
+          scroll_bkg(0, 1);
+
+          // Scroll sprites up
+          move_sprite(PLAYER_SPRITE, playerSpriteX+8, --playerSpriteY+16);
+
+          move_sprite(RED_GUY, moveSprite3PosX, playerSpriteY+16);  // Red guy
+          move_sprite(2, moveSprite2PosX, playerSpriteY+16);  // Green guy
+
+          move_sprite(BLUE_GUY, moveSprite1PosX+9, --moveSprite1PosY+16);
+          move_sprite(4, 134, playerSpriteY+16); // Yellow guy
+          move_sprite(5, 146, playerSpriteY+16); // Cyan guy
+        }
+      }
       if (finalAnimFrame > BLUE_GUY_DANCE_DELAY) {
         // Dance blue guy
         if (++blueMoveAnimDelay >= BLUE_DUDE_ANIM_DELAY) {
