@@ -11,6 +11,7 @@
 #include "../font/font_tiles.h"
 #include "minimap_tiles.h"
 #include "vvvvvv_controller.h"
+#include "credits_text.h"
 
 #define NUM_SCREENS_X      7
 #define NUM_SCREENS_Y      7
@@ -680,8 +681,8 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     set_sprite_palette_entry(7, 2, RGB(0, 31, 31));
     set_sprite_palette_entry(7, 3, RGB(0, 0, 0));
 
-    // Fill offscreen bg rect black so we can scroll the screen
-    fill_bkg_rect(0, 18, 20, 14, 91);
+    // Set offscreen bg to credits so we can scroll the screen
+    set_credits_tiles_initial();
 
     // Make player right-side up no matter what
     playerFlipped = 0;
@@ -845,7 +846,7 @@ void check_sprite_collisions(void) BANKED {
       }
     }
   } else if (curScreenX == 1 && curScreenY == 3) {
-    if (++discoBallAnimDelay >= DISCO_BALL_ANIM_DELAY) {
+    if (curBgPos < 23 && ++discoBallAnimDelay >= DISCO_BALL_ANIM_DELAY) {
       // Animate disco ball bg tile
       discoBallAnimDelay = 0;
       if (discoBallAnimFrame == 0) {
@@ -966,19 +967,23 @@ void check_sprite_collisions(void) BANKED {
             move_sprite(5, 146, playerSpriteY+16); // Cyan guy
 
             if (curBgPos == 8) {
-              // Set the first row of the background to black
-              fill_bkg_rect(0, 0, SCREEN_WIDTH_TILES, 1, 91);
+              // Set the first row of the background
+              set_credits_tile_row(0, 14);
             } else if (curBgPos == 16) {
-              // Set the second row of the background to black
-              fill_bkg_rect(0, 1, SCREEN_WIDTH_TILES, 1, 91);
+              // Set the second row of the background
+              set_credits_tile_row(1, 15);
             } else if (curBgPos == 24) {
-              // Set the third row of the background to black
-              fill_bkg_rect(0, 2, SCREEN_WIDTH_TILES, 1, 91);
+              // Set the third row of the background
+              set_credits_tile_row(2, 16);
             } else if (curBgPos == 32) {
-              // Set the fourth row of the background to black
-              fill_bkg_rect(0, 3, SCREEN_WIDTH_TILES, 1, 91);
+              // Set the fourth row of the background
+              set_credits_tile_row(3, 17);
             }
           } else {
+            // Show "Thanks for playing" text
+            display_dialog = 1;
+            cur_displaying_string_char = 0;
+
             // Keep scrolling player sprite until it wraps back
             if (playerSpriteY != -150) {
               move_sprite(PLAYER_SPRITE, playerSpriteX+8, --playerSpriteY+16);
