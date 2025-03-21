@@ -40,6 +40,12 @@
 	extern const unsigned char SFX_PICKUP[];
 	#define CBTFX_PLAY_SFX_WARP CBTFX_init(&SFX_WARP[0])
 	extern const unsigned char SFX_WARP[];
+	#define CBTFX_PLAY_SFX_SAVEPOINT CBTFX_init(&SFX_SAVEPOINT[0])
+	extern const unsigned char SFX_SAVEPOINT[];
+	#define CBTFX_PLAY_SFX_FLIP CBTFX_init(&SFX_FLIP[0])
+	extern const unsigned char SFX_FLIP[];
+	#define CBTFX_PLAY_SFX_DEATH CBTFX_init(&SFX_DEATH[0])
+	extern const unsigned char SFX_DEATH[];
 
 	extern const unsigned char* NOTE_LIST[];
 

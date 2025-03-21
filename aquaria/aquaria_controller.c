@@ -232,7 +232,6 @@ uint8_t update_sprite_positions(int8_t move_x, int8_t move_y) {
       // Play warp sound
       CBTFX_PLAY_SFX_WARP;
       warping = 1;
-      // TODO: Warp out
       init_vvvvvv();
       return 1;
     }

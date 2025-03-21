@@ -139,7 +139,7 @@ uint8_t savedSound = 0;
 void save_game(void) BANKED {
   if (!savedSound) {
     savedSound = 1;
-    //TODO CBTFX_PLAY_SFX_SAVEPOINT;
+    CBTFX_PLAY_SFX_SAVEPOINT;
   }
   if (isOnGround) {
     lastPlayerFlipped = playerFlipped;
@@ -166,8 +166,7 @@ void player_respawn(void) BANKED {
 }
 
 void player_die(void) BANKED {
-  // TODO Play death sound
-  // CBTFX_PLAY_SFX_DEATH;
+  CBTFX_PLAY_SFX_DEATH;
   set_sprite_tile(PLAYER_SPRITE, PLAYER_DEAD);
   // Turn red
   set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft | 0x2);
@@ -275,7 +274,7 @@ void check_tile_collisions(uint8_t input) BANKED {
       vertFlipped = 1;
       playerFlipped = playerFlipped ? 0 : S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
-      // TODO CBTFX_PLAY_SFX_FLIP;
+      CBTFX_PLAY_SFX_FLIP;
     }
   } else {
     vertFlipped = 0;
@@ -295,7 +294,7 @@ void check_tile_collisions(uint8_t input) BANKED {
         move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
         set_sprite_prop(PLAYER_SPRITE, playerMoveLeft);
       }
-      // TODO CBTFX_PLAY_SFX_FLIP;
+      CBTFX_PLAY_SFX_FLIP;
     }
   } else {
     horizFlipped = 0;
@@ -440,7 +439,7 @@ void update_player(uint8_t input) BANKED {
     isOnGround = 0;
     playerCanFlip = 0;
     playerPressingA = 1;
-    //TODO CBTFX_PLAY_SFX_FLIP;
+    CBTFX_PLAY_SFX_FLIP;
     if (!playerFlipped) {
       playerFlipped = S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
@@ -714,7 +713,7 @@ void check_sprite_collisions(void) BANKED {
     if (isOnGround && !playerHasGlasses && check_sprite_collided(playerSpriteX, playerSpriteY, 48, 40, 8, 8)) {
       // Player picked up the glasses
       playerHasGlasses = 4;
-      // TODO CBTFX_PLAY_SFX_GETGLASSES;
+      CBTFX_PLAY_SFX_OPEN_PLANT;
       // Hide glasses sprite
       set_sprite_tile(1, 0);
       set_sprite_prop(1, 0);
