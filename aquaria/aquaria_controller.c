@@ -48,7 +48,6 @@ uint8_t bulbs_active = NOTE_BULB_1 | NOTE_BULB_2 | NOTE_BULB_3;
 #define WIN_X_OFFSET                7
 #define PLAYER_SPRITE               0
 #define DEFAULT_PLAYER_SPRITE_PROP  0
-#define MAX_NOTE_SEQUENCE_LENGTH    8
 #define NOTE_FRAMES_LENGTH          0x7F
 
 uint8_t moved_bg = 1;
@@ -83,8 +82,6 @@ const uint8_t note_palette_remap[] = {1, 2, 0, 4, 3, 5, 7, 6};
 uint8_t prev_col, prev_row, cur_col, cur_row;
 
 int8_t vibrate_note_counter = 0;
-
-uint8_t note_sequence[] = {0, 0, 0, 0, 0, 0, 0, 0};
 
 uint8_t bulb_palette_from_num(uint8_t rand_num) {
   if (rand_num < 3) {
@@ -203,7 +200,7 @@ void scroll_sprite_in_screen(uint8_t sprite_num, int8_t move_x, int8_t move_y, u
 uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_3; //1 - 1;
 uint8_t warping = 0;
 
-void update_sprite_positions(int8_t move_x, int8_t move_y) {
+uint8_t update_sprite_positions(int8_t move_x, int8_t move_y) {
   // If the note bulbs are on the screen, move them with the background
   if (bulbs_active & NOTE_BULB_1 && bulbs_open[0] == 0) {
     update_bulb_sprite(9, move_x, move_y, NOTE_BULB_X_1, NOTE_BULB_Y_1);
@@ -236,31 +233,11 @@ void update_sprite_positions(int8_t move_x, int8_t move_y) {
       CBTFX_PLAY_SFX_WARP;
       warping = 1;
       // TODO: Warp out
-      bg_pos_x -= 32;
-      bg_pos_y += 128;
+      init_vvvvvv();
+      return 1;
     }
   }
-}
-
-void insert_note_into_sequence(uint8_t note) {
-  for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
-    if (note_sequence[i] == 0) {
-      // Don't duplicate notes
-      if (i > 0 && note_sequence[i - 1] == note) {
-        return;
-      }
-      note_sequence[i] = note;
-      return;
-    }
-  }
-
-  // Note sequence buffer full; shift all notes to the left and insert into the end
-  for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH - 1; i++) {
-    note_sequence[i] = note_sequence[i + 1];
-  }
-  note_sequence[MAX_NOTE_SEQUENCE_LENGTH - 1] = note;
-
-  // TODO: Check note sequence against possible songs
+  return 0;
 }
 
 void stop_note(void) {
@@ -279,9 +256,6 @@ uint8_t display_dialog = 0;
 
 void update_note(void) {
   if (cur_note == 0) {
-    for (i = 0; i < MAX_NOTE_SEQUENCE_LENGTH; i++) {
-      note_sequence[i] = 0;
-    }
     return;
   }
   uint8_t note_sprite = 0;
@@ -313,7 +287,6 @@ void update_note(void) {
       CBTFX_init(&(NOTE_LIST[note_sprite - 1][0]));
     }
   }
-  insert_note_into_sequence(note_sprite - 1);
 
   // Shake the current note back and forth as you sing it
   if (vibrate_note_counter == 0
@@ -603,7 +576,9 @@ void update_aquaria(uint8_t input) NONBANKED {
     }
   }
 
-  update_sprite_positions(move_x, move_y);
+  if (update_sprite_positions(move_x, move_y)) {
+    return;
+  }
   if (moved_bg) {
     move_bkg(bg_pos_x & 0xFF, bg_pos_y & 0xFF);
 

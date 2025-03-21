@@ -130,13 +130,17 @@ uint8_t playerDanceAnimDelay = 42;
 
 uint8_t curBgPos = 0;
 uint8_t initCreditsMusic = 0;
+uint8_t savedSound = 0;
 
 #define CYAN_DUDE_ANIM_DELAY    40
 #define YELLOW_DUDE_ANIM_DELAY  58
 #define RED_AND_GREEN_DUDE_ANIM_DELAY  76
 
 void save_game(void) BANKED {
-  //TODO hUGE_dosound(SFX_SAVEPOINT);
+  if (!savedSound) {
+    savedSound = 1;
+    //TODO CBTFX_PLAY_SFX_SAVEPOINT;
+  }
   if (isOnGround) {
     lastPlayerFlipped = playerFlipped;
     lastPlayerSpriteX = playerSpriteX;
@@ -163,7 +167,7 @@ void player_respawn(void) BANKED {
 
 void player_die(void) BANKED {
   // TODO Play death sound
-  // hUGE_dosound(SFX_DEATH);
+  // CBTFX_PLAY_SFX_DEATH;
   set_sprite_tile(PLAYER_SPRITE, PLAYER_DEAD);
   // Turn red
   set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft | 0x2);
@@ -261,6 +265,8 @@ void check_tile_collisions(uint8_t input) BANKED {
   if (map_tile == MAP_SAVEPOINT_TILE || map_tile2 == MAP_SAVEPOINT_TILE || map_tile3 == MAP_SAVEPOINT_TILE || map_tile4 == MAP_SAVEPOINT_TILE || map_tile5 == MAP_SAVEPOINT_TILE || map_tile6 == MAP_SAVEPOINT_TILE) {
     // Player hit a savepoint
     save_game();
+  } else {
+    savedSound = 0;
   }
 
   if (map_tile == MAP_FLIP_VERT_TILE || map_tile2 == MAP_FLIP_VERT_TILE || map_tile3 == MAP_FLIP_VERT_TILE || map_tile4 == MAP_FLIP_VERT_TILE || map_tile5 == MAP_FLIP_VERT_TILE || map_tile6 == MAP_FLIP_VERT_TILE) {
@@ -269,7 +275,7 @@ void check_tile_collisions(uint8_t input) BANKED {
       vertFlipped = 1;
       playerFlipped = playerFlipped ? 0 : S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
-      // TODO hUGE_dosound(SFX_FLIP);
+      // TODO CBTFX_PLAY_SFX_FLIP;
     }
   } else {
     vertFlipped = 0;
@@ -289,7 +295,7 @@ void check_tile_collisions(uint8_t input) BANKED {
         move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
         set_sprite_prop(PLAYER_SPRITE, playerMoveLeft);
       }
-      // TODO hUGE_dosound(SFX_FLIP);
+      // TODO CBTFX_PLAY_SFX_FLIP;
     }
   } else {
     horizFlipped = 0;
@@ -436,6 +442,7 @@ void update_player(uint8_t input) BANKED {
     isOnGround = 0;
     playerCanFlip = 0;
     playerPressingA = 1;
+    //TODO CBTFX_PLAY_SFX_FLIP;
     if (!playerFlipped) {
       playerFlipped = S_FLIPY;
       set_sprite_prop(PLAYER_SPRITE, playerFlipped | playerMoveLeft);
@@ -548,7 +555,7 @@ void update_player(uint8_t input) BANKED {
 void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
 
   // Hide all sprites by default
-  for (i = 1; i < 10; i++) {
+  for (i = 1; i < 20; i++) {
     set_sprite_tile(i, 0);
     set_sprite_prop(i, 0);
     move_sprite(i, 0, 0);
@@ -709,7 +716,7 @@ void check_sprite_collisions(void) BANKED {
     if (isOnGround && !playerHasGlasses && check_sprite_collided(playerSpriteX, playerSpriteY, 48, 40, 8, 8)) {
       // Player picked up the glasses
       playerHasGlasses = 4;
-      // TODO hUGE_dosound(SFX_GETGLASSES);
+      // TODO CBTFX_PLAY_SFX_GETGLASSES;
       // Hide glasses sprite
       set_sprite_tile(1, 0);
       set_sprite_prop(1, 0);

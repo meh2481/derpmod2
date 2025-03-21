@@ -168,13 +168,11 @@ void init_vvvvvv(void) NONBANKED {
   init_win(0);
   move_win(WIN_X_OFFSET, 0);
 
-  #ifndef DEBUG
+  // Scroll the background
+  move_bkg(0, 0);
+
   lastScreenX = curScreenX = 0;
   lastScreenY = curScreenY = 6;
-  #else
-  lastScreenX = curScreenX = 0;
-  lastScreenY = curScreenY = 3;
-  #endif
   cur_pressing_start = 0;
   mapMenu = 0;
 
@@ -217,16 +215,9 @@ void init_vvvvvv(void) NONBANKED {
 
   SPRITES_8x16;
   lastPlayerFlipped = playerFlipped = playerCanFlip = playerMoveLeft = playerPressingA = 0;
-  #ifdef DEBUG
-  lastPlayerSpriteX = playerSpriteX = 144;
-  lastPlayerSpriteY = playerSpriteY = 104;
-  playerHasGlasses = 4;
-  set_sprite_palette_entry(0, 3, RGB(0, 0, 0));
-  #else
   lastPlayerSpriteX = playerSpriteX = 76;
   lastPlayerSpriteY = playerSpriteY = 24;
   playerHasGlasses = 0;
-  #endif
   move_sprite(PLAYER_SPRITE, playerSpriteX+8, playerSpriteY+16);
 }
 
