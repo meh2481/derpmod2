@@ -21,6 +21,6 @@ extern uint8_t i, j, tmp, tmp_counter;
 extern uint8_t gamestate;
 
 // TODO: Comment out on release
-#define DEBUG
+// #define DEBUG
 
 #endif

@@ -60,8 +60,14 @@ const palette_color_t* const tilesetCGBPal[] =
   32326,
   6435,
   4550,
-  7886,
-  /* Gameboy Color palette 6 */
+  7886
+};
+
+// Skip palette 6 since that's used by textboxes
+
+const palette_color_t* const tilesetCGBPalrest[] =
+{
+  /* Gameboy Color palette 7 */
   32326,
   9511,
   14827,
@@ -456,7 +462,8 @@ void init_aquaria_tileset(void) BANKED {
   gb_decompress_bkg_data(0, tileset);
 
   // Set up the palette
-  set_bkg_palette(0, 7, tilesetCGBPal);
+  set_bkg_palette(0, 6, tilesetCGBPal);
+  set_bkg_palette(7, 1, tilesetCGBPalrest);
 }
 
 /* End of TILESET.C */

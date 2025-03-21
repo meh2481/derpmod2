@@ -8,6 +8,7 @@
 #include "../sfx/sfx.h"
 #include "../font/font_tiles.h"
 #include "../title/press_start.h"
+#include "../vvvvvv/vvvvvv_controller.h"
 
 #ifdef DEBUG
   #define NOCLIP 1
@@ -197,7 +198,7 @@ void scroll_sprite_in_screen(uint8_t sprite_num, int8_t move_x, int8_t move_y, u
     }
 }
 
-uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_3; //1 - 1;
+uint8_t cur_swordfish_string = TEXT_SWORDFISH_STEAK_1 - 1;
 uint8_t warping = 0;
 
 uint8_t update_sprite_positions(int8_t move_x, int8_t move_y) {
