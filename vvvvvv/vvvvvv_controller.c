@@ -76,6 +76,7 @@ uint8_t cur_vvvvvv_dialogue_start;
 uint8_t cur_vvvvvv_dialogue_length;
 extern int8_t cur_displaying_string_char;
 extern uint8_t initCreditsMusic;
+uint8_t inittedMusic = 0;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -163,7 +164,6 @@ uint8_t isOnGround = 0;
 
 void init_vvvvvv(void) NONBANKED {
   gamestate = STATE_VVVVVV;
-  init_vvvvvv_music();
   // Display the window covering everything
   init_win(0);
   move_win(WIN_X_OFFSET, 0);
@@ -226,16 +226,18 @@ uint8_t minimap_blink_on = 1;
 
 void update_vvvvvv(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
-  if (!initCreditsMusic) {
-    uint8_t previous_bank = _current_bank;
-    SWITCH_ROM(BANK(vvvvvv_music));
-    hUGE_dosound();
-    SWITCH_ROM(previous_bank);
-  } else {
-    uint8_t previous_bank = _current_bank;
-    SWITCH_ROM(BANK(credits_music));
-    hUGE_dosound();
-    SWITCH_ROM(previous_bank);
+  if (inittedMusic) {
+    if (!initCreditsMusic) {
+      uint8_t previous_bank = _current_bank;
+      SWITCH_ROM(BANK(vvvvvv_music));
+      hUGE_dosound();
+      SWITCH_ROM(previous_bank);
+    } else {
+      uint8_t previous_bank = _current_bank;
+      SWITCH_ROM(BANK(credits_music));
+      hUGE_dosound();
+      SWITCH_ROM(previous_bank);
+    }
   }
 
   if (curScreenX == 1 && curScreenY == 3) {
@@ -267,6 +269,10 @@ void update_vvvvvv(uint8_t input) NONBANKED {
       display_dialog = 0;
       playerCanFlip = 0;
       move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
+      if(!inittedMusic) {
+        inittedMusic = 1;
+        init_vvvvvv_music();
+      }
     } else {
       // Next line of text
       cur_displaying_string_char = 0;

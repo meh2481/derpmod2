@@ -382,7 +382,6 @@ void update_player(uint8_t input) BANKED {
         isOnGround = 1;
 
         // The first time we land on the ground, start the VVVVVV intro sequence
-        #ifndef DEBUG
         if (!hasDoneIntro) {
           hasDoneIntro = 1;
           // Display dialog and show text box
@@ -392,7 +391,6 @@ void update_player(uint8_t input) BANKED {
           cur_vvvvvv_dialogue_length = 8;
           render_textbox_id(cur_vvvvvv_dialogue, 0);
         }
-        #endif
       }
     } else {
       // Fall down
