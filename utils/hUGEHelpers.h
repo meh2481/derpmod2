@@ -15,6 +15,9 @@ BANKREF_EXTERN(vvvvvv_music)
 extern void init_pajama_music(void) NONBANKED;
 BANKREF_EXTERN(pajama_music)
 
+extern void init_credits_music(void) NONBANKED;
+BANKREF_EXTERN(credits_music)
+
 extern void hUGE_stop_music(void) NONBANKED;
 
 #endif

@@ -18,6 +18,7 @@ OBJS	= main.o \
 	music/space_odyssey.o \
 	music/the_traveller.o \
 	music/pajama_jam.o \
+	music/credits_trash.o \
 	title/press_start.o \
 	title/title.o \
 	title/title_bg_tiles_hi.o \

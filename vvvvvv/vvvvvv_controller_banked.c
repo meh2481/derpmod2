@@ -129,6 +129,7 @@ uint8_t blueMoveAnimFrame = 0;
 uint8_t playerDanceAnimDelay = 42;
 
 uint8_t curBgPos = 0;
+uint8_t initCreditsMusic = 0;
 
 #define CYAN_DUDE_ANIM_DELAY    40
 #define YELLOW_DUDE_ANIM_DELAY  58
@@ -648,6 +649,8 @@ void add_vvvvvv_sprites(uint8_t screenX, uint8_t screenY) BANKED {
     move_sprite(1, moveSprite1PosX+8, moveSprite1PosY+16);
     move_sprite(2, moveSprite2PosX+8, moveSprite2PosY+16);
   } else if (curScreenX == 1 && curScreenY == 3) {
+    hUGE_stop_music();
+
     // Add other cool kids to the cool kids club
     set_sprite_tile(RED_GUY, 4);
     set_sprite_tile(2, 4);
@@ -992,6 +995,10 @@ void check_sprite_collisions(void) BANKED {
         }
       }
       if (finalAnimFrame > BLUE_GUY_DANCE_DELAY) {
+        if (!initCreditsMusic) {
+          initCreditsMusic = 1;
+          init_credits_music();
+        }
         // Dance blue guy
         if (++blueMoveAnimDelay >= BLUE_DUDE_ANIM_DELAY) {
           blueMoveAnimDelay = 0;

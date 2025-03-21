@@ -75,6 +75,7 @@ uint8_t cur_vvvvvv_dialogue;
 uint8_t cur_vvvvvv_dialogue_start;
 uint8_t cur_vvvvvv_dialogue_length;
 extern int8_t cur_displaying_string_char;
+extern uint8_t initCreditsMusic;
 
 uint8_t cur_pressing_arrow;
 uint8_t cur_pressing_start;
@@ -234,10 +235,17 @@ uint8_t minimap_blink_on = 1;
 
 void update_vvvvvv(uint8_t input) NONBANKED {
   // Switch to title music bank to update music
-  uint8_t previous_bank = _current_bank;
-  SWITCH_ROM(BANK(vvvvvv_music));
-  hUGE_dosound();
-  SWITCH_ROM(previous_bank);
+  if (!initCreditsMusic) {
+    uint8_t previous_bank = _current_bank;
+    SWITCH_ROM(BANK(vvvvvv_music));
+    hUGE_dosound();
+    SWITCH_ROM(previous_bank);
+  } else {
+    uint8_t previous_bank = _current_bank;
+    SWITCH_ROM(BANK(credits_music));
+    hUGE_dosound();
+    SWITCH_ROM(previous_bank);
+  }
 
   if (curScreenX == 1 && curScreenY == 3) {
     // Skip player input on the cool kids screen
