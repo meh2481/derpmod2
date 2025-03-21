@@ -50,8 +50,8 @@ void main(void)
   move_win(WIN_X_OFFSET, SCREEN_HEIGHT);
 
   #ifdef DEBUG
-  // init_vvvvvv();
-  init_aquaria();
+  init_vvvvvv();
+  // init_aquaria();
   #else
   init_logo();
   #endif
