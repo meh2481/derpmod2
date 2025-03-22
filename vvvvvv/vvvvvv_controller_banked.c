@@ -853,15 +853,17 @@ void check_sprite_collisions(void) BANKED {
       }
     }
   } else if (curScreenX == 1 && curScreenY == 3) {
-    if (curBgPos < 23 && ++discoBallAnimDelay >= DISCO_BALL_ANIM_DELAY) {
-      // Animate disco ball bg tile
+    if (++discoBallAnimDelay >= DISCO_BALL_ANIM_DELAY) {
       discoBallAnimDelay = 0;
-      if (discoBallAnimFrame == 0) {
-        discoBallAnimFrame = 1;
-        set_bkg_attribute_xy(10, 2, DISCO_BALL_FLIP);
-      } else {
-        discoBallAnimFrame = 0;
-        set_bkg_attribute_xy(10, 2, DISCO_BALL);
+      if (curBgPos < 23) {
+        // Animate disco ball bg tile
+        if (discoBallAnimFrame == 0) {
+          discoBallAnimFrame = 1;
+          set_bkg_attribute_xy(10, 2, DISCO_BALL_FLIP);
+        } else {
+          discoBallAnimFrame = 0;
+          set_bkg_attribute_xy(10, 2, DISCO_BALL);
+        }
       }
 
       // Animate disco ball sparkle
