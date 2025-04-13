@@ -5,4 +5,5 @@ A sequel to the super famous Aquaria mod of the same name (downloadable from the
 Released at Revision 2025.
 
 IRC: irc.esper.net `#bitblot`
+
 Discord: https://discord.gg/WmwpnYk
